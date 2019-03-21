@@ -25,8 +25,8 @@ func (provider *Provider) GetShardingStructure() *jsonrpc.RPCResponse {
 	return provider.call("GetShardingStructure")
 }
 
-func (provider *Provider) GetDsBlock() *jsonrpc.RPCResponse {
-	return provider.call("GetDsBlock")
+func (provider *Provider) GetDsBlock(block_number string) *jsonrpc.RPCResponse {
+	return provider.call("GetDsBlock", block_number)
 }
 
 func (provider *Provider) GetLatestDsBlock() *jsonrpc.RPCResponse {
@@ -41,12 +41,12 @@ func (provider *Provider) GetDSBlockRate() *jsonrpc.RPCResponse {
 	return provider.call("GetDSBlockRate")
 }
 
-func (provider *Provider) DSBlockListing() *jsonrpc.RPCResponse {
-	return provider.call("DSBlockListing")
+func (provider *Provider) DSBlockListing(ds_block_listing int) *jsonrpc.RPCResponse {
+	return provider.call("DSBlockListing", ds_block_listing)
 }
 
-func (provider *Provider) GetTxBlock() *jsonrpc.RPCResponse {
-	return provider.call("GetTxBlock")
+func (provider *Provider) GetTxBlock(tx_block string) *jsonrpc.RPCResponse {
+	return provider.call("GetTxBlock", tx_block)
 }
 
 func (provider *Provider) GetLatestTxBlock() *jsonrpc.RPCResponse {
@@ -141,8 +141,8 @@ func (provider *Provider) GetBalance() *jsonrpc.RPCResponse {
 	return provider.call("GetBalance")
 }
 
-func (provider *Provider) call(method_name string) *jsonrpc.RPCResponse {
-	response, err := provider.rpcClient.Call(method_name)
+func (provider *Provider) call(method_name string, params ...interface{}) *jsonrpc.RPCResponse {
+	response, err := provider.rpcClient.Call(method_name, params)
 	if err != nil {
 		return nil
 	} else {

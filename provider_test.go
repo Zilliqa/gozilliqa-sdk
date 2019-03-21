@@ -5,226 +5,226 @@ import (
 	"testing"
 )
 
-func TestGetNetworkId(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetNetworkId(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetNetworkId()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetNetworkId()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetBlockchainInfo(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetBlockchainInfo(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetBlockchainInfo()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetBlockchainInfo()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetShardingStructure(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetShardingStructure(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetShardingStructure()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetShardingStructure()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetDsBlock(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetDsBlock(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetDsBlock()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetDsBlock("40")
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetLatestDsBlock(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetLatestDsBlock(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetLatestDsBlock()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetLatestDsBlock()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetNumDSBlocks(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetNumDSBlocks(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetNumDSBlocks()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetNumDSBlocks()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetDSBlockRate(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetDSBlockRate(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetDSBlockRate()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetDSBlockRate()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestDSBlockListing(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestDSBlockListing(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.DSBlockListing()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.DSBlockListing(1)
+// 	fmt.Printf("%v\n", response)
+// }
 
 func TestGetTxBlock(t *testing.T) {
 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetTxBlock()
+	response := provider.GetTxBlock("40")
 	fmt.Printf("%v\n", response)
 }
 
-func TestGetLatestTxBlock(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetLatestTxBlock(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetLatestTxBlock()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetLatestTxBlock()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetNumTxBlocks(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetNumTxBlocks(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetNumTxBlocks()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetNumTxBlocks()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetTxBlockRate(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetTxBlockRate(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetTxBlockRate()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetTxBlockRate()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestTxBlockListing(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestTxBlockListing(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.TxBlockListing()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.TxBlockListing()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetNumTransactions(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetNumTransactions(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetNumTransactions()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetNumTransactions()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetTransactionRate(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetTransactionRate(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetTransactionRate()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetTransactionRate()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetCurrentMiniEpoch(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetCurrentMiniEpoch(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetCurrentMiniEpoch()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetCurrentMiniEpoch()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetCurrentDSEpoch(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetCurrentDSEpoch(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetCurrentDSEpoch()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetCurrentDSEpoch()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetPrevDifficulty(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetPrevDifficulty(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetPrevDifficulty()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetPrevDifficulty()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetPrevDSDifficulty(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetPrevDSDifficulty(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetPrevDSDifficulty()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetPrevDSDifficulty()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestCreateTransaction(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestCreateTransaction(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.CreateTransaction()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.CreateTransaction()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetTransaction(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetTransaction(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetTransaction()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetTransaction()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetRecentTransactions(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetRecentTransactions(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetRecentTransactions()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetRecentTransactions()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetTransactionsForTxBlock(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetTransactionsForTxBlock(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetTransactionsForTxBlock()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetTransactionsForTxBlock()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetNumTxnsTxEpoch(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetNumTxnsTxEpoch(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetNumTxnsTxEpoch()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetNumTxnsTxEpoch()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetNumTxnsDSEpoch(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetNumTxnsDSEpoch(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetNumTxnsDSEpoch()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetNumTxnsDSEpoch()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetMinimumGasPrice(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetMinimumGasPrice(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetMinimumGasPrice()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetMinimumGasPrice()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetSmartContractCode(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetSmartContractCode(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetSmartContractCode()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetSmartContractCode()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetSmartContractInit(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetSmartContractInit(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetSmartContractInit()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetSmartContractInit()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetSmartContractState(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetSmartContractState(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetSmartContractState()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetSmartContractState()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetSmartContracts(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetSmartContracts(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetSmartContracts()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetSmartContracts()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetContractAddressFromTransactionID(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetContractAddressFromTransactionID(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetContractAddressFromTransactionID()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetContractAddressFromTransactionID()
+// 	fmt.Printf("%v\n", response)
+// }
 
-func TestGetBalance(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetBalance(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetBalance()
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetBalance()
+// 	fmt.Printf("%v\n", response)
+// }
