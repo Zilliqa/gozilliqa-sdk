@@ -61,8 +61,8 @@ func (provider *Provider) GetTxBlockRate() *jsonrpc.RPCResponse {
 	return provider.call("GetTxBlockRate")
 }
 
-func (provider *Provider) TxBlockListing() *jsonrpc.RPCResponse {
-	return provider.call("TxBlockListing")
+func (provider *Provider) TxBlockListing(page int) *jsonrpc.RPCResponse {
+	return provider.call("TxBlockListing", page)
 }
 
 func (provider *Provider) GetNumTransactions() *jsonrpc.RPCResponse {
@@ -93,16 +93,16 @@ func (provider *Provider) CreateTransaction() *jsonrpc.RPCResponse {
 	return provider.call("CreateTransaction")
 }
 
-func (provider *Provider) GetTransaction() *jsonrpc.RPCResponse {
-	return provider.call("GetTransaction")
+func (provider *Provider) GetTransaction(transaction_hash string) *jsonrpc.RPCResponse {
+	return provider.call("GetTransaction", transaction_hash)
 }
 
 func (provider *Provider) GetRecentTransactions() *jsonrpc.RPCResponse {
 	return provider.call("GetRecentTransactions")
 }
 
-func (provider *Provider) GetTransactionsForTxBlock() *jsonrpc.RPCResponse {
-	return provider.call("GetTransactionsForTxBlock")
+func (provider *Provider) GetTransactionsForTxBlock(tx_block_number string) *jsonrpc.RPCResponse {
+	return provider.call("GetTransactionsForTxBlock", tx_block_number)
 }
 
 func (provider *Provider) GetNumTxnsTxEpoch() *jsonrpc.RPCResponse {
@@ -117,28 +117,28 @@ func (provider *Provider) GetMinimumGasPrice() *jsonrpc.RPCResponse {
 	return provider.call("GetMinimumGasPrice")
 }
 
-func (provider *Provider) GetSmartContractCode() *jsonrpc.RPCResponse {
-	return provider.call("GetSmartContractCode")
+func (provider *Provider) GetSmartContractCode(contract_address string) *jsonrpc.RPCResponse {
+	return provider.call("GetSmartContractCode", contract_address)
 }
 
-func (provider *Provider) GetSmartContractInit() *jsonrpc.RPCResponse {
-	return provider.call("GetSmartContractInit")
+func (provider *Provider) GetSmartContractInit(contract_address string) *jsonrpc.RPCResponse {
+	return provider.call("GetSmartContractInit", contract_address)
 }
 
-func (provider *Provider) GetSmartContractState() *jsonrpc.RPCResponse {
-	return provider.call("GetSmartContractState")
+func (provider *Provider) GetSmartContractState(contract_address string) *jsonrpc.RPCResponse {
+	return provider.call("GetSmartContractState", contract_address)
 }
 
-func (provider *Provider) GetSmartContracts() *jsonrpc.RPCResponse {
-	return provider.call("GetSmartContracts")
+func (provider *Provider) GetSmartContracts(user_address string) *jsonrpc.RPCResponse {
+	return provider.call("GetSmartContracts", user_address)
 }
 
-func (provider *Provider) GetContractAddressFromTransactionID() *jsonrpc.RPCResponse {
-	return provider.call("GetContractAddressFromTransactionID")
+func (provider *Provider) GetContractAddressFromTransactionID(transaction_id string) *jsonrpc.RPCResponse {
+	return provider.call("GetContractAddressFromTransactionID", transaction_id)
 }
 
-func (provider *Provider) GetBalance() *jsonrpc.RPCResponse {
-	return provider.call("GetBalance")
+func (provider *Provider) GetBalance(user_address string) *jsonrpc.RPCResponse {
+	return provider.call("GetBalance", user_address)
 }
 
 func (provider *Provider) call(method_name string, params ...interface{}) *jsonrpc.RPCResponse {

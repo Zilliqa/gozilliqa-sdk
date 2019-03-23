@@ -61,12 +61,12 @@ import (
 // 	fmt.Printf("%v\n", response)
 // }
 
-func TestGetTxBlock(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
+// func TestGetTxBlock(t *testing.T) {
+// 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetTxBlock("40")
-	fmt.Printf("%v\n", response)
-}
+// 	response := provider.GetTxBlock("40")
+// 	fmt.Printf("%v\n", response)
+// }
 
 // func TestGetLatestTxBlock(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
@@ -92,7 +92,7 @@ func TestGetTxBlock(t *testing.T) {
 // func TestTxBlockListing(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-// 	response := provider.TxBlockListing()
+// 	response := provider.TxBlockListing(1)
 // 	fmt.Printf("%v\n", response)
 // }
 
@@ -148,7 +148,7 @@ func TestGetTxBlock(t *testing.T) {
 // func TestGetTransaction(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-// 	response := provider.GetTransaction()
+// 	response := provider.GetTransaction("655107c300e86ee6e819af1cbfce097db1510e8cd971d99f32ce2772dcad42f2")
 // 	fmt.Printf("%v\n", response)
 // }
 
@@ -162,7 +162,7 @@ func TestGetTxBlock(t *testing.T) {
 // func TestGetTransactionsForTxBlock(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-// 	response := provider.GetTransactionsForTxBlock()
+// 	response := provider.GetTransactionsForTxBlock("1")
 // 	fmt.Printf("%v\n", response)
 // }
 
@@ -190,41 +190,41 @@ func TestGetTxBlock(t *testing.T) {
 // func TestGetSmartContractCode(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-// 	response := provider.GetSmartContractCode()
+// 	response := provider.GetSmartContractCode("fe001824823b12b58708bf24edd94d8b5e1cfcf7")
 // 	fmt.Printf("%v\n", response)
 // }
 
 // func TestGetSmartContractInit(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-// 	response := provider.GetSmartContractInit()
+// 	response := provider.GetSmartContractInit("fe001824823b12b58708bf24edd94d8b5e1cfcf7")
 // 	fmt.Printf("%v\n", response)
 // }
 
 // func TestGetSmartContractState(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-// 	response := provider.GetSmartContractState()
+// 	response := provider.GetSmartContractState("fe001824823b12b58708bf24edd94d8b5e1cfcf7")
 // 	fmt.Printf("%v\n", response)
 // }
 
 // func TestGetSmartContracts(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-// 	response := provider.GetSmartContracts()
+// 	response := provider.GetSmartContracts("1eefc4f453539e5ee732b49eb4792b268c2f3908")
 // 	fmt.Printf("%v\n", response)
 // }
 
 // func TestGetContractAddressFromTransactionID(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-// 	response := provider.GetContractAddressFromTransactionID()
+// 	response := provider.GetContractAddressFromTransactionID("AAF3089596437A7C6984FA2627B6F38B5F5B80FAEAAC6993C2E82C6A8EE2615E")
 // 	fmt.Printf("%v\n", response)
 // }
 
 // func TestGetBalance(t *testing.T) {
 // 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-// 	response := provider.GetBalance()
+// 	response := provider.GetBalance("1eefc4f453539e5ee732b49eb4792b268c2f3908")
 // 	fmt.Printf("%v\n", response)
 // }
