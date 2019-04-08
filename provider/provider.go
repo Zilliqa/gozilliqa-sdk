@@ -1,4 +1,4 @@
-package LaksaGo
+package provider
 
 import (
 	"github.com/ybbus/jsonrpc"
