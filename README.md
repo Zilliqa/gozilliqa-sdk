@@ -11,8 +11,8 @@ More docs can be found in https://apidocs.zilliqa.com/
 
 ### Account API
 
-- [ ] fromFile
-- [ ] toFile
+- [x] fromFile
+- [x] toFile
 
 ### Wallet API
 
