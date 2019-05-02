@@ -16,3 +16,4 @@ func GeneratePrivateKey() (PrivateKey, error) {
 	}
 	return PrivateKey(pvk), nil
 }
+
