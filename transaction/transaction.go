@@ -1,5 +1,16 @@
 package transaction
 
+import "github.com/FireStack-Lab/LaksaGo/provider"
+
+type State int
+
+const (
+	Initialised State = iota
+	Pending
+	Confirmed
+	Rejected
+)
+
 type Transaction struct {
 	ID           string
 	Version      string
@@ -13,6 +24,7 @@ type Transaction struct {
 	ToAddr       string
 	Code         string
 	Data         string
+
+	Provider provider.Provider
+	Status   State
 }
-
-
