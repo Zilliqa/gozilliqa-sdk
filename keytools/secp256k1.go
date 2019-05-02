@@ -5,6 +5,7 @@ import (
 	"github.com/FireStack-Lab/LaksaGo"
 	"github.com/btcsuite/btcd/btcec"
 	"io"
+	"math/big"
 )
 
 var (
@@ -15,11 +16,17 @@ type PrivateKey [32]byte
 
 func GeneratePrivateKey() (PrivateKey, error) {
 	pvk := [32]byte{}
-	_, err := io.ReadFull(rand.Reader, pvk[:])
 
-	if err != nil {
-		return pvk, err
+	for {
+		_, err := io.ReadFull(rand.Reader, pvk[:])
+		if err == nil {
+			pvkInt := new(big.Int).SetBytes(pvk[:])
+			if pvkInt.Cmp(big.NewInt(0)) == 1 && pvkInt.Cmp(Secp256k1.N) == -1{
+				break
+			}
+		}
 	}
+
 	return PrivateKey(pvk), nil
 }
 
