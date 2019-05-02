@@ -25,11 +25,11 @@ func GeneratePrivateKey() (PrivateKey, error) {
 
 func GetPublicKeyFromPrivateKey(privateKey []byte, compress bool) []byte {
 	x, y := Secp256k1.ScalarBaseMult(privateKey)
-	return util.Compress(Secp256k1, x, y, compress)
+	return LaksaGo.Compress(Secp256k1, x, y, compress)
 }
 
 func GetAddressFromPublic(publicKey []byte) string {
-	originAddress := util.EncodeHex(util.Sha256(publicKey))
+	originAddress := LaksaGo.EncodeHex(LaksaGo.Sha256(publicKey))
 	return originAddress[24:]
 }
 

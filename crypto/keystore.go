@@ -8,6 +8,7 @@ import (
 	util "github.com/FireStack-Lab/LaksaGo"
 	"github.com/FireStack-Lab/LaksaGo/keytools"
 	uuid "github.com/satori/go.uuid"
+	"strings"
 )
 
 // 0: p 1:s
@@ -51,6 +52,53 @@ func (ks *Keystore) GetDerivedKey(password []byte, params interface{}) ([]byte, 
 	}
 
 	return nil, errors.New("unsupport params")
+}
+
+func (ks *Keystore) DecryptPrivateKey(encryptJson, passphrase string) (string, error) {
+	var kv KeystoreV3
+	err := json.Unmarshal([]byte(encryptJson), &kv)
+	if err != nil {
+		return "", err
+	}
+
+	derivedKey := make([]byte, 32)
+	err = nil
+
+	ciphertext := util.DecodeHex(kv.Crypto.Ciphertext)
+	iv := util.DecodeHex(kv.Crypto.CipherParams.IV)
+	kdfparams := kv.Crypto.KDFParams
+	kdf := kv.Crypto.KDF
+
+	if kdf == "pbkdf2" {
+		derivedKey = ks.pbkdf2.GetDerivedKey([]byte(passphrase), kdfparams.Salt, 262144, 32)
+
+	} else {
+		derivedKey, err = ks.scrypt.GetDerivedKey([]byte(passphrase), kdfparams.Salt, 8192, 8, 1, 32)
+	}
+
+	if err != nil {
+		return "", nil
+	}
+
+	mac := util.EncodeHex(util.GenerateMac(derivedKey, ciphertext))
+
+	if strings.Compare(strings.ToLower(mac), strings.ToLower(kv.Crypto.MAC)) != 0 {
+		return "", errors.New("Failed to decrypt.")
+	}
+
+	encryptKey := make([]byte, 16)
+	copy(encryptKey[:], derivedKey[0:16])
+
+	block, err := aes.NewCipher(encryptKey)
+	if err != nil {
+		return "", err
+	}
+
+	privateKey := make([]byte, len(ciphertext))
+	mode := cipher.NewCTR(block, iv)
+	mode.XORKeyStream(privateKey, ciphertext)
+	return util.EncodeHex(privateKey), nil
+
 }
 
 func (ks *Keystore) EncryptPrivateKey(privateKey, passphrase []byte, t KDFType) (string, error) {
@@ -155,7 +203,7 @@ type KDFParams struct {
 	R     int    `json:"r"`
 	P     int    `json:"p"`
 	DKlen int    `json:"dklen"`
-	salt  []byte `json:"salt"`
+	Salt  []byte `json:"salt"`
 }
 
 func NewKDFParams(salt []byte) KDFParams {
@@ -165,6 +213,6 @@ func NewKDFParams(salt []byte) KDFParams {
 		R:     8,
 		P:     1,
 		DKlen: 32,
-		salt:  salt,
+		Salt:  salt,
 	}
 }

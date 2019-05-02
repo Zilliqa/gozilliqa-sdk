@@ -1,4 +1,4 @@
-package util
+package LaksaGo
 
 import (
 	"github.com/stretchr/testify/assert"
