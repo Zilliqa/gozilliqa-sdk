@@ -71,7 +71,12 @@ func Hash(Q []byte, pubKey []byte, msg []byte) []byte {
 
 func GenerateMac(derivedKey, cipherText []byte) []byte {
 	result := make([]byte, 16+len(cipherText))
-	copy(result[0:16],derivedKey[16:])
-	copy(result[16:],cipherText[:])
+	copy(result[0:16], derivedKey[16:])
+	copy(result[16:], cipherText[:])
 	return Sha256(result)
+}
+
+func ToCheckSumAddress(address string) string {
+	//todo
+	return ""
 }
