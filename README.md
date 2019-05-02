@@ -47,7 +47,7 @@ More docs can be found in https://apidocs.zilliqa.com/
 - [x] Schnorr.verify
 - [x] getPublicKeyFromPrivateKey
 - [x] getAddressFromPublicKey
-- [ ] getAddressFromPrivateKey
+- [x] getAddressFromPrivateKey
 - [x] encryptPrivateKey
 - [x] decryptPrivateKey
 

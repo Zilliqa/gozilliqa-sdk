@@ -21,7 +21,7 @@ func GeneratePrivateKey() (PrivateKey, error) {
 		_, err := io.ReadFull(rand.Reader, pvk[:])
 		if err == nil {
 			pvkInt := new(big.Int).SetBytes(pvk[:])
-			if pvkInt.Cmp(big.NewInt(0)) == 1 && pvkInt.Cmp(Secp256k1.N) == -1{
+			if pvkInt.Cmp(big.NewInt(0)) == 1 && pvkInt.Cmp(Secp256k1.N) == -1 {
 				break
 			}
 		}
@@ -38,6 +38,11 @@ func GetPublicKeyFromPrivateKey(privateKey []byte, compress bool) []byte {
 func GetAddressFromPublic(publicKey []byte) string {
 	originAddress := LaksaGo.EncodeHex(LaksaGo.Sha256(publicKey))
 	return originAddress[24:]
+}
+
+func GetAddressFromPrivateKey(privateKey []byte) string {
+	publicKey := GetPublicKeyFromPrivateKey(privateKey, true)
+	return GetAddressFromPublic(publicKey)
 }
 
 func GenerateRandomBytes(n int) ([]byte, error) {
