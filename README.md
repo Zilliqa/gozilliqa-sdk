@@ -41,7 +41,7 @@ More docs can be found in https://apidocs.zilliqa.com/
 
 ### Crypto API
 
-- [ ] getDerivedKey (PBKDF2 and Scrypt)
+- [x] getDerivedKey (PBKDF2 and Scrypt)
 - [x] generatePrivateKey
 - [x] Schnorr.sign
 - [x] Schnorr.verify
@@ -108,7 +108,7 @@ More docs can be found in https://apidocs.zilliqa.com/
 
 - [x] byteArrayToHexString
 - [x] hexStringToByteArray
-- [ ] generateMac
+- [x] generateMac
 - [ ] isByteString
 - [ ] encodeTransactionProto
 - [ ] toChecksumAddress

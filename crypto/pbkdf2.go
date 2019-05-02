@@ -5,6 +5,13 @@ import (
 	"golang.org/x/crypto/pbkdf2"
 )
 
-func GetDerivedKey(password, salt []byte, iterationCount, keySize int) []byte {
+type pbkdf2Wapper struct {
+}
+
+func NewPbkdf2() *pbkdf2Wapper {
+	return &pbkdf2Wapper{}
+}
+
+func (c *pbkdf2Wapper) GetDerivedKey(password, salt []byte, iterationCount, keySize int) []byte {
 	return pbkdf2.Key(password, salt, iterationCount, keySize, sha256.New)
 }
