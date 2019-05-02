@@ -15,3 +15,9 @@ func NewPbkdf2() *pbkdf2Wapper {
 func (c *pbkdf2Wapper) GetDerivedKey(password, salt []byte, iterationCount, keySize int) []byte {
 	return pbkdf2.Key(password, salt, iterationCount, keySize, sha256.New)
 }
+
+type Pbkdf2Params struct {
+	Salt []byte
+	DkLen int
+	Count int
+}

@@ -19,3 +19,11 @@ func (s *scryptWapper) GetDerivedKey(password, salt []byte, n, r, p, dkLen int) 
 		return dk, nil
 	}
 }
+
+type ScryptParams struct {
+	Salt  []byte
+	DkLen int
+	N     int
+	R     int
+	P     int
+}
