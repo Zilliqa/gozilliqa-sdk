@@ -68,3 +68,10 @@ func Hash(Q []byte, pubKey []byte, msg []byte) []byte {
 	buffer.Write(msg)
 	return Sha256(buffer.Bytes())
 }
+
+func GenerateMac(derivedKey, cipherText []byte) []byte {
+	result := make([]byte, 16+len(cipherText))
+	copy(derivedKey[16:], result[0:16])
+	copy(cipherText[:], result[16:])
+	return Sha256(result)
+}
