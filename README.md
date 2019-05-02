@@ -16,10 +16,10 @@ More docs can be found in https://apidocs.zilliqa.com/
 
 ### Wallet API
 
-- [ ] createAccount
-- [ ] addByPrivateKey addByKeyStore
-- [ ] remove
-- [ ] setDefault
+- [x] createAccount
+- [x] addByPrivateKey addByKeyStore
+- [x] remove
+- [x] setDefault
 - [ ] signTransaction (default account)
 - [ ] signTransactionWith (specific account)
 
@@ -110,6 +110,6 @@ More docs can be found in https://apidocs.zilliqa.com/
 - [x] hexStringToByteArray
 - [x] generateMac
 - [ ] isByteString
-- [ ] encodeTransactionProto
+- [x] encodeTransactionProto
 - [ ] toChecksumAddress
 - [ ] isValidChecksumAddress
