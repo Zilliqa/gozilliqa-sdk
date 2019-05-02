@@ -29,11 +29,11 @@ func TrySign(privateKey []byte, publicKey []byte, message []byte, k []byte) ([]b
 	// 2. Compute commitment Q = kG, where G is the base point
 	Qx, Qy := keytools.Secp256k1.ScalarBaseMult(k)
 
-	Q := LaksaGo.Compress(keytools.Secp256k1, Qx, Qy,true)
+	Q := util.Compress(keytools.Secp256k1, Qx, Qy,true)
 
 	// 3. Compute the challenge r = H(Q || pubKey || msg)
 	// mod reduce r by the order of secp256k1, n
-	r := new(big.Int).SetBytes(LaksaGo.Hash(Q, publicKey, message[:]))
+	r := new(big.Int).SetBytes(util.Hash(Q, publicKey, message[:]))
 	r = r.Mod(r, keytools.Secp256k1.N)
 
 	if r.Cmp(new(big.Int).SetInt64(0)) == 0 {
@@ -77,9 +77,9 @@ func Verify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
 	lx, ly := keytools.Secp256k1.ScalarMult(pkx, pky, r)
 	rx, ry := keytools.Secp256k1.ScalarBaseMult(s)
 	Qx, Qy := keytools.Secp256k1.Add(rx, ry, lx, ly)
-	Q := LaksaGo.Compress(keytools.Secp256k1, Qx, Qy,true)
+	Q := util.Compress(keytools.Secp256k1, Qx, Qy,true)
 
-	_r := LaksaGo.Hash(Q, publicKey, msg)
+	_r := util.Hash(Q, publicKey, msg)
 
 	rn := new(big.Int).SetBytes(r)
 	_rn := new(big.Int).SetBytes(_r)
