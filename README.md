@@ -48,8 +48,8 @@ More docs can be found in https://apidocs.zilliqa.com/
 - [x] getPublicKeyFromPrivateKey
 - [x] getAddressFromPublicKey
 - [ ] getAddressFromPrivateKey
-- [ ] encryptPrivateKey
-- [ ] decryptPrivateKey
+- [x] encryptPrivateKey
+- [x] decryptPrivateKey
 
 ### JSON-RPC API
 
