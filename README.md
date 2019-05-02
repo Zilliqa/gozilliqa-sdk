@@ -111,5 +111,5 @@ More docs can be found in https://apidocs.zilliqa.com/
 - [x] generateMac
 - [ ] isByteString
 - [x] encodeTransactionProto
-- [ ] toChecksumAddress
+- [x] toChecksumAddress
 - [ ] isValidChecksumAddress

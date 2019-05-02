@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"math/big"
+	"strings"
 )
 
 func Pack(a int, b int) int {
@@ -77,6 +78,26 @@ func GenerateMac(derivedKey, cipherText []byte) []byte {
 }
 
 func ToCheckSumAddress(address string) string {
-	//todo
-	return ""
+	lowerAddress := strings.ToLower(address)
+	ar := strings.ReplaceAll(lowerAddress, "0x", "")
+	hash := Sha256(DecodeHex(ar))
+	v := new(big.Int).SetBytes(hash)
+	sb := strings.Builder{}
+	sb.WriteString("0x")
+
+	for i := 0; i < len(ar); i++ {
+		if strings.IndexByte("1234567890", ar[i]) != -1 {
+			sb.WriteByte(ar[i])
+		} else {
+			checker := new(big.Int).And(v, new(big.Int).Exp(new(big.Int).SetInt64(2), new(big.Int).SetInt64(int64(255 - 6*i)), nil))
+			r := checker.Cmp(new(big.Int).SetInt64(1))
+			if r < 0 {
+				sb.WriteString(strings.ToLower(string(ar[i])))
+			} else {
+				sb.WriteString(strings.ToUpper(string(ar[i])))
+			}
+		}
+	}
+
+	return sb.String()
 }
