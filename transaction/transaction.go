@@ -75,7 +75,7 @@ func (t *Transaction) toTransactionPayload() TransactionPayload {
 	}
 }
 
-func (t *Transaction) bytes() ([]byte, error) {
+func (t *Transaction) Bytes() ([]byte, error) {
 	txParams := t.toTransactionParam()
 	bytes, err := EncodeTransactionProto(txParams)
 	if err != nil {

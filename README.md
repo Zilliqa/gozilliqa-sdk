@@ -21,7 +21,7 @@ More docs can be found in https://apidocs.zilliqa.com/
 - [x] remove
 - [x] setDefault
 - [ ] signTransaction (default account)
-- [ ] signTransactionWith (specific account)
+- [x] signTransactionWith (specific account)
 
 ### TransactionFactory Transaction
 

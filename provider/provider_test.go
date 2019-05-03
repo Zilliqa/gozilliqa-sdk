@@ -225,6 +225,6 @@ func TestGetContractAddressFromTransactionID(t *testing.T) {
 func TestGetBalance(t *testing.T) {
 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
-	response := provider.GetBalance("1eefc4f453539e5ee732b49eb4792b268c2f3908")
+	response := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
 	fmt.Printf("%v\n", response)
 }
