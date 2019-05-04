@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"github.com/FireStack-Lab/LaksaGo/transaction"
 	"testing"
 )
 
@@ -140,8 +141,9 @@ func TestGetPrevDSDifficulty(t *testing.T) {
 
 func TestCreateTransaction(t *testing.T) {
 	provider := NewProvider("https://dev-api.zilliqa.com/")
+	tx := transaction.Transaction{}
 
-	response := provider.CreateTransaction()
+	response := provider.CreateTransaction(tx.ToTransactionPayload())
 	fmt.Printf("%v\n", response)
 }
 

@@ -2,7 +2,6 @@ package transaction
 
 import (
 	"github.com/FireStack-Lab/LaksaGo"
-	"github.com/FireStack-Lab/LaksaGo/provider"
 	"strconv"
 	"strings"
 )
@@ -30,7 +29,6 @@ type Transaction struct {
 	Code         string
 	Data         string
 
-	Provider provider.Provider
 	Status   State
 }
 
@@ -57,7 +55,7 @@ func (t *Transaction) toTransactionParam() TxParams {
 	return param
 }
 
-func (t *Transaction) toTransactionPayload() TransactionPayload {
+func (t *Transaction) ToTransactionPayload() TransactionPayload {
 	version, _ := strconv.ParseInt(t.Version, 10, 32)
 	nonce, _ := strconv.ParseInt(t.Nonce, 10, 32)
 
