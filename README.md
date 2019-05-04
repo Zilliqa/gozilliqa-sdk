@@ -20,7 +20,7 @@ More docs can be found in https://apidocs.zilliqa.com/
 - [x] addByPrivateKey addByKeyStore
 - [x] remove
 - [x] setDefault
-- [ ] signTransaction (default account)
+- [x] signTransaction (default account)
 - [x] signTransactionWith (specific account)
 
 ### TransactionFactory Transaction

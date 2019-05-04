@@ -2,6 +2,7 @@ package account
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/FireStack-Lab/LaksaGo"
 	"github.com/FireStack-Lab/LaksaGo/crypto"
@@ -10,6 +11,7 @@ import (
 	go_schnorr "github.com/FireStack-Lab/LaksaGo/schnorr"
 	"github.com/FireStack-Lab/LaksaGo/transaction"
 	"strconv"
+	"strings"
 )
 
 type Wallet struct {
@@ -25,10 +27,32 @@ func NewWallet() *Wallet {
 }
 
 //todo unit test
+func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) error {
+	if tx.SenderPubKey != "" {
+		address := keytools.GetAddressFromPublic(LaksaGo.DecodeHex(tx.SenderPubKey))
+		err := w.SignWith(tx, address, provider)
+		if err != nil {
+			return err
+		}
+	}
+
+	if w.DefaultAccount == nil {
+		return errors.New("this wallet has no default account")
+	}
+
+	err2 := w.SignWith(tx, w.DefaultAccount.address, provider)
+	if err2 != nil {
+		return err2
+	}
+
+	return nil
+
+}
+
 func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider provider.Provider) error {
 	account, ok := w.Accounts[signer]
 	if !ok {
-		panic("account not exists")
+		return errors.New("account does not exist")
 	}
 
 	if tx.Nonce == "" {
@@ -73,7 +97,7 @@ func (w *Wallet) CreateAccount() {
 	privateKey, _ := keytools.GeneratePrivateKey()
 	account := NewAccount(privateKey[:])
 
-	address := keytools.GetAddressFromPrivateKey(privateKey[:])
+	address := strings.ToUpper(keytools.GetAddressFromPrivateKey(privateKey[:]))
 	w.Accounts[address] = account
 
 	if w.DefaultAccount == nil {
@@ -84,8 +108,7 @@ func (w *Wallet) CreateAccount() {
 func (w *Wallet) AddByPrivateKey(privateKey string) {
 	prik := LaksaGo.DecodeHex(privateKey)
 	account := NewAccount(prik[:])
-	address := keytools.GetAddressFromPrivateKey(prik[:])
-	println(address)
+	address := strings.ToUpper(keytools.GetAddressFromPrivateKey(prik[:]))
 	w.Accounts[address] = account
 
 	if w.DefaultAccount == nil {
@@ -100,7 +123,7 @@ func (w *Wallet) AddByKeyStore(keystore, passphrase string) {
 }
 
 func (w *Wallet) SetDefault(address string) {
-	account, ok := w.Accounts[address]
+	account, ok := w.Accounts[strings.ToUpper(address)]
 	if ok {
 		w.DefaultAccount = account
 	}
