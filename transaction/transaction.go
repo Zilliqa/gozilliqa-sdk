@@ -2,6 +2,8 @@ package transaction
 
 import (
 	"github.com/FireStack-Lab/LaksaGo"
+	"github.com/FireStack-Lab/LaksaGo/provider"
+	"github.com/ybbus/jsonrpc"
 	"strconv"
 	"strings"
 )
@@ -29,7 +31,7 @@ type Transaction struct {
 	Code         string
 	Data         string
 
-	Status   State
+	Status State
 }
 
 func (t *Transaction) toTransactionParam() TxParams {
@@ -97,4 +99,11 @@ func (t *Transaction) isConfirmed() bool {
 
 func (t *Transaction) isRejected() bool {
 	return t.Status == Rejected
+}
+
+// todo unit test
+func SendTransaction(signedTx Transaction, provider provider.Provider) *jsonrpc.RPCResponse {
+	rsp := provider.CreateTransaction(signedTx.ToTransactionPayload())
+	println(rsp)
+	return rsp
 }
