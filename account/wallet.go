@@ -26,7 +26,6 @@ func NewWallet() *Wallet {
 	}
 }
 
-//todo unit test
 func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) error {
 	if tx.SenderPubKey != "" {
 		address := keytools.GetAddressFromPublic(LaksaGo.DecodeHex(tx.SenderPubKey))
