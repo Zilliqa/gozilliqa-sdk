@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"github.com/FireStack-Lab/LaksaGo"
+	"github.com/FireStack-Lab/LaksaGo/provider"
 	"strconv"
 	"strings"
 )
@@ -55,11 +56,11 @@ func (t *Transaction) toTransactionParam() TxParams {
 	return param
 }
 
-func (t *Transaction) ToTransactionPayload() TransactionPayload {
+func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 	version, _ := strconv.ParseInt(t.Version, 10, 32)
 	nonce, _ := strconv.ParseInt(t.Nonce, 10, 32)
 
-	return TransactionPayload{
+	return provider.TransactionPayload{
 		Version:   int(version),
 		Nonce:     int(nonce),
 		ToAddr:    LaksaGo.ToCheckSumAddress(t.ToAddr)[2:],
@@ -98,10 +99,3 @@ func (t *Transaction) isConfirmed() bool {
 func (t *Transaction) isRejected() bool {
 	return t.Status == Rejected
 }
-
-//// todo unit test
-//func SendTransaction(signedTx *Transaction, provider provider.Provider) *jsonrpc.RPCResponse {
-//	rsp := provider.CreateTransaction(signedTx.ToTransactionPayload())
-//	println(rsp)
-//	return rsp
-//}

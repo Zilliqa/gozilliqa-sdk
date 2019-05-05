@@ -3,7 +3,6 @@ package provider
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/FireStack-Lab/LaksaGo/transaction"
 	"github.com/ybbus/jsonrpc"
 )
 
@@ -92,7 +91,7 @@ func (provider *Provider) GetPrevDSDifficulty() *jsonrpc.RPCResponse {
 	return provider.call("GetPrevDSDifficulty")
 }
 
-func (provider *Provider) CreateTransaction(payload transaction.TransactionPayload) *jsonrpc.RPCResponse {
+func (provider *Provider) CreateTransaction(payload TransactionPayload) *jsonrpc.RPCResponse {
 	r, _ := json.Marshal(payload)
 	fmt.Println(string(r))
 	return provider.call("CreateTransaction", &payload)

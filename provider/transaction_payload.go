@@ -1,4 +1,4 @@
-package transaction
+package provider
 
 type TransactionPayload struct {
 	Version   int    `json:"version"`
