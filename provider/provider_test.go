@@ -2,7 +2,11 @@ package provider
 
 import (
 	"fmt"
+	"github.com/FireStack-Lab/LaksaGo"
+	"github.com/FireStack-Lab/LaksaGo/account"
 	"github.com/FireStack-Lab/LaksaGo/transaction"
+	"strconv"
+	"strings"
 	"testing"
 )
 
@@ -230,3 +234,5 @@ func TestGetBalance(t *testing.T) {
 	response := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
 	fmt.Printf("%v\n", response)
 }
+
+

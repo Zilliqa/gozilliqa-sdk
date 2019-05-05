@@ -50,7 +50,7 @@ func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) e
 }
 
 func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider provider.Provider) error {
-	account, ok := w.Accounts[signer]
+	account, ok := w.Accounts[strings.ToUpper(signer)]
 	if !ok {
 		return errors.New("account does not exist")
 	}
@@ -62,7 +62,6 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 			n := result["nonce"].(json.Number)
 			nonce, _ := n.Int64()
 			tx.Nonce = strconv.FormatInt(nonce+1, 10)
-			println(tx.Nonce)
 		}
 	}
 
@@ -86,7 +85,7 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 		return err3
 	}
 
-	signature := fmt.Sprintf("%s %s", LaksaGo.EncodeHex(r), LaksaGo.EncodeHex(s))
+	signature := fmt.Sprintf("%s%s", LaksaGo.EncodeHex(r), LaksaGo.EncodeHex(s))
 
 	tx.Signature = signature
 
