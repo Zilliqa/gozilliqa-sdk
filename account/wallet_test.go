@@ -26,7 +26,7 @@ func TestSendTransaction(t *testing.T) {
 	tx := &transaction.Transaction{
 		Version:      strconv.FormatInt(int64(LaksaGo.Pack(333, 2)), 10),
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
-		ToAddr:       strings.ToLower("4baf5fada8e5db92c3d3242618c5b47133ae003c"),
+		ToAddr:       strings.ToLower("0x4baf5fada8e5db92c3d3242618c5b47133ae003c"),
 		Amount:       "10000000",
 		GasPrice:     "1000000000",
 		GasLimit:     "1",
@@ -36,11 +36,17 @@ func TestSendTransaction(t *testing.T) {
 
 	err := wallet.Sign(tx, *provider)
 	if err != nil {
-		println(err)
+		fmt.Println(err)
 		t.Error(err)
 	}
 
 	rsp := provider.CreateTransaction(tx.ToTransactionPayload())
-	fmt.Println(rsp.Result)
+
+	if rsp.Error != nil {
+		fmt.Println(rsp.Error)
+		t.Error(err)
+	} else {
+		fmt.Println(rsp.Result)
+	}
 
 }

@@ -27,6 +27,10 @@ func NewWallet() *Wallet {
 }
 
 func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) error {
+	if strings.HasPrefix(tx.ToAddr, "0x") {
+		tx.ToAddr = strings.TrimPrefix(tx.ToAddr, "0x")
+	}
+
 	if tx.SenderPubKey != "" {
 		address := keytools.GetAddressFromPublic(LaksaGo.DecodeHex(tx.SenderPubKey))
 		err := w.SignWith(tx, address, provider)
