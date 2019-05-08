@@ -27,7 +27,7 @@ More docs can be found in https://apidocs.zilliqa.com/
 
 - [x] sendTransaction
 - [x] trackTx
-- [ ] confirm
+- [x] confirm
 - [x] isPending isInitialised isConfirmed isRejected
 
 ### ContractFactory Contract
