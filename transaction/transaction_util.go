@@ -76,6 +76,7 @@ func EncodeTransactionProto(txParams TxParams) ([]byte, error) {
 
 }
 
+
 func bigIntToPaddedBytes(i *big.Int, paddedSize int32) []byte {
 	bytes := i.Bytes()
 	padded, _ := hex.DecodeString(fmt.Sprintf("%0*x", paddedSize, bytes))

@@ -74,6 +74,32 @@ func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 	}
 }
 
+func (t *Transaction) TrackTx(hash string, provider *provider.Provider) bool {
+	response := provider.GetTransaction(hash)
+	if response == nil || response.Error != nil {
+		return false
+	}
+
+	result := response.Result.(map[string]interface{})
+	t.ID = result["ID"].(string)
+
+	receipt, ok := result["receipt"].(map[string]interface{})
+	if !ok {
+		return false
+	}
+
+	t.Receipt.CumulativeGas = receipt["cumulative_gas"].(string)
+	t.Receipt.EpochNum = receipt["epoch_num"].(string)
+	t.Receipt.Success = receipt["success"].(bool)
+
+	if !t.Receipt.Success {
+		t.Status = Rejected
+	} else {
+		t.Status = Confirmed
+	}
+	return true
+}
+
 func (t *Transaction) Bytes() ([]byte, error) {
 	txParams := t.toTransactionParam()
 	bytes, err := EncodeTransactionProto(txParams)

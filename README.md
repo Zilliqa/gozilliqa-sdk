@@ -26,7 +26,7 @@ More docs can be found in https://apidocs.zilliqa.com/
 ### TransactionFactory Transaction
 
 - [x] sendTransaction
-- [ ] trackTx
+- [x] trackTx
 - [ ] confirm
 - [x] isPending isInitialised isConfirmed isRejected
 
