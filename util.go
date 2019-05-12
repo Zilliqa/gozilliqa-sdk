@@ -6,6 +6,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"math/big"
+	"strconv"
 	"strings"
 )
 
@@ -89,7 +90,7 @@ func ToCheckSumAddress(address string) string {
 		if strings.IndexByte("1234567890", ar[i]) != -1 {
 			sb.WriteByte(ar[i])
 		} else {
-			checker := new(big.Int).And(v, new(big.Int).Exp(new(big.Int).SetInt64(2), new(big.Int).SetInt64(int64(255 - 6*i)), nil))
+			checker := new(big.Int).And(v, new(big.Int).Exp(new(big.Int).SetInt64(2), new(big.Int).SetInt64(int64(255-6*i)), nil))
 			r := checker.Cmp(new(big.Int).SetInt64(1))
 			if r < 0 {
 				sb.WriteString(strings.ToLower(string(ar[i])))
@@ -100,4 +101,35 @@ func ToCheckSumAddress(address string) string {
 	}
 
 	return sb.String()
+}
+
+func IntToHex(value, size int) string {
+	hexVal := strconv.FormatInt(int64(value), 16)
+	hexRep := make([]byte, len(hexVal))
+
+	for i := 0; i < len(hexVal); i++ {
+		hexRep[i] = hexVal[i]
+	}
+
+	hex := make([]byte, size, size)
+
+	for i := 0; i < size-len(hexVal); i++ {
+		hex = append(hex, '0')
+	}
+
+	for i := 0; i < len(hexVal); i++ {
+		hex = append(hex, hexVal[i])
+	}
+
+	var hexFixed [16]byte
+	copy(hexFixed[:],hex[len(hex)-16:])
+	sb := strings.Builder{}
+
+
+	for _, v := range hexFixed {
+		sb.WriteByte(v)
+	}
+
+	return sb.String()
+
 }

@@ -32,11 +32,11 @@ More docs can be found in https://apidocs.zilliqa.com/
 
 ### ContractFactory Contract
 
-- [ ] deploy
-- [ ] call
-- [ ] isInitialised isDeployed isRejected
-- [ ] getState
-- [ ] getAddressForContract
+- [x] deploy
+- [x] call
+- [x] isInitialised isDeployed isRejected
+- [x] getState
+- [x] getAddressForContract
 
 
 ### Crypto API
@@ -109,7 +109,7 @@ More docs can be found in https://apidocs.zilliqa.com/
 - [x] byteArrayToHexString
 - [x] hexStringToByteArray
 - [x] generateMac
-- [ ] isByteString
+- [x] isByteString
 - [x] encodeTransactionProto
 - [x] toChecksumAddress
-- [ ] isValidChecksumAddress
+- [x] isValidChecksumAddress

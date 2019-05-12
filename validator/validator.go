@@ -2,6 +2,7 @@ package validator
 
 import (
 	"regexp"
+	"strconv"
 )
 
 func IsPublicKey(public_key string) bool {
@@ -32,6 +33,12 @@ func IsSignature(signature string) bool {
 // @returns {boolean}
 func IsChecksumAddress(address string) bool {
 	return IsAddress(address)
+}
+
+func IsByteString(str string, len int) bool {
+	pattern := "^(0x)?[0-9a-fA-F]{" + strconv.FormatInt(int64(len), 10) + "}"
+	match, _ := regexp.MatchString(pattern, str)
+	return match
 }
 
 // self.address?(address) && Laksa::Account::Wallet::to_checksum_address(address) == address

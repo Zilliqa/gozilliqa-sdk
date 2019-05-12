@@ -46,7 +46,9 @@ func TestSendTransaction(t *testing.T) {
 		fmt.Println(rsp.Error)
 		t.Error(err)
 	} else {
-		fmt.Println(rsp.Result)
+		result := rsp.Result.(map[string]interface{})
+		hash := result["TranID"].(string)
+		fmt.Printf("hash is %s",hash)
 	}
 
 }
