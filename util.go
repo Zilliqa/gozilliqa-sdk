@@ -19,6 +19,8 @@ func EncodeHex(src []byte) string {
 }
 
 func DecodeHex(src string) []byte {
+	src = strings.ToLower(src)
+	src = strings.TrimPrefix(src,"0x")
 	ret, _ := hex.DecodeString(src)
 	return ret
 }
