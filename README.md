@@ -4,6 +4,8 @@ Zilliqa Blockchain  Library
 
 ## Quick Start
 
+This repo is still under active development, please do not use in production environment!
+
 More docs can be found in https://apidocs.zilliqa.com/
 
 
