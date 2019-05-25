@@ -1,7 +1,9 @@
 package validator
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
 
@@ -38,4 +40,8 @@ func TestIsChecksumAddress(t *testing.T) {
 
 	assert.Equal(t, true, IsChecksumAddress(checksum_address))
 	assert.Equal(t, false, IsChecksumAddress(checksum_address[0:38]))
+
+	fmt.Println(IsChecksumAddress("0xC10ded4923e1F1E0AdfEe276578DEb105A60cA55"))
+
+	fmt.Println(strings.ToLower("0xc10dEd4923e1f1E0ADFEE276578Deb105a60Ca55"))
 }

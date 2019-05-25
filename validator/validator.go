@@ -1,6 +1,7 @@
 package validator
 
 import (
+	"github.com/FireStack-Lab/LaksaGo"
 	"regexp"
 	"strconv"
 )
@@ -32,7 +33,7 @@ func IsSignature(signature string) bool {
 // @param {string} address
 // @returns {boolean}
 func IsChecksumAddress(address string) bool {
-	return IsAddress(address)
+	return IsAddress(address) && address == LaksaGo.ToCheckSumAddress(address)
 }
 
 func IsByteString(str string, len int) bool {
