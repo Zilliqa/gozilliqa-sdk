@@ -6,7 +6,6 @@ import (
 	provider2 "github.com/FireStack-Lab/LaksaGo/provider"
 	"github.com/FireStack-Lab/LaksaGo/transaction"
 	"strconv"
-	"strings"
 	"testing"
 )
 
@@ -26,7 +25,7 @@ func TestSendTransaction(t *testing.T) {
 	tx := &transaction.Transaction{
 		Version:      strconv.FormatInt(int64(LaksaGo.Pack(333, 2)), 10),
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
-		ToAddr:       strings.ToLower("0x4baf5fada8e5db92c3d3242618c5b47133ae003c"),
+		ToAddr:       "d48691c0eC4b578F5482B90878cB358571480078",
 		Amount:       "10000000",
 		GasPrice:     "1000000000",
 		GasLimit:     "1",

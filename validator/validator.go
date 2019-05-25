@@ -6,6 +6,10 @@ import (
 	"strconv"
 )
 
+func IsBech32(addr string) bool {
+	match, _ := regexp.MatchString("^zil1[qpzry9x8gf2tvdw0s3jn54khce6mua7l]{38}", addr)
+	return match
+}
 func IsPublicKey(public_key string) bool {
 	match, _ := regexp.MatchString("^(0x)?[[:xdigit:]]{66}$", public_key)
 	return match

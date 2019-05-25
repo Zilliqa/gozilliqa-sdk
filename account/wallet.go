@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"github.com/FireStack-Lab/LaksaGo"
+	"github.com/FireStack-Lab/LaksaGo/bech32"
 	"github.com/FireStack-Lab/LaksaGo/crypto"
 	"github.com/FireStack-Lab/LaksaGo/keytools"
 	"github.com/FireStack-Lab/LaksaGo/provider"
 	go_schnorr "github.com/FireStack-Lab/LaksaGo/schnorr"
 	"github.com/FireStack-Lab/LaksaGo/transaction"
+	"github.com/FireStack-Lab/LaksaGo/validator"
 	"strconv"
 	"strings"
 )
@@ -29,6 +31,22 @@ func NewWallet() *Wallet {
 func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) error {
 	if strings.HasPrefix(tx.ToAddr, "0x") {
 		tx.ToAddr = strings.TrimPrefix(tx.ToAddr, "0x")
+	}
+
+	if !validator.IsBech32(tx.ToAddr) && !validator.IsChecksumAddress("0x" + tx.ToAddr) {
+		return errors.New("not checksum address or bech32")
+	}
+
+	if validator.IsBech32(tx.ToAddr) {
+		adddress, err := bech32.FromBech32Addr(tx.ToAddr)
+		if err != nil {
+			return err
+		}
+		tx.ToAddr = adddress
+	}
+
+	if validator.IsChecksumAddress("0x" + tx.ToAddr) {
+		tx.ToAddr = "0x" + tx.ToAddr
 	}
 
 	if tx.SenderPubKey != "" {

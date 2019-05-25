@@ -45,3 +45,8 @@ func TestIsChecksumAddress(t *testing.T) {
 
 	fmt.Println(strings.ToLower("0xc10dEd4923e1f1E0ADFEE276578Deb105a60Ca55"))
 }
+
+func TestIsBech32(t *testing.T) {
+	isBech32 := IsBech32("zil16jrfrs8vfdtc74yzhyy83je4s4c5sqrcasjlc4")
+	fmt.Println(isBech32)
+}
