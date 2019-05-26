@@ -115,3 +115,6 @@ More docs can be found in https://apidocs.zilliqa.com/
 - [x] encodeTransactionProto
 - [x] toChecksumAddress
 - [x] isValidChecksumAddress
+- [x] bech32 encode decode
+- [x] isBech32
+- [x] fromBech32Address toBech32Address
