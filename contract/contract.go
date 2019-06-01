@@ -94,7 +94,7 @@ func (c *Contract) Deploy(params DeployParams, attempts, interval int) error {
 
 }
 
-func (c *Contract) Call(transition Transition, args []Value, params CallParams, attempts, interval int) error {
+func (c *Contract) Call(transition string, args []Value, params CallParams, attempts, interval int) (error, *transaction.Transaction) {
 	if c.Address == "" {
 		_ = errors.New("Contract has not been deployed!")
 	}
@@ -118,32 +118,33 @@ func (c *Contract) Call(transition Transition, args []Value, params CallParams, 
 		SenderPubKey: params.SenderPubKey,
 		ToAddr:       c.Address,
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
-		Data:         string(dataStr),
+		Data:         strings.ReplaceAll(string(dataStr), "/\\", ""),
 		Status:       0,
 	}
 
 	err2 := c.singer.Sign(tx, *c.provider)
 	if err2 != nil {
-		return err2
+		return err2, nil
 	}
 
 	rsp := c.provider.CreateTransaction(tx.ToTransactionPayload())
 
 	if rsp.Error != nil {
-		return errors.New(rsp.Error.Message)
+		return errors.New(rsp.Error.Message), nil
 	}
 
 	result := rsp.Result.(map[string]interface{})
 	hash := result["TranID"].(string)
+	tx.ID = hash
 
-	tx.TrackTx(hash, c.provider)
+
 
 	if tx.Status == transaction.Rejected {
 		c.ContractStatus = Rejected
-		return nil
+		return nil, nil
 	}
 
-	return nil
+	return nil, tx
 
 }
 

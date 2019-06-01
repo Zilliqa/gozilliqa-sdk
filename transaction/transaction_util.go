@@ -61,11 +61,11 @@ func EncodeTransactionProto(txParams TxParams) ([]byte, error) {
 	}
 
 	if txParams.Data != "" {
-		protoTransactionCoreInfo.Data = LaksaGo.DecodeHex(txParams.Data)
+		protoTransactionCoreInfo.Data = []byte(txParams.Data)
 	}
 
 	if txParams.Code != "" {
-		protoTransactionCoreInfo.Data = LaksaGo.DecodeHex(txParams.Code)
+		protoTransactionCoreInfo.Data = []byte(txParams.Code)
 	}
 
 	bytes, err4 := proto.Marshal(&protoTransactionCoreInfo)

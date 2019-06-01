@@ -25,7 +25,7 @@ func TestSendTransaction(t *testing.T) {
 	tx := &transaction.Transaction{
 		Version:      strconv.FormatInt(int64(LaksaGo.Pack(333, 2)), 10),
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
-		ToAddr:       "d48691c0eC4b578F5482B90878cB358571480078",
+		ToAddr:       "bd7198209529dC42320db4bC8508880BcD22a9f2",
 		Amount:       "10000000",
 		GasPrice:     "1000000000",
 		GasLimit:     "1",
@@ -51,3 +51,6 @@ func TestSendTransaction(t *testing.T) {
 	}
 
 }
+
+//{"version":21823489,"nonce":226,"toAddr":"bd7198209529dC42320db4bC8508880BcD22a9f2","amount":"0","pubKey":"0246e7178dc8253201101e18fd6f6eb9972451d121fc57aa2a06dd5c111e58dc6a","gasPrice":"1000000000","gasLimit":"1000","code":"","data":"{\"_tag\":\"Transfer\",\"params\":[{\"vname\":\"to\",\"type\":\"ByStr20\",\"value\":\"0x381f4008505e940ad7681ec3468a719060caf796\"},{\"vname\":\"tokens\",\"type\":\"Uint128\",\"value\":\"10\"}]}","signature":"746fab24f8940fff741fe46dfb228c01e965c9c54b106959af60d2a7ddfbef49af0c2a8ee996155fc772fa4f90de2c10bd5e49aff29df534f7d162b2aaa80f61"}
+//{"version":21823489,"nonce":225,"toAddr":"bd7198209529dC42320db4bC8508880BcD22a9f2","amount":"0","pubKey":"0246e7178dc8253201101e18fd6f6eb9972451d121fc57aa2a06dd5c111e58dc6a","gasPrice":"1000000000","gasLimit":"1000","code":"","data":"{\"_tag\":\"Transfer\",\"params\":[{\"vname\":\"to\",\"type\":\"ByStr20\",\"value\":\"0x381f4008505e940ad7681ec3468a719060caf796\"},{\"vname\":\"tokens\",\"type\":\"Uint128\",\"value\":\"10\"}]}","signature":"e5cb1859bb712e961df8a8c2be84e8185ed9468562baf546d706f87e663093906fae8fd086df6b142c8348b2fe11ec0e55355fcc53f2de07a485f6cf720d1628"}
