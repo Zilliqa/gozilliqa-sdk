@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"fmt"
 	"github.com/FireStack-Lab/LaksaGo"
 	"github.com/FireStack-Lab/LaksaGo/provider"
 	"strconv"
@@ -104,6 +105,7 @@ func (t *Transaction) TrackTx(hash string, provider *provider.Provider) bool {
 func (t *Transaction) Confirm(hash string, maxAttempts, interval int, provider *provider.Provider) {
 	t.Status = Pending
 	for i := 0; i < maxAttempts; i++ {
+		fmt.Printf("track " + hash)
 		tracked := t.TrackTx(hash, provider)
 		time.Sleep(time.Duration(interval) * time.Second)
 		if tracked {

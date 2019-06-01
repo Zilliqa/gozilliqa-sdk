@@ -7,11 +7,25 @@ import (
 )
 
 func TestGeneratePrivateKey(t *testing.T) {
-	privateKey, err := GeneratePrivateKey()
-	if err != nil {
-		panic("cannot generate private key")
+	for i := 0; i < 100000; i++ {
+		privateKey, err := GeneratePrivateKey()
+		if err != nil {
+			panic("cannot generate private key")
+		}
+
+		prikeys := LaksaGo.EncodeHex(privateKey[:])
+		if len(prikeys) != 64 {
+			panic("generate private key error")
+		}
+		println("private key = " + prikeys)
+		publickKey := GetPublicKeyFromPrivateKey(LaksaGo.DecodeHex(prikeys), true)
+		pubkeys := LaksaGo.EncodeHex(publickKey)
+		if len(pubkeys) != 66 {
+			panic("generate public key error")
+		}
+		println("public key = " + pubkeys)
+
 	}
-	println(LaksaGo.EncodeHex(privateKey[:]))
 }
 
 func TestGetPublicKeyFromPrivateKey(t *testing.T) {

@@ -26,9 +26,7 @@ func TestTransaction_TrackTx(t *testing.T) {
 		Data:         "",
 		Status:       0,
 	}
-	tx.TrackTx("13d24a3d9137a7a047ca468511a3856d4a173777a0c35d78b44624e5fc0b91bc",provider)
-	if tx.Status != Confirmed {
-		t.Error("track tx failed")
-	}
+
+	tx.Confirm("846cda64971e259b1739bf15710758803abcf5754507af5af3f779777cd1b0b0",1000,3,provider)
 
 }

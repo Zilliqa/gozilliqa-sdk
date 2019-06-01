@@ -96,7 +96,7 @@ func (c *Contract) Deploy(params DeployParams, attempts, interval int) error {
 
 func (c *Contract) Call(transition Transition, args []Value, params CallParams, attempts, interval int) error {
 	if c.Address == "" {
-		errors.New("Contract has not been deployed!")
+		_ = errors.New("Contract has not been deployed!")
 	}
 
 	data := Data{
