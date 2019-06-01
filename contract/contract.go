@@ -25,8 +25,8 @@ type Contract struct {
 	Code           string         `json:"code"`
 	ContractStatus ContractStatus `json:"contractStatus"`
 
-	singer   *account.Wallet
-	provider *provider.Provider
+	Singer   *account.Wallet
+	Provider *provider.Provider
 }
 
 type Value struct {
@@ -66,12 +66,12 @@ func (c *Contract) Deploy(params DeployParams, attempts, interval int) error {
 		Status:       0,
 	}
 
-	err2 := c.singer.Sign(tx, *c.provider)
+	err2 := c.Singer.Sign(tx, *c.Provider)
 	if err2 != nil {
 		return err2
 	}
 
-	rsp := c.provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp := c.Provider.CreateTransaction(tx.ToTransactionPayload())
 
 	if rsp.Error != nil {
 		return errors.New(rsp.Error.Message)
@@ -80,7 +80,7 @@ func (c *Contract) Deploy(params DeployParams, attempts, interval int) error {
 	result := rsp.Result.(map[string]interface{})
 	hash := result["TranID"].(string)
 
-	tx.TrackTx(hash, c.provider)
+	tx.TrackTx(hash, c.Provider)
 
 	if tx.Status == transaction.Rejected {
 		c.ContractStatus = Rejected
@@ -122,12 +122,12 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, atte
 		Status:       0,
 	}
 
-	err2 := c.singer.Sign(tx, *c.provider)
+	err2 := c.Singer.Sign(tx, *c.Provider)
 	if err2 != nil {
 		return err2, nil
 	}
 
-	rsp := c.provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp := c.Provider.CreateTransaction(tx.ToTransactionPayload())
 
 	if rsp.Error != nil {
 		return errors.New(rsp.Error.Message), nil

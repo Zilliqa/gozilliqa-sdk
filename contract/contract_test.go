@@ -17,8 +17,8 @@ func TestContract_Call(t *testing.T) {
 
 	contract := Contract{
 		Address:  "bd7198209529dC42320db4bC8508880BcD22a9f2",
-		singer:   wallet,
-		provider: provider,
+		Singer:   wallet,
+		Provider: provider,
 	}
 
 	args := []Value{
