@@ -32,7 +32,7 @@ type Contract struct {
 type Value struct {
 	VName string `json:"vname"`
 	Type  string `json:"type"`
-	Value string `json:"value"`
+	Value interface{} `json:"value"`
 }
 
 type State struct {
