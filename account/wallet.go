@@ -34,7 +34,7 @@ func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) e
 	}
 
 	if !validator.IsBech32(tx.ToAddr) && !validator.IsChecksumAddress("0x" + tx.ToAddr) {
-		return errors.New("not checksum address or bech32")
+		return errors.New("not checksum Address or bech32")
 	}
 
 	if validator.IsBech32(tx.ToAddr) {
@@ -61,7 +61,7 @@ func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) e
 		return errors.New("this wallet has no default account")
 	}
 
-	err2 := w.SignWith(tx, w.DefaultAccount.address, provider)
+	err2 := w.SignWith(tx, w.DefaultAccount.Address, provider)
 	if err2 != nil {
 		return err2
 	}
@@ -86,7 +86,7 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 		}
 	}
 
-	tx.SenderPubKey = LaksaGo.EncodeHex(account.publicKey)
+	tx.SenderPubKey = LaksaGo.EncodeHex(account.PublicKey)
 
 	message, err := tx.Bytes()
 
@@ -100,7 +100,7 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 		return err2
 	}
 
-	r, s, err3 := go_schnorr.TrySign(account.privateKey, account.publicKey, message, rb)
+	r, s, err3 := go_schnorr.TrySign(account.PrivateKey, account.PublicKey, message, rb)
 
 	if err3 != nil {
 		return err3

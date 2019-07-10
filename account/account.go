@@ -7,18 +7,18 @@ import (
 )
 
 type Account struct {
-	privateKey []byte
-	publicKey  []byte
-	address    string
+	PrivateKey []byte
+	PublicKey  []byte
+	Address    string
 }
 
 func NewAccount(privateKey []byte) *Account {
 	publicKey := keytools.GetPublicKeyFromPrivateKey(privateKey, true)
 	address := keytools.GetAddressFromPublic(publicKey)
 	return &Account{
-		privateKey: privateKey,
-		publicKey:  publicKey,
-		address:    address,
+		PrivateKey: privateKey,
+		PublicKey:  publicKey,
+		Address:    address,
 	}
 }
 
