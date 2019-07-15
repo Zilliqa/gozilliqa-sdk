@@ -109,6 +109,7 @@ func (t *Transaction) Confirm(hash string, maxAttempts, interval int, provider *
 		tracked := t.TrackTx(hash, provider)
 		time.Sleep(time.Duration(interval) * time.Second)
 		if tracked {
+			fmt.Println("confirmed! "+ hash)
 			return
 		}
 	}
