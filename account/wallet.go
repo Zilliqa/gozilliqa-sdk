@@ -55,6 +55,7 @@ func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) e
 		if err != nil {
 			return err
 		}
+		return nil
 	}
 
 	if w.DefaultAccount == nil {
