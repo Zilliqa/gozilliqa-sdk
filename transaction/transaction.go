@@ -62,7 +62,7 @@ func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 	version, _ := strconv.ParseInt(t.Version, 10, 32)
 	nonce, _ := strconv.ParseInt(t.Nonce, 10, 32)
 
-	return provider.TransactionPayload{
+	p := provider.TransactionPayload{
 		Version:   int(version),
 		Nonce:     int(nonce),
 		ToAddr:    LaksaGo.ToCheckSumAddress(t.ToAddr)[2:],
@@ -74,6 +74,11 @@ func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 		Data:      t.Data,
 		Signature: strings.ToLower(t.Signature),
 	}
+
+	if p.ToAddr == "0000000000000000000000000000000000000000" {
+		p.ToAddr = "0x0000000000000000000000000000000000000000"
+	}
+	return p
 }
 
 func (t *Transaction) TrackTx(hash string, provider *provider.Provider) bool {
@@ -109,7 +114,7 @@ func (t *Transaction) Confirm(hash string, maxAttempts, interval int, provider *
 		tracked := t.TrackTx(hash, provider)
 		time.Sleep(time.Duration(interval) * time.Second)
 		if tracked {
-			fmt.Println("confirmed! "+ hash)
+			fmt.Println("confirmed! " + hash)
 			return
 		}
 	}
@@ -119,6 +124,7 @@ func (t *Transaction) Confirm(hash string, maxAttempts, interval int, provider *
 func (t *Transaction) Bytes() ([]byte, error) {
 	txParams := t.toTransactionParam()
 	bytes, err := EncodeTransactionProto(txParams)
+
 	if err != nil {
 		return nil, err
 	} else {

@@ -65,7 +65,7 @@ func EncodeTransactionProto(txParams TxParams) ([]byte, error) {
 	}
 
 	if txParams.Code != "" {
-		protoTransactionCoreInfo.Data = []byte(txParams.Code)
+		protoTransactionCoreInfo.Code = []byte(txParams.Code)
 	}
 
 	bytes, err4 := proto.Marshal(&protoTransactionCoreInfo)
@@ -75,7 +75,6 @@ func EncodeTransactionProto(txParams TxParams) ([]byte, error) {
 	return bytes, nil
 
 }
-
 
 func bigIntToPaddedBytes(i *big.Int, paddedSize int32) []byte {
 	bytes := i.Bytes()

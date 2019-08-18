@@ -30,8 +30,8 @@ type Contract struct {
 }
 
 type Value struct {
-	VName string `json:"vname"`
-	Type  string `json:"type"`
+	VName string      `json:"vname"`
+	Type  string      `json:"type"`
 	Value interface{} `json:"value"`
 }
 
@@ -39,15 +39,15 @@ type State struct {
 	Value
 }
 
-func (c *Contract) Deploy(params DeployParams, attempts, interval int) error {
+func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error) {
 	if c.Code == "" || c.Init == nil || len(c.Init) == 0 {
-		return errors.New("Cannot deploy without code or initialisation parameters.")
+		return nil, errors.New("Cannot deploy without code or initialisation parameters.")
 	}
 
 	data, err := json.Marshal(c.Init)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	tx := &transaction.Transaction{
@@ -62,35 +62,27 @@ func (c *Contract) Deploy(params DeployParams, attempts, interval int) error {
 		SenderPubKey: params.SenderPubKey,
 		ToAddr:       "0000000000000000000000000000000000000000",
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
-		Data:         string(data),
+		Data:         strings.ReplaceAll(string(data), "/\\", ""),
 		Status:       0,
 	}
 
 	err2 := c.Singer.Sign(tx, *c.Provider)
 	if err2 != nil {
-		return err2
+		return nil, err2
 	}
 
 	rsp := c.Provider.CreateTransaction(tx.ToTransactionPayload())
 
 	if rsp.Error != nil {
-		return errors.New(rsp.Error.Message)
+		return nil, errors.New(rsp.Error.Message)
 	}
 
 	result := rsp.Result.(map[string]interface{})
 	hash := result["TranID"].(string)
 
-	tx.TrackTx(hash, c.Provider)
+	tx.ID = hash
 
-	if tx.Status == transaction.Rejected {
-		c.ContractStatus = Rejected
-		return nil
-	}
-
-	c.ContractStatus = Deployed
-	c.Address = GetAddressFromContract(tx)
-
-	return nil
+	return tx, nil
 
 }
 
@@ -136,8 +128,6 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, atte
 	result := rsp.Result.(map[string]interface{})
 	hash := result["TranID"].(string)
 	tx.ID = hash
-
-
 
 	if tx.Status == transaction.Rejected {
 		c.ContractStatus = Rejected
