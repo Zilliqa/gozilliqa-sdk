@@ -84,6 +84,8 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 			n := result["nonce"].(json.Number)
 			nonce, _ := n.Int64()
 			tx.Nonce = strconv.FormatInt(nonce+1, 10)
+		} else {
+			tx.Nonce = "1"
 		}
 	}
 
