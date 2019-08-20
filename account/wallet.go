@@ -79,6 +79,9 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 
 	if tx.Nonce == "" {
 		response := provider.GetBalance(signer)
+		if response == nil {
+			return errors.New("get balance response err")
+		}
 		if response.Error == nil {
 			result := response.Result.(map[string]interface{})
 			n := result["nonce"].(json.Number)
