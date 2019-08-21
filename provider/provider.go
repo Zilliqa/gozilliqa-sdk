@@ -1,7 +1,6 @@
 package provider
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/ybbus/jsonrpc"
 )
@@ -92,8 +91,9 @@ func (provider *Provider) GetPrevDSDifficulty() *jsonrpc.RPCResponse {
 }
 
 func (provider *Provider) CreateTransaction(payload TransactionPayload) *jsonrpc.RPCResponse {
-	r, _ := json.Marshal(payload)
-	fmt.Println(string(r))
+	//r, _ := json.Marshal(payload)
+	//fmt.Println(string(r))
+	fmt.Println(payload)
 	return provider.call("CreateTransaction", &payload)
 }
 
