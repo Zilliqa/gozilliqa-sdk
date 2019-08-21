@@ -79,9 +79,10 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 
 	result := rsp.Result.(map[string]interface{})
 	hash := result["TranID"].(string)
+	contractAddress := result["ContractAddress"].(string)
 
 	tx.ID = hash
-
+	tx.ContractAddress = contractAddress
 	return tx, nil
 
 }

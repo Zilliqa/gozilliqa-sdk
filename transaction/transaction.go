@@ -32,7 +32,8 @@ type Transaction struct {
 	Code         string
 	Data         string
 
-	Status State
+	Status          State
+	ContractAddress string
 }
 
 func (t *Transaction) toTransactionParam() TxParams {
