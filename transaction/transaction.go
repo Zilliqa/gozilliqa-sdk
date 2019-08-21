@@ -1,6 +1,7 @@
 package transaction
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/FireStack-Lab/LaksaGo"
 	"github.com/FireStack-Lab/LaksaGo/provider"
@@ -30,13 +31,14 @@ type Transaction struct {
 	SenderPubKey string
 	ToAddr       string
 	Code         string
-	Data         string
+	Data        interface{}
 
 	Status          State
 	ContractAddress string
 }
 
 func (t *Transaction) toTransactionParam() TxParams {
+	data, _ := json.Marshal(t.Data)
 	param := TxParams{
 		ID:           t.ID,
 		Version:      t.Version,
@@ -48,7 +50,7 @@ func (t *Transaction) toTransactionParam() TxParams {
 		Receipt:      t.Receipt,
 		SenderPubKey: t.SenderPubKey,
 		Code:         t.Code,
-		Data:         t.Data,
+		Data:         string(data),
 	}
 
 	if t.ToAddr == "" {
@@ -62,6 +64,7 @@ func (t *Transaction) toTransactionParam() TxParams {
 func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 	version, _ := strconv.ParseInt(t.Version, 10, 32)
 	nonce, _ := strconv.ParseInt(t.Nonce, 10, 32)
+	data, _ := json.Marshal(t.Data)
 
 	p := provider.TransactionPayload{
 		Version:   int(version),
@@ -72,7 +75,7 @@ func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 		GasPrice:  t.GasPrice,
 		GasLimit:  t.GasLimit,
 		Code:      t.Code,
-		Data:      t.Data,
+		Data:      string(data),
 		Signature: strings.ToLower(t.Signature),
 	}
 

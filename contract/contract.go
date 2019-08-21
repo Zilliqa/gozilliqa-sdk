@@ -1,7 +1,6 @@
 package contract
 
 import (
-	"encoding/json"
 	"errors"
 	"github.com/FireStack-Lab/LaksaGo/account"
 	"github.com/FireStack-Lab/LaksaGo/provider"
@@ -44,11 +43,6 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		return nil, errors.New("Cannot deploy without code or initialisation parameters.")
 	}
 
-	data, err := json.Marshal(c.Init)
-
-	if err != nil {
-		return nil, err
-	}
 
 	tx := &transaction.Transaction{
 		ID:           params.ID,
@@ -62,7 +56,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		SenderPubKey: params.SenderPubKey,
 		ToAddr:       "0000000000000000000000000000000000000000",
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
-		Data:         strings.ReplaceAll(string(data), "/\\", ""),
+		Data:         c.Init,
 		Status:       0,
 	}
 
@@ -97,8 +91,6 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, atte
 		Params: args,
 	}
 
-	dataStr, _ := json.Marshal(data)
-
 	tx := &transaction.Transaction{
 		ID:           params.ID,
 		Version:      params.Version,
@@ -111,7 +103,7 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, atte
 		SenderPubKey: params.SenderPubKey,
 		ToAddr:       c.Address,
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
-		Data:         strings.ReplaceAll(string(dataStr), "/\\", ""),
+		Data:         data,
 		Status:       0,
 	}
 
