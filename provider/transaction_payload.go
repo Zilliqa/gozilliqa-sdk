@@ -11,4 +11,5 @@ type TransactionPayload struct {
 	Code      string `json:"code"`
 	Data      string `json:"data"`
 	Signature string `json:"signature"`
+	Priority  bool   `json:"priority"`
 }

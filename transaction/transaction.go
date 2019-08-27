@@ -31,10 +31,11 @@ type Transaction struct {
 	SenderPubKey string
 	ToAddr       string
 	Code         string
-	Data        interface{}
+	Data         interface{}
 
 	Status          State
 	ContractAddress string
+	Priority        bool
 }
 
 func (t *Transaction) toTransactionParam() TxParams {
@@ -76,6 +77,7 @@ func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 		GasLimit:  t.GasLimit,
 		Code:      t.Code,
 		Signature: strings.ToLower(t.Signature),
+		Priority:  t.Priority,
 	}
 
 	if string(data) != "\"\"" {

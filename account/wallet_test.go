@@ -31,6 +31,7 @@ func TestSendTransaction(t *testing.T) {
 		GasLimit:     "1",
 		Code:         "",
 		Data:         "",
+		Priority:     false,
 	}
 
 	err := wallet.Sign(tx, *provider)
@@ -47,7 +48,7 @@ func TestSendTransaction(t *testing.T) {
 	} else {
 		result := rsp.Result.(map[string]interface{})
 		hash := result["TranID"].(string)
-		fmt.Printf("hash is %s",hash)
+		fmt.Printf("hash is %s", hash)
 		tx.Confirm(hash, 1000, 3, provider)
 	}
 }
