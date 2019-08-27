@@ -81,7 +81,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 
 }
 
-func (c *Contract) Call(transition string, args []Value, params CallParams, attempts, interval int) (error, *transaction.Transaction) {
+func (c *Contract) Call(transition string, args []Value, params CallParams, priority bool,attempts, interval int) (error, *transaction.Transaction) {
 	if c.Address == "" {
 		_ = errors.New("Contract has not been deployed!")
 	}

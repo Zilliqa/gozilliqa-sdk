@@ -110,7 +110,7 @@ func TestContract_Call(t *testing.T) {
 		Amount:       "0",
 	}
 
-	err, tx := contract.Call("Transfer", args, params, 1000, 3)
+	err, tx := contract.Call("Transfer", args, params, false, 1000, 3)
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
