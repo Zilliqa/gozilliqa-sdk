@@ -75,8 +75,11 @@ func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 		GasPrice:  t.GasPrice,
 		GasLimit:  t.GasLimit,
 		Code:      t.Code,
-		Data:      string(data),
 		Signature: strings.ToLower(t.Signature),
+	}
+
+	if string(data) != "\"\"" {
+		p.Data = string(data)
 	}
 
 	if p.ToAddr == "0000000000000000000000000000000000000000" {

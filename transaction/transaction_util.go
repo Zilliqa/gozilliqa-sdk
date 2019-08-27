@@ -60,7 +60,11 @@ func EncodeTransactionProto(txParams TxParams) ([]byte, error) {
 		Gaslimit:     &gasLimit,
 	}
 
-	if txParams.Data != "" && txParams.Data != "\"\"" {
+	if txParams.Data == "\"\"" {
+		txParams.Data = ""
+	}
+
+	if txParams.Data != "" {
 		protoTransactionCoreInfo.Data = []byte(txParams.Data)
 	}
 
