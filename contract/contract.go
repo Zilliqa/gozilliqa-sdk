@@ -43,7 +43,6 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		return nil, errors.New("Cannot deploy without code or initialisation parameters.")
 	}
 
-
 	tx := &transaction.Transaction{
 		ID:           params.ID,
 		Version:      params.Version,
@@ -81,7 +80,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 
 }
 
-func (c *Contract) Call(transition string, args []Value, params CallParams, priority bool,attempts, interval int) (error, *transaction.Transaction) {
+func (c *Contract) Call(transition string, args []Value, params CallParams, priority bool, attempts, interval int) (error, *transaction.Transaction) {
 	if c.Address == "" {
 		_ = errors.New("Contract has not been deployed!")
 	}
@@ -105,6 +104,7 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, prio
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
 		Data:         data,
 		Status:       0,
+		Priority:     priority,
 	}
 
 	err2 := c.Singer.Sign(tx, *c.Provider)
