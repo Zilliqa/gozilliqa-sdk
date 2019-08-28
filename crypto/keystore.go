@@ -3,8 +3,10 @@ package crypto
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	util "github.com/FireStack-Lab/LaksaGo"
 	"github.com/FireStack-Lab/LaksaGo/keytools"
 	uuid "github.com/satori/go.uuid"
@@ -68,19 +70,19 @@ func (ks *Keystore) DecryptPrivateKey(encryptJson, passphrase string) (string, e
 	iv := util.DecodeHex(kv.Crypto.CipherParams.IV)
 	kdfparams := kv.Crypto.KDFParams
 	kdf := kv.Crypto.KDF
-
+	fmt.Println(kdfparams.Salt)
 	if kdf == "pbkdf2" {
-		derivedKey = ks.pbkdf2.GetDerivedKey([]byte(passphrase), kdfparams.Salt, 262144, 32)
+		derivedKey = ks.pbkdf2.GetDerivedKey([]byte(passphrase), util.DecodeHex(kdfparams.Salt), 262144, 32)
 
 	} else {
-		derivedKey, err = ks.scrypt.GetDerivedKey([]byte(passphrase), kdfparams.Salt, 8192, 8, 1, 32)
+		derivedKey, err = ks.scrypt.GetDerivedKey([]byte(passphrase), util.DecodeHex(kdfparams.Salt), 8192, 8, 1, 32)
 	}
 
 	if err != nil {
 		return "", nil
 	}
 
-	mac := util.EncodeHex(util.GenerateMac(derivedKey, ciphertext))
+	mac := hex.EncodeToString(util.GenerateMac(derivedKey, ciphertext, iv))
 
 	if strings.Compare(strings.ToLower(mac), strings.ToLower(kv.Crypto.MAC)) != 0 {
 		return "", errors.New("Failed to decrypt.")
@@ -128,7 +130,6 @@ func (ks *Keystore) EncryptPrivateKey(privateKey, passphrase []byte, t KDFType) 
 	copy(encryptKey, derivedKey[0:16])
 
 	//perform cipher operation
-	// todo please review
 	block, err := aes.NewCipher(encryptKey)
 	if err != nil {
 		return "", err
@@ -138,14 +139,14 @@ func (ks *Keystore) EncryptPrivateKey(privateKey, passphrase []byte, t KDFType) 
 	mode := cipher.NewCTR(block, iv)
 	mode.XORKeyStream(ciphertext, privateKey)
 
-	mac := util.GenerateMac(derivedKey, ciphertext)
+	mac := util.GenerateMac(derivedKey, ciphertext, iv)
 
 	//build struct
 	cp := CipherParams{
 		IV: util.EncodeHex(iv),
 	}
 
-	kp := NewKDFParams(salt)
+	kp := NewKDFParams(util.EncodeHex(salt))
 
 	var kdf string
 
@@ -203,10 +204,10 @@ type KDFParams struct {
 	R     int    `json:"r"`
 	P     int    `json:"p"`
 	DKlen int    `json:"dklen"`
-	Salt  []byte `json:"salt"`
+	Salt  string `json:"salt"`
 }
 
-func NewKDFParams(salt []byte) KDFParams {
+func NewKDFParams(salt string) KDFParams {
 	return KDFParams{
 		N:     8192,
 		C:     262144,

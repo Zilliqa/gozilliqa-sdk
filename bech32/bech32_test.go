@@ -1,6 +1,7 @@
 package bech32
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
@@ -68,4 +69,8 @@ func TestFromBech32Addr(t *testing.T) {
 
 	addr,_ = FromBech32Addr("zil1tawmrsvvehn8u5fm0aawsg89dy25ja46ndsrhq")
 	assert.Equal(t,strings.ToLower(addr),"5f5db1c18ccde67e513b7f7ae820e569154976ba")
+}
+
+func TestDecode(t *testing.T) {
+	fmt.Println(ToBech32Address("81dc58610bb6abe93bcb5593d220fedbe3e5edc6"))
 }

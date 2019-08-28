@@ -3,6 +3,7 @@ package LaksaGo
 import (
 	"bytes"
 	"crypto/elliptic"
+	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
 	"math/big"
@@ -20,13 +21,19 @@ func EncodeHex(src []byte) string {
 
 func DecodeHex(src string) []byte {
 	src = strings.ToLower(src)
-	src = strings.TrimPrefix(src,"0x")
+	src = strings.TrimPrefix(src, "0x")
 	ret, _ := hex.DecodeString(src)
 	return ret
 }
 
 func Sha256(data []byte) []byte {
 	hash := sha256.New()
+	hash.Write(data)
+	return hash.Sum(nil)
+}
+
+func HashMacSha256(key, data []byte) []byte {
+	hash := hmac.New(sha256.New, key)
 	hash.Write(data)
 	return hash.Sum(nil)
 }
@@ -73,11 +80,13 @@ func Hash(Q []byte, pubKey []byte, msg []byte) []byte {
 	return Sha256(buffer.Bytes())
 }
 
-func GenerateMac(derivedKey, cipherText []byte) []byte {
-	result := make([]byte, 16+len(cipherText))
-	copy(result[0:16], derivedKey[16:])
-	copy(result[16:], cipherText[:])
-	return Sha256(result)
+func GenerateMac(derivedKey, cipherText, iv []byte) []byte {
+	buffer := bytes.NewBuffer(nil)
+	buffer.Write(derivedKey[16:32])
+	buffer.Write(cipherText[:])
+	buffer.Write(iv[:])
+	buffer.Write([]byte("aes-128-ctr"))
+	return HashMacSha256(derivedKey, buffer.Bytes())
 }
 
 func ToCheckSumAddress(address string) string {
@@ -124,9 +133,8 @@ func IntToHex(value, size int) string {
 	}
 
 	var hexFixed [16]byte
-	copy(hexFixed[:],hex[len(hex)-16:])
+	copy(hexFixed[:], hex[len(hex)-16:])
 	sb := strings.Builder{}
-
 
 	for _, v := range hexFixed {
 		sb.WriteByte(v)

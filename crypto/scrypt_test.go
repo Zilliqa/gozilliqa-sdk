@@ -2,6 +2,7 @@ package crypto
 
 import (
 	util "github.com/FireStack-Lab/LaksaGo"
+	"github.com/FireStack-Lab/LaksaGo/keytools"
 	"strings"
 	"testing"
 )
@@ -13,8 +14,12 @@ func TestScryptWapper_GetDerivedKey(t *testing.T) {
 	if err != nil {
 		t.Error("scrypt: get derived key")
 	}
+	iv, err := keytools.GenerateRandomBytes(16)
+	if err != nil {
+		t.Error(err.Error())
+	}
 
-	macArray := util.GenerateMac(keys, util.DecodeHex("ecdf81453d031ac2fa068b7185ddac044fa4632d3b061400d3c07a86510b4823"))
+	macArray := util.GenerateMac(keys, util.DecodeHex("ecdf81453d031ac2fa068b7185ddac044fa4632d3b061400d3c07a86510b4823"),iv)
 	if strings.Compare(strings.ToLower(util.EncodeHex(macArray)), "ed7fa37a4adbc8b7bbe0d43a329a047f89e2dcf7f2dfc96babfe79edd955f7a3") != 0 {
 		t.Error("crypt: get derived key")
 	}
