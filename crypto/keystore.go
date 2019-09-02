@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	util "github.com/FireStack-Lab/LaksaGo"
 	"github.com/FireStack-Lab/LaksaGo/keytools"
 	uuid "github.com/satori/go.uuid"
@@ -70,7 +69,6 @@ func (ks *Keystore) DecryptPrivateKey(encryptJson, passphrase string) (string, e
 	iv := util.DecodeHex(kv.Crypto.CipherParams.IV)
 	kdfparams := kv.Crypto.KDFParams
 	kdf := kv.Crypto.KDF
-	fmt.Println(kdfparams.Salt)
 	if kdf == "pbkdf2" {
 		derivedKey = ks.pbkdf2.GetDerivedKey([]byte(passphrase), util.DecodeHex(kdfparams.Salt), 262144, 32)
 
