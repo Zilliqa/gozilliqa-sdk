@@ -102,7 +102,7 @@ func (ks *Keystore) DecryptPrivateKey(encryptJson, passphrase string) (string, e
 }
 
 func (ks *Keystore) EncryptPrivateKey(privateKey, passphrase []byte, t KDFType) (string, error) {
-	address := keytools.GetAddressFromPublic(privateKey)
+	address := keytools.GetAddressFromPrivateKey(privateKey)
 	iv, err := keytools.GenerateRandomBytes(16)
 	if err != nil {
 		return "", err
