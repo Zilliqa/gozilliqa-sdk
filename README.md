@@ -1,6 +1,6 @@
 ### LaksaGo
 
-The golang version if zilliqa blockchain library
+The golang version of zilliqa blockchain library
 
 #### Requirements
 
