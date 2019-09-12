@@ -2,7 +2,7 @@ package keytools
 
 import (
 	"crypto/rand"
-	"github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/btcsuite/btcd/btcec"
 	"io"
 	"math/big"
@@ -32,11 +32,11 @@ func GeneratePrivateKey() (PrivateKey, error) {
 
 func GetPublicKeyFromPrivateKey(privateKey []byte, compress bool) []byte {
 	x, y := Secp256k1.ScalarBaseMult(privateKey)
-	return LaksaGo.Compress(Secp256k1, x, y, compress)
+	return util.Compress(Secp256k1, x, y, compress)
 }
 
 func GetAddressFromPublic(publicKey []byte) string {
-	originAddress := LaksaGo.EncodeHex(LaksaGo.Sha256(publicKey))
+	originAddress := util.EncodeHex(util.Sha256(publicKey))
 	return originAddress[24:]
 }
 

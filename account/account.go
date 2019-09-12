@@ -1,9 +1,9 @@
 package account
 
 import (
-	"github.com/Zilliqa/gozilliqa-sdk"
 	"github.com/Zilliqa/gozilliqa-sdk/crypto"
 	"github.com/Zilliqa/gozilliqa-sdk/keytools"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 )
 
 type Account struct {
@@ -28,12 +28,12 @@ func FromFile(file, passphrase string) (*Account, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewAccount(LaksaGo.DecodeHex(privateKey)), nil
+	return NewAccount(util.DecodeHex(privateKey)), nil
 }
 
 func ToFile(privateKey, passphrase string, t crypto.KDFType) (string, error) {
 	ks := crypto.NewDefaultKeystore()
-	file, err := ks.EncryptPrivateKey(LaksaGo.DecodeHex(privateKey), LaksaGo.DecodeHex(passphrase), t)
+	file, err := ks.EncryptPrivateKey(util.DecodeHex(privateKey), util.DecodeHex(passphrase), t)
 	if err != nil {
 		return "", nil
 	}

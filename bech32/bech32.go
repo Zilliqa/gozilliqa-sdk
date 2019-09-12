@@ -3,7 +3,7 @@ package bech32
 import (
 	"errors"
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/Zilliqa/gozilliqa-sdk/validator"
 	"strings"
 )
@@ -256,7 +256,7 @@ func ToBech32Address(address string) (string, error) {
 	if !validator.IsAddress(address) {
 		return "", errors.New("invalid address format")
 	}
-	data := LaksaGo.DecodeHex(address)
+	data := util.DecodeHex(address)
 	conv, err := ConvertBits(data, 8, 5, false)
 	if err != nil {
 		return "", err
@@ -296,5 +296,5 @@ func FromBech32Addr(address string) (string, error) {
 		return "", errors.New("could not convert buffer to bytes")
 	}
 
-	return strings.TrimPrefix(LaksaGo.ToCheckSumAddress(LaksaGo.EncodeHex(buf)),"0x"), nil
+	return strings.TrimPrefix(util.ToCheckSumAddress(util.EncodeHex(buf)),"0x"), nil
 }

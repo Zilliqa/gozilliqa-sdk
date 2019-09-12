@@ -3,9 +3,9 @@ package contract
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk"
 	"github.com/Zilliqa/gozilliqa-sdk/account"
 	provider2 "github.com/Zilliqa/gozilliqa-sdk/provider"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"io/ioutil"
 	"strconv"
 	"testing"
@@ -59,7 +59,7 @@ func TestContract_Deploy(t *testing.T) {
 	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 
 	deployParams := DeployParams{
-		Version:      strconv.FormatInt(int64(LaksaGo.Pack(333, 1)), 10),
+		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 		Nonce:        strconv.FormatInt(nonce+1, 10),
 		GasPrice:     "10000000000",
 		GasLimit:     "10000",
@@ -103,7 +103,7 @@ func TestContract_Call(t *testing.T) {
 	n := nonce + 1
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
-		Version:      strconv.FormatInt(int64(LaksaGo.Pack(333, 1)), 10),
+		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 		GasPrice:     "1000000000",
 		GasLimit:     "1000",
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",

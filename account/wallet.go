@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk"
 	"github.com/Zilliqa/gozilliqa-sdk/bech32"
 	"github.com/Zilliqa/gozilliqa-sdk/crypto"
 	"github.com/Zilliqa/gozilliqa-sdk/keytools"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	go_schnorr "github.com/Zilliqa/gozilliqa-sdk/schnorr"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/Zilliqa/gozilliqa-sdk/validator"
 	"strconv"
 	"strings"
@@ -50,7 +50,7 @@ func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) e
 	}
 
 	if tx.SenderPubKey != "" {
-		address := keytools.GetAddressFromPublic(LaksaGo.DecodeHex(tx.SenderPubKey))
+		address := keytools.GetAddressFromPublic(util.DecodeHex(tx.SenderPubKey))
 		err := w.SignWith(tx, address, provider)
 		if err != nil {
 			return err
@@ -92,7 +92,7 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 		}
 	}
 
-	tx.SenderPubKey = LaksaGo.EncodeHex(account.PublicKey)
+	tx.SenderPubKey = util.EncodeHex(account.PublicKey)
 
 	message, err := tx.Bytes()
 
@@ -112,7 +112,7 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 		return err3
 	}
 
-	signature := fmt.Sprintf("%s%s", LaksaGo.EncodeHex(r), LaksaGo.EncodeHex(s))
+	signature := fmt.Sprintf("%s%s", util.EncodeHex(r), util.EncodeHex(s))
 
 	tx.Signature = signature
 
@@ -132,7 +132,7 @@ func (w *Wallet) CreateAccount() {
 }
 
 func (w *Wallet) AddByPrivateKey(privateKey string) {
-	prik := LaksaGo.DecodeHex(privateKey)
+	prik := util.DecodeHex(privateKey)
 	account := NewAccount(prik[:])
 	address := strings.ToUpper(keytools.GetAddressFromPrivateKey(prik[:]))
 	w.Accounts[address] = account

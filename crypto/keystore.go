@@ -6,8 +6,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	util "github.com/Zilliqa/gozilliqa-sdk"
 	"github.com/Zilliqa/gozilliqa-sdk/keytools"
+	util2 "github.com/Zilliqa/gozilliqa-sdk/util"
 	uuid "github.com/satori/go.uuid"
 	"strings"
 )
@@ -65,22 +65,22 @@ func (ks *Keystore) DecryptPrivateKey(encryptJson, passphrase string) (string, e
 	derivedKey := make([]byte, 32)
 	err = nil
 
-	ciphertext := util.DecodeHex(kv.Crypto.Ciphertext)
-	iv := util.DecodeHex(kv.Crypto.CipherParams.IV)
+	ciphertext := util2.DecodeHex(kv.Crypto.Ciphertext)
+	iv := util2.DecodeHex(kv.Crypto.CipherParams.IV)
 	kdfparams := kv.Crypto.KDFParams
 	kdf := kv.Crypto.KDF
 	if kdf == "pbkdf2" {
-		derivedKey = ks.pbkdf2.GetDerivedKey([]byte(passphrase), util.DecodeHex(kdfparams.Salt), 262144, 32)
+		derivedKey = ks.pbkdf2.GetDerivedKey([]byte(passphrase), util2.DecodeHex(kdfparams.Salt), 262144, 32)
 
 	} else {
-		derivedKey, err = ks.scrypt.GetDerivedKey([]byte(passphrase), util.DecodeHex(kdfparams.Salt), 8192, 8, 1, 32)
+		derivedKey, err = ks.scrypt.GetDerivedKey([]byte(passphrase), util2.DecodeHex(kdfparams.Salt), 8192, 8, 1, 32)
 	}
 
 	if err != nil {
 		return "", nil
 	}
 
-	mac := hex.EncodeToString(util.GenerateMac(derivedKey, ciphertext, iv))
+	mac := hex.EncodeToString(util2.GenerateMac(derivedKey, ciphertext, iv))
 
 	if strings.Compare(strings.ToLower(mac), strings.ToLower(kv.Crypto.MAC)) != 0 {
 		return "", errors.New("Failed to decrypt.")
@@ -97,7 +97,7 @@ func (ks *Keystore) DecryptPrivateKey(encryptJson, passphrase string) (string, e
 	privateKey := make([]byte, len(ciphertext))
 	mode := cipher.NewCTR(block, iv)
 	mode.XORKeyStream(privateKey, ciphertext)
-	return util.EncodeHex(privateKey), nil
+	return util2.EncodeHex(privateKey), nil
 
 }
 
@@ -137,14 +137,14 @@ func (ks *Keystore) EncryptPrivateKey(privateKey, passphrase []byte, t KDFType) 
 	mode := cipher.NewCTR(block, iv)
 	mode.XORKeyStream(ciphertext, privateKey)
 
-	mac := util.GenerateMac(derivedKey, ciphertext, iv)
+	mac := util2.GenerateMac(derivedKey, ciphertext, iv)
 
 	//build struct
 	cp := CipherParams{
-		IV: util.EncodeHex(iv),
+		IV: util2.EncodeHex(iv),
 	}
 
-	kp := NewKDFParams(util.EncodeHex(salt))
+	kp := NewKDFParams(util2.EncodeHex(salt))
 
 	var kdf string
 
@@ -157,10 +157,10 @@ func (ks *Keystore) EncryptPrivateKey(privateKey, passphrase []byte, t KDFType) 
 	crypto := Crypto{
 		Cipher:       "aes-128-ctr",
 		CipherParams: cp,
-		Ciphertext:   util.EncodeHex(ciphertext),
+		Ciphertext:   util2.EncodeHex(ciphertext),
 		KDF:          kdf,
 		KDFParams:    kp,
-		MAC:          util.EncodeHex(mac),
+		MAC:          util2.EncodeHex(mac),
 	}
 
 	kv := KeystoreV3{

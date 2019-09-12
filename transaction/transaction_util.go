@@ -4,8 +4,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk"
 	"github.com/Zilliqa/gozilliqa-sdk/protobuf"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/golang/protobuf/proto"
 	"math/big"
 	"strconv"
@@ -34,7 +34,7 @@ func EncodeTransactionProto(txParams TxParams) ([]byte, error) {
 	}
 
 	senderpubkey := protobuf.ByteArray{
-		Data: LaksaGo.DecodeHex(txParams.SenderPubKey),
+		Data: util.DecodeHex(txParams.SenderPubKey),
 	}
 
 	amountArray := protobuf.ByteArray{
@@ -53,7 +53,7 @@ func EncodeTransactionProto(txParams TxParams) ([]byte, error) {
 	protoTransactionCoreInfo := protobuf.ProtoTransactionCoreInfo{
 		Version:      &version,
 		Nonce:        &nonce,
-		Toaddr:       LaksaGo.DecodeHex(txParams.ToAddr),
+		Toaddr:       util.DecodeHex(txParams.ToAddr),
 		Senderpubkey: &senderpubkey,
 		Amount:       &amountArray,
 		Gasprice:     &gasPriceArray,

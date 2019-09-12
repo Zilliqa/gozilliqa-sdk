@@ -3,8 +3,8 @@ package transaction
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"strconv"
 	"strings"
 	"time"
@@ -70,7 +70,7 @@ func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 	p := provider.TransactionPayload{
 		Version:   int(version),
 		Nonce:     int(nonce),
-		ToAddr:    LaksaGo.ToCheckSumAddress(t.ToAddr)[2:],
+		ToAddr:    util.ToCheckSumAddress(t.ToAddr)[2:],
 		Amount:    t.Amount,
 		PubKey:    strings.ToLower(t.SenderPubKey),
 		GasPrice:  t.GasPrice,

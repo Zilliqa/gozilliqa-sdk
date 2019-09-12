@@ -2,9 +2,9 @@ package account
 
 import (
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk"
 	provider2 "github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"strconv"
 	"testing"
 )
@@ -23,7 +23,7 @@ func TestSendTransaction(t *testing.T) {
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
 
 	tx := &transaction.Transaction{
-		Version:      strconv.FormatInt(int64(LaksaGo.Pack(333, 2)), 10),
+		Version:      strconv.FormatInt(int64(util.Pack(333, 2)), 10),
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 		Amount:       "10000000",

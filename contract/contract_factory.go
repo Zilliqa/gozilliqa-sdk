@@ -3,17 +3,17 @@ package contract
 import (
 	"crypto/sha256"
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk"
 	"github.com/Zilliqa/gozilliqa-sdk/keytools"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"strconv"
 )
 
 func GetAddressFromContract(tx *transaction.Transaction) string {
-	senderAddress := keytools.GetAddressFromPublic(LaksaGo.DecodeHex(tx.SenderPubKey))
+	senderAddress := keytools.GetAddressFromPublic(util.DecodeHex(tx.SenderPubKey))
 	sha256Ctx := sha256.New()
 	fmt.Printf("send address = %s",senderAddress)
-	sha256Ctx.Write(LaksaGo.DecodeHex(senderAddress))
+	sha256Ctx.Write(util.DecodeHex(senderAddress))
 
 	var nonce int64
 
@@ -23,13 +23,13 @@ func GetAddressFromContract(tx *transaction.Transaction) string {
 		nonce = nonce - 1
 	}
 
-	hexNonce := LaksaGo.IntToHex(int(nonce),16)
+	hexNonce := util.IntToHex(int(nonce),16)
 
-	sha256Ctx.Write(LaksaGo.DecodeHex(hexNonce))
+	sha256Ctx.Write(util.DecodeHex(hexNonce))
 
 	bytes := sha256Ctx.Sum(nil)
 
-	hexString := LaksaGo.EncodeHex(bytes)
+	hexString := util.EncodeHex(bytes)
 
 	return hexString[24:]
 }

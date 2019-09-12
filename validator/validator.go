@@ -1,7 +1,7 @@
 package validator
 
 import (
-	"github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"regexp"
 	"strconv"
 )
@@ -37,7 +37,7 @@ func IsSignature(signature string) bool {
 // @param {string} address
 // @returns {boolean}
 func IsChecksumAddress(address string) bool {
-	return IsAddress(address) && address == LaksaGo.ToCheckSumAddress(address)
+	return IsAddress(address) && address == util.ToCheckSumAddress(address)
 }
 
 func IsByteString(str string, len int) bool {
