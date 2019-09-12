@@ -6,8 +6,8 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	util "github.com/FireStack-Lab/LaksaGo"
-	"github.com/FireStack-Lab/LaksaGo/keytools"
+	util "github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/keytools"
 	uuid "github.com/satori/go.uuid"
 	"strings"
 )

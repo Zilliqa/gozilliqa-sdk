@@ -1,7 +1,7 @@
 package crypto
 
 import (
-	util "github.com/FireStack-Lab/LaksaGo"
+	util "github.com/Zilliqa/gozilliqa-sdk"
 	"strings"
 	"testing"
 )

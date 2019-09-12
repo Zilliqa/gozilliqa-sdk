@@ -1,7 +1,7 @@
 package transaction
 
 import (
-	"github.com/FireStack-Lab/LaksaGo/provider"
+	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"testing"
 )
 

@@ -2,7 +2,7 @@ package provider
 
 import (
 	"fmt"
-	"github.com/FireStack-Lab/LaksaGo/transaction"
+	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"testing"
 )
 

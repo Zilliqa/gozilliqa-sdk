@@ -3,9 +3,9 @@ package contract
 import (
 	"crypto/sha256"
 	"fmt"
-	"github.com/FireStack-Lab/LaksaGo"
-	"github.com/FireStack-Lab/LaksaGo/keytools"
-	"github.com/FireStack-Lab/LaksaGo/transaction"
+	"github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/keytools"
+	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"strconv"
 )
 

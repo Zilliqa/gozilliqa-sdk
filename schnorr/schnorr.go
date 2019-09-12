@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/FireStack-Lab/LaksaGo"
-	"github.com/FireStack-Lab/LaksaGo/keytools"
+	"github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/keytools"
 	"github.com/btcsuite/btcd/btcec"
 )
 

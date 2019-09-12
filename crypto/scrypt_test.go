@@ -1,8 +1,8 @@
 package crypto
 
 import (
-	util "github.com/FireStack-Lab/LaksaGo"
-	"github.com/FireStack-Lab/LaksaGo/keytools"
+	util "github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/keytools"
 	"strings"
 	"testing"
 )

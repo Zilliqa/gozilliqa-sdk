@@ -1,7 +1,7 @@
 package validator
 
 import (
-	"github.com/FireStack-Lab/LaksaGo"
+	"github.com/Zilliqa/gozilliqa-sdk"
 	"regexp"
 	"strconv"
 )

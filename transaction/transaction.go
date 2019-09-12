@@ -3,8 +3,8 @@ package transaction
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/FireStack-Lab/LaksaGo"
-	"github.com/FireStack-Lab/LaksaGo/provider"
+	"github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"strconv"
 	"strings"
 	"time"

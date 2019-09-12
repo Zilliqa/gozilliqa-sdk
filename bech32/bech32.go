@@ -3,8 +3,8 @@ package bech32
 import (
 	"errors"
 	"fmt"
-	"github.com/FireStack-Lab/LaksaGo"
-	"github.com/FireStack-Lab/LaksaGo/validator"
+	"github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/validator"
 	"strings"
 )
 

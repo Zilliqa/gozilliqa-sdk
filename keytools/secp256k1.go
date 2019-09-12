@@ -2,7 +2,7 @@ package keytools
 
 import (
 	"crypto/rand"
-	"github.com/FireStack-Lab/LaksaGo"
+	"github.com/Zilliqa/gozilliqa-sdk"
 	"github.com/btcsuite/btcd/btcec"
 	"io"
 	"math/big"

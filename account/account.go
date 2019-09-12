@@ -1,9 +1,9 @@
 package account
 
 import (
-	"github.com/FireStack-Lab/LaksaGo"
-	"github.com/FireStack-Lab/LaksaGo/crypto"
-	"github.com/FireStack-Lab/LaksaGo/keytools"
+	"github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/crypto"
+	"github.com/Zilliqa/gozilliqa-sdk/keytools"
 )
 
 type Account struct {

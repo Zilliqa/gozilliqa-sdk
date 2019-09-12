@@ -2,9 +2,9 @@ package contract
 
 import (
 	"errors"
-	"github.com/FireStack-Lab/LaksaGo/account"
-	"github.com/FireStack-Lab/LaksaGo/provider"
-	"github.com/FireStack-Lab/LaksaGo/transaction"
+	"github.com/Zilliqa/gozilliqa-sdk/account"
+	"github.com/Zilliqa/gozilliqa-sdk/provider"
+	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"strings"
 )
 

@@ -2,9 +2,9 @@ package account
 
 import (
 	"fmt"
-	"github.com/FireStack-Lab/LaksaGo"
-	provider2 "github.com/FireStack-Lab/LaksaGo/provider"
-	"github.com/FireStack-Lab/LaksaGo/transaction"
+	"github.com/Zilliqa/gozilliqa-sdk"
+	provider2 "github.com/Zilliqa/gozilliqa-sdk/provider"
+	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"strconv"
 	"testing"
 )
@@ -48,7 +48,7 @@ func TestSendTransaction(t *testing.T) {
 	} else {
 		result := rsp.Result.(map[string]interface{})
 		hash := result["TranID"].(string)
-		fmt.Printf("hash is %s", hash)
+		fmt.Printf("hash is %s\n", hash)
 		tx.Confirm(hash, 1000, 3, provider)
 	}
 }

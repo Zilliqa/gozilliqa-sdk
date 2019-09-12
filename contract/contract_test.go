@@ -3,9 +3,9 @@ package contract
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/FireStack-Lab/LaksaGo"
-	"github.com/FireStack-Lab/LaksaGo/account"
-	provider2 "github.com/FireStack-Lab/LaksaGo/provider"
+	"github.com/Zilliqa/gozilliqa-sdk"
+	"github.com/Zilliqa/gozilliqa-sdk/account"
+	provider2 "github.com/Zilliqa/gozilliqa-sdk/provider"
 	"io/ioutil"
 	"strconv"
 	"testing"

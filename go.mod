@@ -1,4 +1,4 @@
-module github.com/FireStack-Lab/LaksaGo
+module github.com/Zilliqa/gozilliqa-sdk
 
 require (
 	github.com/btcsuite/btcd v0.0.0-20190315201642-aa6e0f35703c

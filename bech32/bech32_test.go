@@ -72,5 +72,5 @@ func TestFromBech32Addr(t *testing.T) {
 }
 
 func TestDecode(t *testing.T) {
-	fmt.Println(ToBech32Address("81dc58610bb6abe93bcb5593d220fedbe3e5edc6"))
+	fmt.Println(FromBech32Addr("zil15yw7wej02h6mm7z5f2dvwytfr5qn0z6vlwqug6"))
 }
