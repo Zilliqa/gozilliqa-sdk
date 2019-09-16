@@ -1,17 +1,23 @@
 package provider
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"github.com/ybbus/jsonrpc"
+	"io/ioutil"
+	"net/http"
 )
 
 type Provider struct {
+	host      string
 	rpcClient jsonrpc.RPCClient
 }
 
 func NewProvider(host string) *Provider {
+
 	rpcClient := jsonrpc.NewClient(host)
-	return &Provider{rpcClient}
+	return &Provider{host: host, rpcClient: rpcClient}
 }
 
 func (provider *Provider) GetNetworkId() *jsonrpc.RPCResponse {
@@ -131,6 +137,53 @@ func (provider *Provider) GetSmartContractInit(contract_address string) *jsonrpc
 
 func (provider *Provider) GetSmartContractState(contract_address string) *jsonrpc.RPCResponse {
 	return provider.call("GetSmartContractState", contract_address)
+}
+
+func (provider *Provider) GetSmartContractSubState(contractAddress string, params ...interface{}) (string, error) {
+	//we should hack here for now
+	type req struct {
+		Id      string      `json:"id"`
+		Jsonrpc string      `json:"jsonrpc"`
+		Method  string      `json:"method"`
+		Params  interface{} `json:"params"`
+	}
+
+	p := []interface{}{
+		contractAddress,
+	}
+
+	for _, v := range params {
+		p = append(p, v)
+	}
+
+	r := &req{
+		Id:      "1",
+		Jsonrpc: "2.0",
+		Method:  "GetSmartContractSubState",
+		Params:  p,
+	}
+
+	b, _ := json.Marshal(r)
+	reader := bytes.NewReader(b)
+	request, err := http.NewRequest("POST", provider.host, reader)
+	if err != nil {
+		return "", err
+	}
+	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	client := http.Client{}
+	resp, err := client.Do(request)
+	if err != nil {
+		return "", nil
+	}
+	defer resp.Body.Close()
+
+	result, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", nil
+	}
+
+	return string(result), nil
+
 }
 
 func (provider *Provider) GetSmartContracts(user_address string) *jsonrpc.RPCResponse {

@@ -2,7 +2,6 @@ package provider
 
 import (
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"testing"
 )
 
@@ -46,6 +45,25 @@ func TestGetNumDSBlocks(t *testing.T) {
 
 	response := provider.GetNumDSBlocks()
 	fmt.Printf("%v\n", response)
+}
+
+func TestProvider_GetSmartContractSubState(t *testing.T) {
+	provider := NewProvider("https://api.zilliqa.com")
+	response, err := provider.GetSmartContractSubState("9611c53BE6d1b32058b2747bdeCECed7e1216793", "admins", []interface{}{})
+	if err != nil {
+		t.Error(err.Error())
+	}
+	fmt.Println(response)
+}
+
+func TestNewProvider(t *testing.T) {
+
+	//params := []interface{}{
+	//	"a", 1, []interface{}{},
+	//}
+	//
+	//b,_  := json.Marshal()
+	//fmt.Println(string(b))
 }
 
 func TestGetDSBlockRate(t *testing.T) {
@@ -136,14 +154,6 @@ func TestGetPrevDSDifficulty(t *testing.T) {
 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
 	response := provider.GetPrevDSDifficulty()
-	fmt.Printf("%v\n", response)
-}
-
-func TestCreateTransaction(t *testing.T) {
-	provider := NewProvider("https://dev-api.zilliqa.com/")
-	tx := transaction.Transaction{}
-
-	response := provider.CreateTransaction(tx.ToTransactionPayload())
 	fmt.Printf("%v\n", response)
 }
 
