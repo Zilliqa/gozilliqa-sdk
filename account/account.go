@@ -33,7 +33,7 @@ func FromFile(file, passphrase string) (*Account, error) {
 
 func ToFile(privateKey, passphrase string, t crypto.KDFType) (string, error) {
 	ks := crypto.NewDefaultKeystore()
-	file, err := ks.EncryptPrivateKey(util.DecodeHex(privateKey), util.DecodeHex(passphrase), t)
+	file, err := ks.EncryptPrivateKey(util.DecodeHex(privateKey), []byte(passphrase), t)
 	if err != nil {
 		return "", nil
 	}
