@@ -16,6 +16,8 @@ import (
 func TestContract_Deploy(t *testing.T) {
 	host := "https://dev-api.zilliqa.com/"
 	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+	chainID := 333
+	msgVersion := 1
 
 	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
 	address := keytools.GetAddressFromPublic(publickKey)
@@ -68,7 +70,7 @@ func TestContract_Deploy(t *testing.T) {
 	nonce, _ := provider.GetBalance(address).Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 
 	deployParams := DeployParams{
-		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
+		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
 		Nonce:        strconv.FormatInt(nonce+1, 10),
 		GasPrice:     "10000000000",
 		GasLimit:     "10000",
@@ -87,6 +89,8 @@ func TestContract_Deploy(t *testing.T) {
 func TestContract_Call(t *testing.T) {
 	host := "https://dev-api.zilliqa.com/"
 	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+	chainID := 333
+	msgVersion := 1
 
 	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
 	address := keytools.GetAddressFromPublic(publickKey)
@@ -119,7 +123,7 @@ func TestContract_Call(t *testing.T) {
 	n := nonce + 1
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
-		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
+		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
 		GasPrice:     "1000000000",
 		GasLimit:     "1000",
 		SenderPubKey: pubkey,
