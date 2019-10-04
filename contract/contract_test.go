@@ -3,18 +3,27 @@ package contract
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk/account"
-	provider2 "github.com/Zilliqa/gozilliqa-sdk/provider"
-	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"io/ioutil"
 	"strconv"
 	"testing"
+
+	"github.com/Zilliqa/gozilliqa-sdk/account"
+	"github.com/Zilliqa/gozilliqa-sdk/keytools"
+	provider2 "github.com/Zilliqa/gozilliqa-sdk/provider"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 )
 
 func TestContract_Deploy(t *testing.T) {
+	host := "https://dev-api.zilliqa.com/"
+	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+
+	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
+	address := keytools.GetAddressFromPublic(publickKey)
+	pubkey := util.EncodeHex(publickKey)
+	provider := provider2.NewProvider(host)
+
 	wallet := account.NewWallet()
-	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
-	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
+	wallet.AddByPrivateKey(privateKey)
 
 	code, _ := ioutil.ReadFile("./fungible.scilla")
 	init := []Value{
@@ -26,7 +35,7 @@ func TestContract_Deploy(t *testing.T) {
 		{
 			"owner",
 			"ByStr20",
-			"0x9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a",
+			"0x" + address,
 		},
 		{
 			"total_tokens",
@@ -56,14 +65,14 @@ func TestContract_Deploy(t *testing.T) {
 		Provider: provider,
 	}
 
-	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	nonce, _ := provider.GetBalance(address).Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 
 	deployParams := DeployParams{
 		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 		Nonce:        strconv.FormatInt(nonce+1, 10),
 		GasPrice:     "10000000000",
 		GasLimit:     "10000",
-		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
+		SenderPubKey: pubkey,
 	}
 
 	tx, err := contract.Deploy(deployParams)
@@ -76,9 +85,16 @@ func TestContract_Deploy(t *testing.T) {
 }
 
 func TestContract_Call(t *testing.T) {
+	host := "https://dev-api.zilliqa.com/"
+	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+
+	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
+	address := keytools.GetAddressFromPublic(publickKey)
+	pubkey := util.EncodeHex(publickKey)
+	provider := provider2.NewProvider(host)
+
 	wallet := account.NewWallet()
-	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
-	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
+	wallet.AddByPrivateKey(privateKey)
 
 	contract := Contract{
 		Address:  "bd7198209529dC42320db4bC8508880BcD22a9f2",
@@ -90,7 +106,7 @@ func TestContract_Call(t *testing.T) {
 		{
 			"to",
 			"ByStr20",
-			"0x381f4008505e940ad7681ec3468a719060caf796",
+			"0x" + address,
 		},
 		{
 			"tokens",
@@ -106,7 +122,7 @@ func TestContract_Call(t *testing.T) {
 		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 		GasPrice:     "1000000000",
 		GasLimit:     "1000",
-		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
+		SenderPubKey: pubkey,
 		Amount:       "0",
 	}
 
