@@ -96,6 +96,10 @@ func (provider *Provider) GetPrevDSDifficulty() *jsonrpc.RPCResponse {
 	return provider.call("GetPrevDSDifficulty")
 }
 
+func (provider *Provider) GetTotalCoinSupply() *jsonrpc.RPCResponse {
+	return provider.call("GetTotalCoinSupply")
+}
+
 func (provider *Provider) CreateTransaction(payload TransactionPayload) *jsonrpc.RPCResponse {
 	//r, _ := json.Marshal(payload)
 	//fmt.Println(string(r))
