@@ -58,10 +58,12 @@ func TestContract_Deploy(t *testing.T) {
 
 	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 
+	gasPrice := provider.GetMinimumGasPrice().Result.(string)
+
 	deployParams := DeployParams{
 		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 		Nonce:        strconv.FormatInt(nonce+1, 10),
-		GasPrice:     "10000000000",
+		GasPrice:     gasPrice,
 		GasLimit:     "10000",
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
 	}
@@ -101,10 +103,13 @@ func TestContract_Call(t *testing.T) {
 
 	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 	n := nonce + 1
+	gasPrice := provider.GetMinimumGasPrice().Result.(string)
+
+
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
 		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
-		GasPrice:     "1000000000",
+		GasPrice:     gasPrice,
 		GasLimit:     "1000",
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
 		Amount:       "0",

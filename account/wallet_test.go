@@ -22,12 +22,14 @@ func TestSendTransaction(t *testing.T) {
 	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
 
+	gasPrice := provider.GetMinimumGasPrice().Result.(string)
+
 	tx := &transaction.Transaction{
 		Version:      strconv.FormatInt(int64(util.Pack(333, 2)), 10),
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 		Amount:       "10000000",
-		GasPrice:     "1000000000",
+		GasPrice:     gasPrice,
 		GasLimit:     "1",
 		Code:         "",
 		Data:         "",
