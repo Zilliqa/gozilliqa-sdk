@@ -101,9 +101,9 @@ func (provider *Provider) GetTotalCoinSupply() *jsonrpc.RPCResponse {
 }
 
 func (provider *Provider) CreateTransaction(payload TransactionPayload) *jsonrpc.RPCResponse {
-	//r, _ := json.Marshal(payload)
-	//fmt.Println(string(r))
-	fmt.Println(payload)
+	r, _ := json.Marshal(payload)
+	fmt.Println(string(r))
+	//fmt.Println(payload)
 	return provider.call("CreateTransaction", &payload)
 }
 
