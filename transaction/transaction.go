@@ -104,8 +104,12 @@ func (t *Transaction) TrackTx(hash string, provider *provider.Provider) bool {
 		return false
 	}
 
+	epochNum, ok := receipt["epoch_num"]
+	if ok {
+		t.Receipt.EpochNum = epochNum.(string)
+	}
+
 	t.Receipt.CumulativeGas = receipt["cumulative_gas"].(string)
-	t.Receipt.EpochNum = receipt["epoch_num"].(string)
 	t.Receipt.Success = receipt["success"].(bool)
 
 	if !t.Receipt.Success {

@@ -14,9 +14,9 @@ import (
 )
 
 func TestContract_Deploy(t *testing.T) {
-	host := "https://dev-api.zilliqa.com/"
-	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
-	chainID := 333
+	host := "http://kaya.godscilla.com:5555"
+	privateKey := "4d5296a36eb3d95e6ea576e1ef5eeda69be486eaf381fd61d5f5b3d1c5e3e854"
+	chainID := 1
 	msgVersion := 1
 
 	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
