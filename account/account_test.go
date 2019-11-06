@@ -29,3 +29,40 @@ func TestFromFile(t *testing.T) {
 		t.Failed()
 	}
 }
+
+func TestNewHDAccount(t *testing.T) {
+	expectAddresses := []string{
+		"bea456fb58094be1c7f99bb6d1584dcec642b0b0",
+		"aacdf9c84bba51878c8681c72f035b62135d6d7e",
+		"852f52532c3c928269bdd3b83ac88e25a04d6b3b",
+		"0237f40d30d3c37c9b77577acbb11c972cc58664",
+		"cd6cb5bc8f3ee8ff7a91b060ce341feb6fc40e21",
+		"ecd9d875c7366432a7ce403a7702dfa3e7f09602",
+		"9165ae9ceeb155fb75d9c1fee2041f12c6e1f5ea",
+		"0723dd96243491ee84a925edb657f24582aec899",
+		"68275607e8bdf7cfa248b5f5a07b576f9ef39cd1",
+		"4878d8eb9a63493a6de066eb1458cab672dc8cfd",
+	}
+
+	var mnemonic = "cart hat drip lava jelly keep device journey bean mango rocket festival"
+	for i := 0; i < 10; i++ {
+		account, err := NewHDAccount(mnemonic, uint32(i))
+		if err != nil {
+			t.Failed()
+		} else {
+			if !contains(expectAddresses, account.Address) {
+				t.Failed()
+			}
+		}
+	}
+}
+
+func contains(slice []string, item string) bool {
+	set := make(map[string]struct{}, len(slice))
+	for _, s := range slice {
+		set[s] = struct{}{}
+	}
+
+	_, ok := set[item]
+	return ok
+}
