@@ -1,4 +1,4 @@
-### LaksaGo
+### gozilliqa-sdk
 
 The golang version of zilliqa blockchain library
 
