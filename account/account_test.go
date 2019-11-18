@@ -30,7 +30,31 @@ func TestFromFile(t *testing.T) {
 	}
 }
 
-func TestNewHDAccount(t *testing.T) {
+func TestNewHDAccountWithDerivationPath(t *testing.T) {
+	path := "m/44'/313'/0'/0/0"
+	mnemonic := "cart hat drip lava jelly keep device journey bean mango rocket festival"
+
+	account,err := NewHDAccountWithDerivationPath(mnemonic,path)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if account.Address != "bea456fb58094be1c7f99bb6d1584dcec642b0b0" {
+		t.Failed()
+	}
+
+	path = "m/44'/313'/0'/0/1"
+	account,err = NewHDAccountWithDerivationPath(mnemonic,path)
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	if account.Address != "aacdf9c84bba51878c8681c72f035b62135d6d7e" {
+		t.Failed()
+	}
+}
+
+func TestNewDefaultHDAccount(t *testing.T) {
 	expectAddresses := []string{
 		"bea456fb58094be1c7f99bb6d1584dcec642b0b0",
 		"aacdf9c84bba51878c8681c72f035b62135d6d7e",
@@ -46,7 +70,7 @@ func TestNewHDAccount(t *testing.T) {
 
 	var mnemonic = "cart hat drip lava jelly keep device journey bean mango rocket festival"
 	for i := 0; i < 10; i++ {
-		account, err := NewHDAccount(mnemonic, uint32(i))
+		account, err := NewDefaultHDAccount(mnemonic, uint32(i))
 		if err != nil {
 			t.Failed()
 		} else {
