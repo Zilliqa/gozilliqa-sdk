@@ -24,7 +24,7 @@ type Contract struct {
 	Code           string         `json:"code"`
 	ContractStatus ContractStatus `json:"contractStatus"`
 
-	Singer   *account.Wallet
+	Signer   *account.Wallet
 	Provider *provider.Provider
 }
 
@@ -59,7 +59,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		Status:       0,
 	}
 
-	err2 := c.Singer.Sign(tx, *c.Provider)
+	err2 := c.Signer.Sign(tx, *c.Provider)
 	if err2 != nil {
 		return nil, err2
 	}
@@ -107,7 +107,7 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, prio
 		Priority:     priority,
 	}
 
-	err2 := c.Singer.Sign(tx, *c.Provider)
+	err2 := c.Signer.Sign(tx, *c.Provider)
 	if err2 != nil {
 		return err2, nil
 	}

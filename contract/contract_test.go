@@ -63,7 +63,7 @@ func TestContract_Deploy(t *testing.T) {
 	contract := Contract{
 		Code:     string(code),
 		Init:     init,
-		Singer:   wallet,
+		Signer:   wallet,
 		Provider: provider,
 	}
 
@@ -104,7 +104,7 @@ func TestContract_Call(t *testing.T) {
 
 	contract := Contract{
 		Address:  "bd7198209529dC42320db4bC8508880BcD22a9f2",
-		Singer:   wallet,
+		Signer:   wallet,
 		Provider: provider,
 	}
 
