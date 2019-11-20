@@ -28,6 +28,8 @@ the section `quick start` first to get a basic understanding before you start to
 
 - [x] fromFile
 - [x] toFile
+- [x] newHDAccount (with default derivation path "m/44'/313'/0'/0/${index}")
+- [x] newHDAccountWithDerivationPath
 
 ##### Wallet API
 
