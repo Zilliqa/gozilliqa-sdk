@@ -157,6 +157,14 @@ func TestGetPrevDifficulty(t *testing.T) {
 	fmt.Println(string(result))
 }
 
+func TestProvider_GetPendingTxn(t *testing.T) {
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+
+	response := provider.GetPendingTxn("2cf109b25f2132c08a4248e2be8add6b95b92aef5b2c77e737faefbc9353ee7c")
+	result, _ := json.Marshal(response)
+	fmt.Println(string(result))
+}
+
 func TestProvider_GetTotalCoinSupply(t *testing.T) {
 	provider := NewProvider("https://dev-api.zilliqa.com/")
 
