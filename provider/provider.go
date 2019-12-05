@@ -92,6 +92,10 @@ func (provider *Provider) GetPrevDifficulty() *jsonrpc.RPCResponse {
 	return provider.call("GetPrevDifficulty")
 }
 
+func (provider *Provider) GetPendingTxn(tx string) *jsonrpc.RPCResponse {
+	return provider.call("GetPendingTxn",tx)
+}
+
 func (provider *Provider) GetPrevDSDifficulty() *jsonrpc.RPCResponse {
 	return provider.call("GetPrevDSDifficulty")
 }
