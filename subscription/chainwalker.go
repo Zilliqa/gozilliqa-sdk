@@ -17,13 +17,20 @@ type Walker struct {
 	ToBlock      uint64
 	CurrentBlock uint64
 	Address      string
-	EventLogs    map[uint64]interface{}
+	EventLogs    map[uint64]Log
 	WorkerNumber int64
 	EventName    string
 }
 
+type Log struct {
+	Hash      string
+	EventName string
+	Address   string
+	Logs      interface{}
+}
+
 func NewWalker(p *provider.Provider, from, to uint64, address string, workerNumber int64, eventName string) *Walker {
-	eventLogs := make(map[uint64]interface{})
+	eventLogs := make(map[uint64]Log)
 	return &Walker{
 		Provider:     p,
 		FromBlock:    from,
@@ -81,7 +88,13 @@ func (t GetEventReceiptTask) Run() {
 				addr, ok1 := log["address"]
 				eventName, ok2 := log["_eventname"]
 				if ok1 && ok2 && strings.Compare(strings.ToLower(addr.(string)), strings.ToLower(t.Walker.Address)) == 0 && strings.Compare(eventName.(string), t.Walker.EventName) == 0 {
-					t.Walker.EventLogs[t.BlockNum] = log
+					logData := Log{
+						Hash:      t.Id,
+						EventName: eventName.(string),
+						Address:   t.Walker.Address,
+						Logs:      log,
+					}
+					t.Walker.EventLogs[t.BlockNum] = logData
 				}
 			}
 		}
