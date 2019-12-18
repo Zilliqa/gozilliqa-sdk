@@ -8,7 +8,7 @@ import (
 
 func TestWalker_TraversalBlock(t *testing.T) {
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
-	walker := NewWalker(provider, 960215, 960420, "0x557b6d169b6dafedd2cbe3f7db486c1ef40d1ff3",50,"shareoutSuccess")
+	walker := NewWalker(provider, 933750, 933770, "0xab14b0fd133721d7c47ef410908e8ffc2b39167f",50,"Transfer")
 	walker.StartTraversalBlock()
 	fmt.Println(walker.EventLogs)
 }

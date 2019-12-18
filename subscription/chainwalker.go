@@ -76,7 +76,8 @@ func (t GetEventReceiptTask) Run() {
 	rsp := t.Provider.GetTransaction(t.Id)
 	resultMap := rsp.Result.(map[string]interface{})
 	receipt := resultMap["receipt"].(map[string]interface{})
-	success := receipt["success"]
+	addr := resultMap["toAddr"].(string)
+	success, ok1 := receipt["success"]
 	if success == nil || success.(bool) == false {
 		return
 	} else {
@@ -85,9 +86,9 @@ func (t GetEventReceiptTask) Run() {
 			els := eventLogs.([]interface{})
 			for _, el := range els {
 				log := el.(map[string]interface{})
-				addr, ok1 := log["address"]
 				eventName, ok2 := log["_eventname"]
-				if ok1 && ok2 && strings.Compare(strings.ToLower(addr.(string)), strings.ToLower(t.Walker.Address)) == 0 && strings.Compare(eventName.(string), t.Walker.EventName) == 0 {
+				// important: currently we only compare contract address to toAddr
+				if ok1 && ok2 && strings.Compare(strings.ToLower(addr), strings.ToLower(t.Walker.Address[2:])) == 0 && strings.Compare(eventName.(string), t.Walker.EventName) == 0 {
 					logData := Log{
 						Hash:      t.Id,
 						EventName: eventName.(string),
