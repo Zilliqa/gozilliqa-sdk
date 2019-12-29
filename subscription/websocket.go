@@ -8,7 +8,6 @@ import (
 type Websocket struct {
 	Topic  Topic
 	URL    url.URL
-	Done   chan struct{}
 	Err    chan error
 	Msg    chan []byte
 	Client *websocket.Conn
@@ -44,5 +43,8 @@ func (w *Websocket) Start() {
 			w.Msg <- message
 		}
 	}()
+}
 
+func (w *Websocket) Close() error {
+	return w.Client.Close()
 }

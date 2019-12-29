@@ -14,7 +14,6 @@ func TestWebsocket_Start(t *testing.T) {
 	ws := &Websocket{
 		Topic: topic,
 		URL:   u,
-		Done:  make(chan struct{}),
 		Err:   make(chan error, 1),
 		Msg:   make(chan []byte, 10),
 	}
