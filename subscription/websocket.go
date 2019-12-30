@@ -13,6 +13,15 @@ type Websocket struct {
 	Client *websocket.Conn
 }
 
+func NewWebsocket(topic Topic, url url.URL,err chan error, msg chan []byte) *Websocket {
+	return &Websocket{
+		Topic:  topic,
+		URL:    url,
+		Err:    err,
+		Msg:    msg,
+	}
+}
+
 func (w *Websocket) Subscribe() error {
 	c, _, err := websocket.DefaultDialer.Dial(w.URL.String(), nil)
 	if err != nil {
