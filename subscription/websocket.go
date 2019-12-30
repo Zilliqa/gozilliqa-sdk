@@ -48,6 +48,7 @@ func (w *Websocket) Start() {
 			_, message, err := w.Client.ReadMessage()
 			if err != nil {
 				w.Err <- err
+				break
 			}
 			w.Msg <- message
 		}
