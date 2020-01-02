@@ -13,12 +13,12 @@ type Websocket struct {
 	Client *websocket.Conn
 }
 
-func NewWebsocket(topic Topic, url url.URL,err chan error, msg chan []byte) *Websocket {
+func NewWebsocket(topic Topic, url url.URL, err chan error, msg chan []byte) *Websocket {
 	return &Websocket{
-		Topic:  topic,
-		URL:    url,
-		Err:    err,
-		Msg:    msg,
+		Topic: topic,
+		URL:   url,
+		Err:   err,
+		Msg:   msg,
 	}
 }
 
@@ -48,9 +48,21 @@ func (w *Websocket) Start() {
 			_, message, err := w.Client.ReadMessage()
 			if err != nil {
 				w.Err <- err
-				break
+				c, _, err := websocket.DefaultDialer.Dial(w.URL.String(), nil)
+				if err != nil {
+					w.Err <- err
+				} else {
+					w.Client = c
+					sub, _ := w.Topic.Stringify()
+					err2 := c.WriteMessage(websocket.TextMessage, sub)
+					if err2 != nil {
+						w.Err <- err2
+					}
+				}
+			} else {
+				w.Msg <- message
 			}
-			w.Msg <- message
+
 		}
 	}()
 }

@@ -17,21 +17,13 @@ func TestBuildEventLogSubscriber(t *testing.T) {
 		t.Fail()
 	}
 
-	cancel := false
-
 	for {
-		if cancel {
-			_ = subscriber.Ws.Close()
-			break
-		}
-
 		select {
 		case message := <-msg:
 			fmt.Println("Get new message: ", string(message))
 
 		case err := <-ec:
 			fmt.Println("Get error: ", err.Error())
-			cancel = true
 		}
 	}
 }
