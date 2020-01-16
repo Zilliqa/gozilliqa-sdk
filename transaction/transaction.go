@@ -111,7 +111,10 @@ func (t *Transaction) TrackTx(hash string, provider *provider.Provider) bool {
 
 	t.Receipt.CumulativeGas = receipt["cumulative_gas"].(string)
 	t.Receipt.Success = receipt["success"].(bool)
-	t.Receipt.EventLogs = receipt["event_logs"].([]interface{})
+	if receipt["event_logs"] != nil {
+		t.Receipt.EventLogs = receipt["event_logs"].([]interface{})
+	}
+
 
 	if !t.Receipt.Success {
 		t.Status = Rejected
