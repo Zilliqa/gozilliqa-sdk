@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 )
 
 type TransactionPayload struct {
@@ -36,6 +37,59 @@ type TransactionPayload struct {
 	Priority  bool   `json:"priority"`
 }
 
+type payload struct {
+	Version   int           `json:"version"`
+	Nonce     int           `json:"nonce"`
+	ToAddr    string        `json:"toAddr"`
+	Amount    int64         `json:"amount"`
+	PubKey    string        `json:"pubKey"`
+	GasPrice  int64         `json:"gasPrice"`
+	GasLimit  int64         `json:"gasLimit"`
+	Code      string        `json:"code"`
+	Data      []interface{} `json:"data"`
+	Signature string        `json:"signature"`
+	//Priority  bool
+}
+
+func (pl *TransactionPayload) ToJson() ([]byte, error) {
+	a, err := strconv.ParseInt(pl.Amount, 10, 64)
+	if err != nil {
+		return nil, err
+	}
+
+	price, err2 := strconv.ParseInt(pl.GasPrice, 10, 64)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	limit, err3 := strconv.ParseInt(pl.GasLimit, 10, 64)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	var data []interface{}
+	err4 := json.Unmarshal([]byte(pl.Data), &data)
+	if err4 != nil {
+		return nil, err4
+	}
+
+	p := payload{
+		Version:   pl.Version,
+		Nonce:     pl.Nonce,
+		ToAddr:    pl.ToAddr,
+		Amount:    a,
+		PubKey:    pl.PubKey,
+		GasPrice:  price,
+		GasLimit:  limit,
+		Code:      pl.Code,
+		Data:      data,
+		Signature: pl.Signature,
+		//Priority:  pl.Priority,
+	}
+
+	return json.Marshal(&p)
+}
+
 // some data fields don't match, so we need middle map
 // see the unit test
 func NewFromJson(data []byte) (*TransactionPayload, error) {
@@ -46,7 +100,6 @@ func NewFromJson(data []byte) (*TransactionPayload, error) {
 	}
 
 	return NewFromMap(middle)
-
 }
 
 func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
@@ -82,9 +135,8 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 	}
 
 	pubkey, ok6 := middle["pubKey"].(string)
-	// todo resolve me
 	if !ok6 {
-		//return nil, errors.New("parse payload json failed: public key")
+		return nil, errors.New("parse payload json failed: public key")
 	}
 
 	code, ok7 := middle["code"].(string)

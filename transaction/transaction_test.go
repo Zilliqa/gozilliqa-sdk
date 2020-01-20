@@ -107,7 +107,7 @@ func TestNewFromPayload(t *testing.T) {
         }
     ],
         "signature": "",
-		"PubKey": ""
+		"pubKey": ""
 }`)
 
 	payload, err2 := provider.NewFromJson(data)
