@@ -117,3 +117,28 @@ func TestNewFromPayload(t *testing.T) {
 	tx := NewFromPayload(payload)
 	fmt.Println(tx)
 }
+
+func TestNewFromPayload2(t *testing.T) {
+	tx := Transaction{
+		ID:           "",
+		Version:      "65535",
+		Nonce:        "7",
+		Amount:       "0",
+		GasPrice:     "1000",
+		GasLimit:     "100000",
+		Signature:    "ff123",
+		SenderPubKey: "fff",
+		ToAddr:       "fff",
+		Code:         "",
+		Data:         "{\"_tag\":\"SubmitCustomTransferOwnershipTransaction\",\"params\":[{\"vname\":\"proxyTokenContract\",\"type\":\"ByStr20\",\"value\":\"0xdbeae4969ea520f43ed27dbdc51edbdc755c2d91\"},{\"vname\":\"newOwner\",\"type\":\"ByStr20\",\"value\":\"0x48102c29095063809E49915D151e9182E6c0B6B5\"}]}",
+		Status:       0,
+	}
+
+	payload := tx.ToTransactionPayload()
+	data,err := payload.ToJson()
+	if err != nil {
+		t.Error(err.Error())
+	}
+
+	fmt.Println(string(data))
+}

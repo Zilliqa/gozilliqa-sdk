@@ -38,16 +38,16 @@ type TransactionPayload struct {
 }
 
 type payload struct {
-	Version   int           `json:"version"`
-	Nonce     int           `json:"nonce"`
-	ToAddr    string        `json:"toAddr"`
-	Amount    int64         `json:"amount"`
-	PubKey    string        `json:"pubKey"`
-	GasPrice  int64         `json:"gasPrice"`
-	GasLimit  int64         `json:"gasLimit"`
-	Code      string        `json:"code"`
-	Data      []interface{} `json:"data"`
-	Signature string        `json:"signature"`
+	Version   int         `json:"version"`
+	Nonce     int         `json:"nonce"`
+	ToAddr    string      `json:"toAddr"`
+	Amount    int64       `json:"amount"`
+	PubKey    string      `json:"pubKey"`
+	GasPrice  int64       `json:"gasPrice"`
+	GasLimit  int64       `json:"gasLimit"`
+	Code      string      `json:"code"`
+	Data      interface{} `json:"data"`
+	Signature string      `json:"signature"`
 	//Priority  bool
 }
 
@@ -67,7 +67,7 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 		return nil, err3
 	}
 
-	var data []interface{}
+	var data interface{}
 	err4 := json.Unmarshal([]byte(pl.Data), &data)
 	if err4 != nil {
 		return nil, err4
@@ -150,16 +150,8 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 	}
 
 	var data string
-
-	switch v := d.(type) {
-	case []interface{}:
-		j, _ := json.Marshal(v)
-		data = string(j)
-	case interface{}:
-		j, _ := json.Marshal(v)
-		data = string(j)
-	default:
-	}
+	j, _ := json.Marshal(d)
+	data = string(j)
 
 	sig, ok9 := middle["signature"].(string)
 	if !ok9 {
