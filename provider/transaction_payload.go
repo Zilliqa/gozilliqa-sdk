@@ -36,10 +36,6 @@ type TransactionPayload struct {
 	Priority  bool   `json:"priority"`
 }
 
-func (payload *TransactionPayload) ToJson() ([]byte, error) {
-	return json.Marshal(payload)
-}
-
 // some data fields don't match, so we need middle map
 // see the unit test
 func NewFromJson(data []byte) (*TransactionPayload, error) {

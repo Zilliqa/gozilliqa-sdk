@@ -38,6 +38,28 @@ type Transaction struct {
 	Priority        bool
 }
 
+func NewFromPayload(payload *provider.TransactionPayload) *Transaction {
+	v := strconv.FormatInt(int64(payload.Version), 10)
+	n := strconv.FormatInt(int64(payload.Nonce), 10)
+	return &Transaction{
+		ID:              "",
+		Version:         v,
+		Nonce:           n,
+		Amount:          payload.Amount,
+		GasPrice:        payload.GasPrice,
+		GasLimit:        payload.GasLimit,
+		Signature:       payload.Signature,
+		Receipt:         TransactionReceipt{},
+		SenderPubKey:    payload.PubKey,
+		ToAddr:          payload.ToAddr,
+		Code:            payload.Code,
+		Data:            payload.Data,
+		Status:          0,
+		ContractAddress: "",
+		Priority:        payload.Priority,
+	}
+}
+
 func (t *Transaction) toTransactionParam() TxParams {
 	data, _ := json.Marshal(t.Data)
 	param := TxParams{
@@ -114,7 +136,6 @@ func (t *Transaction) TrackTx(hash string, provider *provider.Provider) bool {
 	if receipt["event_logs"] != nil {
 		t.Receipt.EventLogs = receipt["event_logs"].([]interface{})
 	}
-
 
 	if !t.Receipt.Success {
 		t.Status = Rejected

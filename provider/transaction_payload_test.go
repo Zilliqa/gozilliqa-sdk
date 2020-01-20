@@ -64,7 +64,8 @@ func TestNewFromJson(t *testing.T) {
             "value": "2"
         }
     ],
-        "signature": ""
+        "signature": "",
+		"PubKey": ""
 }`)
 
 	payload, err2 := NewFromJson(data)
