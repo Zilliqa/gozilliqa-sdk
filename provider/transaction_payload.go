@@ -144,14 +144,21 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		return nil, errors.New("parse payload json failed: code")
 	}
 
-	d, ok8 := middle["data"].([]interface{})
+	d, ok8 := middle["data"]
 	if !ok8 {
 		return nil, errors.New("parse payload json failed: data")
 	}
 
-	data, err := json.Marshal(d)
-	if err != nil {
-		return nil, errors.New("parse data failed")
+	var data string
+
+	switch v := d.(type) {
+	case []interface{}:
+		j, _ := json.Marshal(v)
+		data = string(j)
+	case interface{}:
+		j, _ := json.Marshal(v)
+		data = string(j)
+	default:
 	}
 
 	sig, ok9 := middle["signature"].(string)
@@ -168,7 +175,7 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		GasPrice:  fmt.Sprintf("%.0f", price),
 		GasLimit:  fmt.Sprintf("%.0f", limit),
 		Code:      code,
-		Data:      string(data),
+		Data:      data,
 		Signature: sig,
 		Priority:  false,
 	}, nil

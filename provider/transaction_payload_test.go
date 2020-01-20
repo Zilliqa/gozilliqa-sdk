@@ -65,7 +65,7 @@ func TestNewFromJson(t *testing.T) {
         }
     ],
         "signature": "",
-		"PubKey": ""
+		"pubKey": ""
 }`)
 
 	payload, err2 := NewFromJson(data)
@@ -74,6 +74,26 @@ func TestNewFromJson(t *testing.T) {
 	}
 
 	fmt.Println(payload)
+
+	data = []byte(`{
+    "version": 65537,
+    "nonce": 1,
+    "toAddr": "0x0000000000000000000000000000000000000000",
+    "amount": 0,
+    "gasPrice": 10000000,
+    "gasLimit": 9000,
+    "code": "",
+    "data": {"_tag":"SubmitCustomTransferOwnershipTransaction","params":[{"vname":"proxyTokenContract","type":"ByStr20","value":"0xdbeae4969ea520f43ed27dbdc51edbdc755c2d91"},{"vname":"newOwner","type":"ByStr20","value":"0x48102c29095063809E49915D151e9182E6c0B6B5"}]},
+    "signature": "",
+    "pubKey": ""
+	}`)
+
+	payload2, err3 := NewFromJson(data)
+	if err3 != nil {
+		t.Error(err3.Error())
+	}
+	fmt.Println(payload2)
+
 }
 
 func TestTransactionPayload_ToJson(t *testing.T) {
