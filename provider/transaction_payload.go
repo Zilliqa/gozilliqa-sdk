@@ -103,6 +103,19 @@ func NewFromJson(data []byte) (*TransactionPayload, error) {
 }
 
 func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
+
+	type Value struct {
+		VName string      `json:"vname"`
+		Type  string      `json:"type"`
+		Value interface{} `json:"value"`
+	}
+
+	type Data struct {
+		Tag string `json:"_tag"`
+		Params []Value `json:"params"`
+	}
+
+
 	v, ok := middle["version"].(float64)
 	if !ok {
 		return nil, errors.New("parse payload json failed: version")
@@ -149,9 +162,18 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		return nil, errors.New("parse payload json failed: data")
 	}
 
-	var data string
+
 	j, _ := json.Marshal(d)
-	data = string(j)
+	var data Data
+	err := json.Unmarshal(j,&data)
+	if err != nil {
+		return nil,err
+	}
+
+	sd,err := json.Marshal(data)
+	if err != nil{
+		return nil,err
+	}
 
 	sig, ok9 := middle["signature"].(string)
 	if !ok9 {
@@ -167,7 +189,7 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		GasPrice:  fmt.Sprintf("%.0f", price),
 		GasLimit:  fmt.Sprintf("%.0f", limit),
 		Code:      code,
-		Data:      data,
+		Data:      string(sd),
 		Signature: sig,
 		Priority:  false,
 	}, nil
