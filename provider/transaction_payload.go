@@ -20,6 +20,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"reflect"
 	"strconv"
 )
 
@@ -162,18 +163,31 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		return nil, errors.New("parse payload json failed: data")
 	}
 
+	var sd string
 
-	j, _ := json.Marshal(d)
-	var data Data
-	err := json.Unmarshal(j,&data)
-	if err != nil {
-		return nil,err
+	if reflect.TypeOf(d).Kind() == reflect.Slice {
+		dd := d.([]interface{})
+		s,err := json.Marshal(dd)
+		if err != nil {
+			return nil,err
+		}
+		sd = string(s)
+	} else {
+		j, _ := json.Marshal(d)
+		var data Data
+		err := json.Unmarshal(j,&data)
+		if err != nil {
+			return nil,err
+		}
+		ss,err := json.Marshal(data)
+		if err != nil{
+			return nil,err
+		}
+
+		sd = string(ss)
 	}
 
-	sd,err := json.Marshal(data)
-	if err != nil{
-		return nil,err
-	}
+
 
 	sig, ok9 := middle["signature"].(string)
 	if !ok9 {
@@ -189,7 +203,7 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		GasPrice:  fmt.Sprintf("%.0f", price),
 		GasLimit:  fmt.Sprintf("%.0f", limit),
 		Code:      code,
-		Data:      string(sd),
+		Data:      sd,
 		Signature: sig,
 		Priority:  false,
 	}, nil
