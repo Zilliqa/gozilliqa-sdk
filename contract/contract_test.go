@@ -159,3 +159,75 @@ func TestContract_Call(t *testing.T) {
 	tx.Confirm(tx.ID, 1000, 3, provider)
 
 }
+
+func TestContract_Sign(t *testing.T) {
+	host := "https://dev-api.zilliqa.com/"
+	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+	chainID := 333
+	msgVersion := 1
+
+	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
+	//address := keytools.GetAddressFromPublic(publickKey)
+	pubkey := util.EncodeHex(publickKey)
+	provider := provider2.NewProvider(host)
+
+	wallet := account.NewWallet()
+	wallet.AddByPrivateKey(privateKey)
+
+	contract := Contract{
+		Address:  "84eb5C96Bec8d29eDdFBe36865E9B7F26b816f0F",
+		Signer:   wallet,
+		Provider: provider,
+	}
+
+	args := []Value{
+		{
+			"proxyTokenContract",
+			"ByStr20",
+			"0x39550ab45d74cce5fef70e857c1326b2d9bee096",
+		},
+		{
+			"to",
+			"ByStr20",
+			"0x39550ab45d74cce5fef70e857c1326b2d9bee096",
+		},
+		{
+			"value",
+			"Uint128",
+			"10000000",
+		},
+	}
+
+	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	n := nonce + 1
+	gasPrice := provider.GetMinimumGasPrice().Result.(string)
+
+
+	params := CallParams{
+		Nonce:        strconv.FormatInt(n, 10),
+		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
+		GasPrice:     gasPrice,
+		GasLimit:     "1000",
+		SenderPubKey: pubkey,
+		Amount:       "0",
+	}
+
+	err, tx := contract.Sign("SubmitCustomMintTransaction", args, params, true)
+	if err != nil {
+		fmt.Printf(err.Error())
+	}
+
+	pl :=  tx.ToTransactionPayload()
+	j,_ := pl.ToJson()
+	fmt.Println(string(j))
+
+	payload2, err3 := provider2.NewFromJson(j)
+	if err3 != nil {
+		t.Error(err3.Error())
+	}
+	rsp := provider.CreateTransaction(*payload2)
+	fmt.Println(rsp.Error)
+	fmt.Println(rsp.Result)
+
+
+}

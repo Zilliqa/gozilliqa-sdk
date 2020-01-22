@@ -95,6 +95,40 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 	return tx, nil
 
 }
+func (c *Contract) Sign(transition string, args []Value, params CallParams, priority bool) (error, *transaction.Transaction) {
+	if c.Address == "" {
+		_ = errors.New("Contract has not been deployed!")
+	}
+
+	data := Data{
+		Tag:    transition,
+		Params: args,
+	}
+
+	tx := &transaction.Transaction{
+		ID:           params.ID,
+		Version:      params.Version,
+		Nonce:        params.Nonce,
+		Amount:       params.Amount,
+		GasPrice:     params.GasPrice,
+		GasLimit:     params.GasLimit,
+		Signature:    "",
+		Receipt:      transaction.TransactionReceipt{},
+		SenderPubKey: params.SenderPubKey,
+		ToAddr:       c.Address,
+		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
+		Data:         data,
+		Status:       0,
+		Priority:     priority,
+	}
+
+	err2 := c.Signer.Sign(tx, *c.Provider)
+	if err2 != nil {
+		return err2, nil
+	}
+
+	return nil, tx
+}
 
 func (c *Contract) Call(transition string, args []Value, params CallParams, priority bool, attempts, interval int) (error, *transaction.Transaction) {
 	if c.Address == "" {
