@@ -121,16 +121,16 @@ func TestNewFromPayload(t *testing.T) {
 func TestNewFromPayload2(t *testing.T) {
 	tx := Transaction{
 		ID:           "",
-		Version:      "65535",
-		Nonce:        "7",
+		Version:      "21823489",
+		Nonce:        "959",
 		Amount:       "0",
-		GasPrice:     "1000",
-		GasLimit:     "100000",
-		Signature:    "ff123",
-		SenderPubKey: "fff",
-		ToAddr:       "fff",
+		GasPrice:     "1000000000",
+		GasLimit:     "10000",
+		Signature:    "c0dcffb4f5ef80b9e426c16fc1fb62b31356219deb84c5689ab6a73915ea962c0bc4d4a49985803cd1db8aabb6870e8c749003cab41246e17493767acc6cca90",
+		SenderPubKey: "0246e7178dc8253201101e18fd6f6eb9972451d121fc57aa2a06dd5c111e58dc6a",
+		ToAddr:       "84eb5C96Bec8d29eDdFBe36865E9B7F26b816f0F",
 		Code:         "",
-		Data:         "{\"_tag\":\"SubmitCustomTransferOwnershipTransaction\",\"params\":[{\"vname\":\"proxyTokenContract\",\"type\":\"ByStr20\",\"value\":\"0xdbeae4969ea520f43ed27dbdc51edbdc755c2d91\"},{\"vname\":\"newOwner\",\"type\":\"ByStr20\",\"value\":\"0x48102c29095063809E49915D151e9182E6c0B6B5\"}]}",
+		Data:         "{\"_tag\":\"SubmitCustomMintTransaction\",\"params\":[{\"vname\":\"proxyTokenContract\",\"type\":\"ByStr20\",\"value\":\"0x39550ab45d74cce5fef70e857c1326b2d9bee096\"},{\"vname\":\"to\",\"type\":\"ByStr20\",\"value\":\"0x39550ab45d74cce5fef70e857c1326b2d9bee096\"},{\"vname\":\"value\",\"type\":\"Uint128\",\"value\":\"10000000\"}]}",
 		Status:       0,
 	}
 

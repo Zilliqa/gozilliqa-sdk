@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 )
 
 type TransactionPayload struct {
@@ -38,17 +39,28 @@ type TransactionPayload struct {
 	Priority  bool   `json:"priority"`
 }
 
+type Value struct {
+	VName string      `json:"vname"`
+	Type  string      `json:"type"`
+	Value interface{} `json:"value"`
+}
+
+type Data struct {
+	Tag    string  `json:"_tag"`
+	Params []Value `json:"params"`
+}
+
 type payload struct {
-	Version   int         `json:"version"`
-	Nonce     int         `json:"nonce"`
-	ToAddr    string      `json:"toAddr"`
-	Amount    int64       `json:"amount"`
-	PubKey    string      `json:"pubKey"`
-	GasPrice  int64       `json:"gasPrice"`
-	GasLimit  int64       `json:"gasLimit"`
-	Code      string      `json:"code"`
-	Data      interface{} `json:"data"`
-	Signature string      `json:"signature"`
+	Version   int    `json:"version"`
+	Nonce     int    `json:"nonce"`
+	ToAddr    string `json:"toAddr"`
+	Amount    int64  `json:"amount"`
+	PubKey    string `json:"pubKey"`
+	GasPrice  int64  `json:"gasPrice"`
+	GasLimit  int64  `json:"gasLimit"`
+	Code      string `json:"code"`
+	Data      Data   `json:"data"`
+	Signature string `json:"signature"`
 	//Priority  bool
 }
 
@@ -68,9 +80,14 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 		return nil, err3
 	}
 
-	var data interface{}
-	err4 := json.Unmarshal([]byte(pl.Data), &data)
+	originData := strings.TrimPrefix(pl.Data,`"`)
+	originData = strings.TrimSuffix(originData,`"`)
+	originData = strings.ReplaceAll(originData,"\\","")
+
+	var data Data
+	err4 := json.Unmarshal([]byte(originData), &data)
 	if err4 != nil {
+		fmt.Println(err4.Error())
 		return nil, err4
 	}
 
@@ -112,10 +129,9 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 	}
 
 	type Data struct {
-		Tag string `json:"_tag"`
+		Tag    string  `json:"_tag"`
 		Params []Value `json:"params"`
 	}
-
 
 	v, ok := middle["version"].(float64)
 	if !ok {
@@ -136,7 +152,6 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 	if !ok3 {
 		return nil, errors.New("parse payload json failed: amount")
 	}
-	fmt.Println(amount)
 
 	price, ok4 := middle["gasPrice"].(float64)
 	if !ok4 {
@@ -167,27 +182,24 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 
 	if reflect.TypeOf(d).Kind() == reflect.Slice {
 		dd := d.([]interface{})
-		s,err := json.Marshal(dd)
+		s, err := json.Marshal(dd)
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
 		sd = string(s)
 	} else {
 		j, _ := json.Marshal(d)
 		var data Data
-		err := json.Unmarshal(j,&data)
+		err := json.Unmarshal(j, &data)
 		if err != nil {
-			return nil,err
+			return nil, err
 		}
-		ss,err := json.Marshal(data)
-		if err != nil{
-			return nil,err
+		ss, err := json.Marshal(data)
+		if err != nil {
+			return nil, err
 		}
-
 		sd = string(ss)
 	}
-
-
 
 	sig, ok9 := middle["signature"].(string)
 	if !ok9 {
