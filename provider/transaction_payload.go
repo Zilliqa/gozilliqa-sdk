@@ -51,17 +51,30 @@ type Data struct {
 }
 
 type payload struct {
-	Version   int    `json:"version"`
-	Nonce     int    `json:"nonce"`
-	ToAddr    string `json:"toAddr"`
-	Amount    int64  `json:"amount"`
-	PubKey    string `json:"pubKey"`
+	Version int    `json:"version"`
+	Nonce   int    `json:"nonce"`
+	ToAddr  string `json:"toAddr"`
+	Amount  int64  `json:"amount"`
+	//PubKey    string `json:"pubKey"`
 	GasPrice  int64  `json:"gasPrice"`
 	GasLimit  int64  `json:"gasLimit"`
 	Code      string `json:"code"`
 	Data      Data   `json:"data"`
 	Signature string `json:"signature"`
 	//Priority  bool
+}
+
+type Init struct {
+	Version int    `json:"version"`
+	Nonce   int    `json:"nonce"`
+	ToAddr  string `json:"toAddr"`
+	Amount  int64  `json:"amount"`
+	//PubKey    string        `json:"pubKey"`
+	GasPrice  int64         `json:"gasPrice"`
+	GasLimit  int64         `json:"gasLimit"`
+	Code      string        `json:"code"`
+	Data      []interface{} `json:"data"`
+	Signature string        `json:"signature"`
 }
 
 func (pl *TransactionPayload) ToJson() ([]byte, error) {
@@ -80,32 +93,49 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 		return nil, err3
 	}
 
-	originData := strings.TrimPrefix(pl.Data,`"`)
-	originData = strings.TrimSuffix(originData,`"`)
-	originData = strings.ReplaceAll(originData,"\\","")
+	originData := strings.TrimPrefix(pl.Data, `"`)
+	originData = strings.TrimSuffix(originData, `"`)
+	originData = strings.ReplaceAll(originData, "\\", "")
 
 	var data Data
 	err4 := json.Unmarshal([]byte(originData), &data)
 	if err4 != nil {
-		fmt.Println(err4.Error())
-		return nil, err4
+		var dataArray []interface{}
+		err5 := json.Unmarshal([]byte(originData), &dataArray)
+		if err5 != nil {
+			return nil, errors.New("wrong data")
+		} else {
+			p := Init{
+				Version: pl.Version,
+				Nonce:   pl.Nonce,
+				ToAddr:  pl.ToAddr,
+				Amount:  a,
+				//PubKey:    pl.PubKey,
+				GasPrice:  price,
+				GasLimit:  limit,
+				Code:      pl.Code,
+				Data:      dataArray,
+				Signature: pl.Signature,
+				//Priority:  pl.Priority,
+			}
+			return json.Marshal(&p)
+		}
+	} else {
+		p := payload{
+			Version: pl.Version,
+			Nonce:   pl.Nonce,
+			ToAddr:  pl.ToAddr,
+			Amount:  a,
+			//PubKey:    pl.PubKey,
+			GasPrice:  price,
+			GasLimit:  limit,
+			Code:      pl.Code,
+			Data:      data,
+			Signature: pl.Signature,
+			//Priority:  pl.Priority,
+		}
+		return json.Marshal(&p)
 	}
-
-	p := payload{
-		Version:   pl.Version,
-		Nonce:     pl.Nonce,
-		ToAddr:    pl.ToAddr,
-		Amount:    a,
-		PubKey:    pl.PubKey,
-		GasPrice:  price,
-		GasLimit:  limit,
-		Code:      pl.Code,
-		Data:      data,
-		Signature: pl.Signature,
-		//Priority:  pl.Priority,
-	}
-
-	return json.Marshal(&p)
 }
 
 // some data fields don't match, so we need middle map
