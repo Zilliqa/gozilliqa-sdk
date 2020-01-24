@@ -109,7 +109,7 @@ func (provider *Provider) GetPrevDifficulty() *jsonrpc.RPCResponse {
 }
 
 func (provider *Provider) GetPendingTxn(tx string) *jsonrpc.RPCResponse {
-	return provider.call("GetPendingTxn",tx)
+	return provider.call("GetPendingTxn", tx)
 }
 
 func (provider *Provider) GetPrevDSDifficulty() *jsonrpc.RPCResponse {
@@ -125,6 +125,15 @@ func (provider *Provider) CreateTransaction(payload TransactionPayload) *jsonrpc
 	fmt.Println(string(r))
 	//fmt.Println(payload)
 	return provider.call("CreateTransaction", &payload)
+}
+
+func (provider *Provider) CreateTransactionRaw(payload []byte) *jsonrpc.RPCResponse {
+	var pl TransactionPayload
+	err := json.Unmarshal(payload, &pl)
+	if err != nil {
+		panic(err.Error())
+	}
+	return provider.call("CreateTransaction", &pl)
 }
 
 func (provider *Provider) GetTransaction(transaction_hash string) *jsonrpc.RPCResponse {
