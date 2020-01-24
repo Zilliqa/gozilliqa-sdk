@@ -292,3 +292,11 @@ func TestGetBalance(t *testing.T) {
 	result, _ := json.Marshal(response)
 	fmt.Println(string(result))
 }
+
+func TestProvider_CreateTransactionRaw(t *testing.T) {
+	provider := NewProvider("https://api.zilliqa.com/")
+	payload := []byte(`{"version":65537,"nonce":1,"toAddr":"39550aB45D74cCe5feF70e857c1326b2d9bEE096","pubKey":"03bb0637134af801bcc912f7cf61448aed05fea21f4a6460a7f15a48c8704f2aea","amount":"0","gasPrice":"1000000000","gasLimit":"40000","code":"","data":"{\"_tag\":\"ProxyTransfer\",\"params\":[{\"vname\":\"to\",\"type\":\"ByStr20\",\"value\":\"0x0200a288be83e2a2061d7519d3397b3c6da05f29\"},{\"vname\":\"value\",\"type\":\"Uint128\",\"value\":\"10000000\"}]}","signature":"edf8d36c24e1d9e8e6832aa8e513690afe6df2f076756b45286200dfa02e202525ad0a7349b9c00f10ceb8ce2b71e9cfc745a679e68a6b034d581383155213b0","priority":false}`)
+	response := provider.CreateTransactionRaw(payload)
+	result, _ := json.Marshal(response)
+	fmt.Println(string(result))
+}
