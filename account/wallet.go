@@ -32,6 +32,8 @@ import (
 	"strings"
 )
 
+const signatureSize = 128
+
 type Wallet struct {
 	Accounts       map[string]*Account
 	DefaultAccount *Account
@@ -122,13 +124,19 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 		return err2
 	}
 
-	r, s, err3 := go_schnorr.TrySign(account.PrivateKey, account.PublicKey, message, rb)
+	var signature string
 
-	if err3 != nil {
-		return err3
+	for {
+		r, s, err3 := go_schnorr.TrySign(account.PrivateKey, account.PublicKey, message, rb)
+		if err3 != nil {
+			return err3
+		}
+		sig := fmt.Sprintf("%s%s", util.EncodeHex(r), util.EncodeHex(s))
+		if len(sig) == signatureSize {
+			signature = sig
+			break
+		}
 	}
-
-	signature := fmt.Sprintf("%s%s", util.EncodeHex(r), util.EncodeHex(s))
 
 	tx.Signature = signature
 
