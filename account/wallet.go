@@ -32,6 +32,8 @@ import (
 	"strings"
 )
 
+const signatureSize = 128
+
 type Wallet struct {
 	Accounts       map[string]*Account
 	DefaultAccount *Account
@@ -130,7 +132,7 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 			return err3
 		}
 		sig := fmt.Sprintf("%s%s", util.EncodeHex(r), util.EncodeHex(s))
-		if len(sig) == 128 {
+		if len(sig) == signatureSize {
 			signature = sig
 			break
 		}
