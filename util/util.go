@@ -127,7 +127,7 @@ func ToCheckSumAddress(address string) string {
 		}
 	}
 
-	return sb.String()
+	return strings.TrimSpace(sb.String())
 }
 
 func IntToHex(value, size int) string {
