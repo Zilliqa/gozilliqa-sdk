@@ -74,7 +74,29 @@ func TrySign(privateKey []byte, publicKey []byte, message []byte, k []byte) ([]b
 		return nil, nil, errors.New("invalid s")
 	}
 
-	return r.Bytes(), s.Bytes(), nil
+	rbytes := r.Bytes()
+	sbytes := s.Bytes()
+
+	return LeftPadding(rbytes), LeftPadding(sbytes), nil
+}
+
+func LeftPadding(bytes []byte) []byte {
+	cur := len(bytes)
+	num := 32 - cur
+	if num > 0 {
+		var value []byte
+		for i := 0; i < num; i++ {
+			fmt.Println("pending 0")
+			value = append(value, 0)
+		}
+		for _, ele := range bytes {
+			value = append(value, ele)
+		}
+		return value
+	} else {
+		return bytes
+	}
+
 }
 
 func Verify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
