@@ -128,7 +128,7 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 	if err3 != nil {
 		return err3
 	}
-	sig := fmt.Sprintf("%s%s", util.EncodeHex(r), util.EncodeHex(s))
+	sig := fmt.Sprintf("%064s%064s", util.EncodeHex(r), util.EncodeHex(s))
 	tx.Signature = sig
 	return nil
 }
