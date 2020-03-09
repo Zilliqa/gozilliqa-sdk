@@ -74,10 +74,7 @@ func TrySign(privateKey []byte, publicKey []byte, message []byte, k []byte) ([]b
 		return nil, nil, errors.New("invalid s")
 	}
 
-	rbytes := r.Bytes()
-	sbytes := s.Bytes()
-
-	return rbytes, sbytes, nil
+	return r.Bytes(), s.Bytes(), nil
 }
 
 func Verify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
