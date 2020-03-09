@@ -116,9 +116,7 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 		return err
 	}
 
-	fmt.Println("start generate random number")
 	rb, err2 := keytools.GenerateRandomBytes(keytools.Secp256k1.N.BitLen() / 8)
-	fmt.Println("end generate random number")
 
 	if err2 != nil {
 		return err2
