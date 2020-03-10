@@ -32,8 +32,6 @@ import (
 	"strings"
 )
 
-const signatureSize = 128
-
 type Wallet struct {
 	Accounts       map[string]*Account
 	DefaultAccount *Account
@@ -51,7 +49,7 @@ func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) e
 		tx.ToAddr = strings.TrimPrefix(tx.ToAddr, "0x")
 	}
 
-	if !validator.IsBech32(tx.ToAddr) && !validator.IsChecksumAddress("0x" + tx.ToAddr) {
+	if !validator.IsBech32(tx.ToAddr) && !validator.IsChecksumAddress("0x"+tx.ToAddr) {
 		return errors.New("not checksum Address or bech32")
 	}
 
@@ -124,22 +122,12 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 		return err2
 	}
 
-	var signature string
-
-	for {
-		r, s, err3 := go_schnorr.TrySign(account.PrivateKey, account.PublicKey, message, rb)
-		if err3 != nil {
-			return err3
-		}
-		sig := fmt.Sprintf("%s%s", util.EncodeHex(r), util.EncodeHex(s))
-		if len(sig) == signatureSize {
-			signature = sig
-			break
-		}
+	r, s, err3 := go_schnorr.TrySign(account.PrivateKey, account.PublicKey, message, rb)
+	if err3 != nil {
+		return err3
 	}
-
-	tx.Signature = signature
-
+	sig := fmt.Sprintf("%064s%064s", util.EncodeHex(r), util.EncodeHex(s))
+	tx.Signature = sig
 	return nil
 }
 
