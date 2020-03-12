@@ -89,7 +89,7 @@ func (t GetEventReceiptTask) Run() {
 	t.Complete.Lock()
 	defer t.Complete.Unlock()
 	t.Complete.Number++
-	rsp := t.Provider.GetTransaction(t.Id)
+	rsp, _ := t.Provider.GetTransaction(t.Id)
 	resultMap := rsp.Result.(map[string]interface{})
 	receipt := resultMap["receipt"].(map[string]interface{})
 	addr := resultMap["toAddr"].(string)
@@ -120,9 +120,15 @@ func (t GetEventReceiptTask) Run() {
 
 func (w *Walker) StartTraversalBlock() {
 	for i := w.FromBlock; i < w.ToBlock; i++ {
-		rsp := w.Provider.GetTransactionsForTxBlock(strconv.FormatUint(i, 10))
-		if rsp.Error != nil {
-			fmt.Println("tx for block ", i, " = ", rsp.Error)
+		rsp, err := w.Provider.GetTransactionsForTxBlock(strconv.FormatUint(i, 10))
+
+		if err != nil || rsp.Error != nil {
+			if err != nil {
+				fmt.Println("tx for block ", i, " = ", err)
+			} else {
+				fmt.Println("tx for block ", i, " = ", rsp.Error)
+			}
+
 		} else {
 			txResult := rsp.Result.([]interface{})
 			var txns []string

@@ -141,7 +141,6 @@ func TestContract_Call(t *testing.T) {
 	n := nonce + 1
 	gasPrice := provider.GetMinimumGasPrice().Result.(string)
 
-
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
 		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
@@ -151,7 +150,7 @@ func TestContract_Call(t *testing.T) {
 		Amount:       "0",
 	}
 
-	err, tx := contract.Call("Transfer", args, params, true, 1000, 3)
+	tx, err := contract.Call("Transfer", args, params, true)
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
@@ -167,7 +166,6 @@ func TestContract_Sign(t *testing.T) {
 	msgVersion := 1
 
 	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
-	//address := keytools.GetAddressFromPublic(publickKey)
 	pubkey := util.EncodeHex(publickKey)
 	provider := provider2.NewProvider(host)
 
@@ -202,7 +200,6 @@ func TestContract_Sign(t *testing.T) {
 	n := nonce + 1
 	gasPrice := provider.GetMinimumGasPrice().Result.(string)
 
-
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
 		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
@@ -217,17 +214,21 @@ func TestContract_Sign(t *testing.T) {
 		fmt.Printf(err.Error())
 	}
 
-	pl :=  tx.ToTransactionPayload()
-	j,_ := pl.ToJson()
+	pl := tx.ToTransactionPayload()
+	j, _ := pl.ToJson()
 	fmt.Println(string(j))
 
 	payload2, err3 := provider2.NewFromJson(j)
 	if err3 != nil {
 		t.Error(err3.Error())
 	}
-	rsp := provider.CreateTransaction(*payload2)
+	rsp, err := provider.CreateTransaction(*payload2)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
 	fmt.Println(rsp.Error)
 	fmt.Println(rsp.Result)
-
 
 }

@@ -36,98 +36,98 @@ func NewProvider(host string) *Provider {
 	return &Provider{host: host, rpcClient: rpcClient}
 }
 
-func (provider *Provider) GetNetworkId() *jsonrpc.RPCResponse {
+func (provider *Provider) GetNetworkId() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetNetworkId")
 }
 
-func (provider *Provider) GetBlockchainInfo() *jsonrpc.RPCResponse {
+func (provider *Provider) GetBlockchainInfo() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetBlockchainInfo")
 }
 
-func (provider *Provider) GetShardingStructure() *jsonrpc.RPCResponse {
+func (provider *Provider) GetShardingStructure() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetShardingStructure")
 }
 
-func (provider *Provider) GetDsBlock(block_number string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetDsBlock(block_number string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetDsBlock", block_number)
 }
 
-func (provider *Provider) GetLatestDsBlock() *jsonrpc.RPCResponse {
+func (provider *Provider) GetLatestDsBlock() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetLatestDsBlock")
 }
 
-func (provider *Provider) GetNumDSBlocks() *jsonrpc.RPCResponse {
+func (provider *Provider) GetNumDSBlocks() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetNumDSBlocks")
 }
 
-func (provider *Provider) GetDSBlockRate() *jsonrpc.RPCResponse {
+func (provider *Provider) GetDSBlockRate() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetDSBlockRate")
 }
 
-func (provider *Provider) DSBlockListing(ds_block_listing int) *jsonrpc.RPCResponse {
+func (provider *Provider) DSBlockListing(ds_block_listing int) (*jsonrpc.RPCResponse,error) {
 	return provider.call("DSBlockListing", ds_block_listing)
 }
 
-func (provider *Provider) GetTxBlock(tx_block string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetTxBlock(tx_block string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetTxBlock", tx_block)
 }
 
-func (provider *Provider) GetLatestTxBlock() *jsonrpc.RPCResponse {
+func (provider *Provider) GetLatestTxBlock() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetLatestTxBlock")
 }
 
-func (provider *Provider) GetNumTxBlocks() *jsonrpc.RPCResponse {
+func (provider *Provider) GetNumTxBlocks() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetNumTxBlocks")
 }
 
-func (provider *Provider) GetTxBlockRate() *jsonrpc.RPCResponse {
+func (provider *Provider) GetTxBlockRate() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetTxBlockRate")
 }
 
-func (provider *Provider) TxBlockListing(page int) *jsonrpc.RPCResponse {
+func (provider *Provider) TxBlockListing(page int) (*jsonrpc.RPCResponse,error) {
 	return provider.call("TxBlockListing", page)
 }
 
-func (provider *Provider) GetNumTransactions() *jsonrpc.RPCResponse {
+func (provider *Provider) GetNumTransactions() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetNumTransactions")
 }
 
-func (provider *Provider) GetTransactionRate() *jsonrpc.RPCResponse {
+func (provider *Provider) GetTransactionRate() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetTransactionRate")
 }
 
-func (provider *Provider) GetCurrentMiniEpoch() *jsonrpc.RPCResponse {
+func (provider *Provider) GetCurrentMiniEpoch() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetCurrentMiniEpoch")
 }
 
-func (provider *Provider) GetCurrentDSEpoch() *jsonrpc.RPCResponse {
+func (provider *Provider) GetCurrentDSEpoch() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetCurrentDSEpoch")
 }
 
-func (provider *Provider) GetPrevDifficulty() *jsonrpc.RPCResponse {
+func (provider *Provider) GetPrevDifficulty() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetPrevDifficulty")
 }
 
-func (provider *Provider) GetPendingTxn(tx string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetPendingTxn(tx string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetPendingTxn", tx)
 }
 
-func (provider *Provider) GetPrevDSDifficulty() *jsonrpc.RPCResponse {
+func (provider *Provider) GetPrevDSDifficulty() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetPrevDSDifficulty")
 }
 
-func (provider *Provider) GetTotalCoinSupply() *jsonrpc.RPCResponse {
+func (provider *Provider) GetTotalCoinSupply() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetTotalCoinSupply")
 }
 
-func (provider *Provider) CreateTransaction(payload TransactionPayload) *jsonrpc.RPCResponse {
+func (provider *Provider) CreateTransaction(payload TransactionPayload) (*jsonrpc.RPCResponse,error) {
 	r, _ := json.Marshal(payload)
 	fmt.Println(string(r))
 	//fmt.Println(payload)
 	return provider.call("CreateTransaction", &payload)
 }
 
-func (provider *Provider) CreateTransactionRaw(payload []byte) *jsonrpc.RPCResponse {
+func (provider *Provider) CreateTransactionRaw(payload []byte) (*jsonrpc.RPCResponse,error) {
 	var pl TransactionPayload
 	err := json.Unmarshal(payload, &pl)
 	if err != nil {
@@ -136,39 +136,39 @@ func (provider *Provider) CreateTransactionRaw(payload []byte) *jsonrpc.RPCRespo
 	return provider.call("CreateTransaction", &pl)
 }
 
-func (provider *Provider) GetTransaction(transaction_hash string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetTransaction(transaction_hash string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetTransaction", transaction_hash)
 }
 
-func (provider *Provider) GetRecentTransactions() *jsonrpc.RPCResponse {
+func (provider *Provider) GetRecentTransactions() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetRecentTransactions")
 }
 
-func (provider *Provider) GetTransactionsForTxBlock(tx_block_number string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetTransactionsForTxBlock(tx_block_number string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetTransactionsForTxBlock", tx_block_number)
 }
 
-func (provider *Provider) GetNumTxnsTxEpoch() *jsonrpc.RPCResponse {
+func (provider *Provider) GetNumTxnsTxEpoch() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetNumTxnsTxEpoch")
 }
 
-func (provider *Provider) GetNumTxnsDSEpoch() *jsonrpc.RPCResponse {
+func (provider *Provider) GetNumTxnsDSEpoch() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetNumTxnsDSEpoch")
 }
 
-func (provider *Provider) GetMinimumGasPrice() *jsonrpc.RPCResponse {
+func (provider *Provider) GetMinimumGasPrice() (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetMinimumGasPrice")
 }
 
-func (provider *Provider) GetSmartContractCode(contract_address string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetSmartContractCode(contract_address string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetSmartContractCode", contract_address)
 }
 
-func (provider *Provider) GetSmartContractInit(contract_address string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetSmartContractInit(contract_address string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetSmartContractInit", contract_address)
 }
 
-func (provider *Provider) GetSmartContractState(contract_address string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetSmartContractState(contract_address string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetSmartContractState", contract_address)
 }
 
@@ -219,23 +219,23 @@ func (provider *Provider) GetSmartContractSubState(contractAddress string, param
 
 }
 
-func (provider *Provider) GetSmartContracts(user_address string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetSmartContracts(user_address string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetSmartContracts", user_address)
 }
 
-func (provider *Provider) GetContractAddressFromTransactionID(transaction_id string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetContractAddressFromTransactionID(transaction_id string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetContractAddressFromTransactionID", transaction_id)
 }
 
-func (provider *Provider) GetBalance(user_address string) *jsonrpc.RPCResponse {
+func (provider *Provider) GetBalance(user_address string) (*jsonrpc.RPCResponse,error) {
 	return provider.call("GetBalance", user_address)
 }
 
-func (provider *Provider) call(method_name string, params ...interface{}) *jsonrpc.RPCResponse {
+func (provider *Provider) call(method_name string, params ...interface{}) (*jsonrpc.RPCResponse,error) {
 	response, err := provider.rpcClient.Call(method_name, params)
 	if err != nil {
-		return nil
+		return nil, err
 	} else {
-		return response
+		return response, nil
 	}
 }

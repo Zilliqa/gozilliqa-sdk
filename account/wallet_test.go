@@ -58,7 +58,11 @@ func TestSendTransaction(t *testing.T) {
 		t.Error(err)
 	}
 
-	rsp := provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp, err := provider.CreateTransaction(tx.ToTransactionPayload())
+
+	if err != nil {
+		t.Error(err.Error())
+	}
 
 	if rsp.Error != nil {
 		fmt.Println(rsp.Error)

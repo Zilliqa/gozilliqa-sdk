@@ -113,8 +113,8 @@ func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 }
 
 func (t *Transaction) TrackTx(hash string, provider *provider.Provider) bool {
-	response := provider.GetTransaction(hash)
-	if response == nil || response.Error != nil {
+	response,err := provider.GetTransaction(hash)
+	if err == nil ||response == nil || response.Error != nil {
 		return false
 	}
 
