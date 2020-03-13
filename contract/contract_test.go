@@ -30,9 +30,9 @@ import (
 )
 
 func TestContract_Deploy(t *testing.T) {
-	host := "http://kaya.godscilla.com:5555"
-	privateKey := "4d5296a36eb3d95e6ea576e1ef5eeda69be486eaf381fd61d5f5b3d1c5e3e854"
-	chainID := 1
+	host := "https://dev-api.zilliqa.com/"
+	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+	chainID := 333
 	msgVersion := 1
 
 	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
@@ -140,7 +140,8 @@ func TestContract_Call(t *testing.T) {
 		},
 	}
 
-	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	res, err := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	nonce, _ := res.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 	n := nonce + 1
 	result, _ := provider.GetMinimumGasPrice()
 	gasPrice := result.Result.(string)

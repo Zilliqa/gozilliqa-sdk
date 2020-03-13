@@ -87,7 +87,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 	}
 
 	if rsp == nil {
-		return nil,errors.New("rpc response is nil")
+		return nil, errors.New("rpc response is nil")
 	}
 
 	if rsp.Error != nil {
@@ -174,6 +174,10 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, prio
 
 	if err != nil {
 		return tx, err
+	}
+
+	if rsp == nil {
+		return tx, errors.New("rpc response is nil")
 	}
 
 	if rsp.Error != nil {
