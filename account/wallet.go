@@ -94,7 +94,10 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 	}
 
 	if tx.Nonce == "" {
-		response := provider.GetBalance(signer)
+		response, err := provider.GetBalance(signer)
+		if err != nil {
+			return err
+		}
 		if response == nil {
 			return errors.New("get balance response err")
 		}

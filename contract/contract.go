@@ -86,6 +86,10 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		return nil, err
 	}
 
+	if rsp == nil {
+		return nil,errors.New("rpc response is nil")
+	}
+
 	if rsp.Error != nil {
 		return nil, errors.New(rsp.Error.Message)
 	}
