@@ -80,7 +80,15 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		return nil, err2
 	}
 
-	rsp := c.Provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp, err := c.Provider.CreateTransaction(tx.ToTransactionPayload())
+
+	if err != nil {
+		return nil, err
+	}
+
+	if rsp == nil {
+		return nil, errors.New("rpc response is nil")
+	}
 
 	if rsp.Error != nil {
 		return nil, errors.New(rsp.Error.Message)
@@ -130,7 +138,7 @@ func (c *Contract) Sign(transition string, args []Value, params CallParams, prio
 	return nil, tx
 }
 
-func (c *Contract) Call(transition string, args []Value, params CallParams, priority bool, attempts, interval int) (error, *transaction.Transaction) {
+func (c *Contract) Call(transition string, args []Value, params CallParams, priority bool) (*transaction.Transaction, error) {
 	if c.Address == "" {
 		_ = errors.New("Contract has not been deployed!")
 	}
@@ -159,13 +167,21 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, prio
 
 	err2 := c.Signer.Sign(tx, *c.Provider)
 	if err2 != nil {
-		return err2, nil
+		return tx, err2
 	}
 
-	rsp := c.Provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp, err := c.Provider.CreateTransaction(tx.ToTransactionPayload())
+
+	if err != nil {
+		return tx, err
+	}
+
+	if rsp == nil {
+		return tx, errors.New("rpc response is nil")
+	}
 
 	if rsp.Error != nil {
-		return errors.New(rsp.Error.Message), nil
+		return tx, errors.New(rsp.Error.Message)
 	}
 
 	result := rsp.Result.(map[string]interface{})
@@ -174,10 +190,10 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, prio
 
 	if tx.Status == transaction.Rejected {
 		c.ContractStatus = Rejected
-		return nil, nil
+		return tx, nil
 	}
 
-	return nil, tx
+	return tx, nil
 
 }
 

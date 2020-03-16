@@ -30,9 +30,9 @@ import (
 )
 
 func TestContract_Deploy(t *testing.T) {
-	host := "http://kaya.godscilla.com:5555"
-	privateKey := "4d5296a36eb3d95e6ea576e1ef5eeda69be486eaf381fd61d5f5b3d1c5e3e854"
-	chainID := 1
+	host := "https://dev-api.zilliqa.com/"
+	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+	chainID := 333
 	msgVersion := 1
 
 	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
@@ -83,9 +83,12 @@ func TestContract_Deploy(t *testing.T) {
 		Provider: provider,
 	}
 
-	nonce, _ := provider.GetBalance(address).Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	result, _ := provider.GetBalance(address)
 
-	gasPrice := provider.GetMinimumGasPrice().Result.(string)
+	nonce, _ := result.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+
+	result, _ = provider.GetMinimumGasPrice()
+	gasPrice := result.Result.(string)
 
 	deployParams := DeployParams{
 		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
@@ -137,10 +140,11 @@ func TestContract_Call(t *testing.T) {
 		},
 	}
 
-	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	res, err := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	nonce, _ := res.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 	n := nonce + 1
-	gasPrice := provider.GetMinimumGasPrice().Result.(string)
-
+	result, _ := provider.GetMinimumGasPrice()
+	gasPrice := result.Result.(string)
 
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
@@ -151,7 +155,7 @@ func TestContract_Call(t *testing.T) {
 		Amount:       "0",
 	}
 
-	err, tx := contract.Call("Transfer", args, params, true, 1000, 3)
+	tx, err := contract.Call("Transfer", args, params, true)
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
@@ -167,7 +171,6 @@ func TestContract_Sign(t *testing.T) {
 	msgVersion := 1
 
 	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
-	//address := keytools.GetAddressFromPublic(publickKey)
 	pubkey := util.EncodeHex(publickKey)
 	provider := provider2.NewProvider(host)
 
@@ -198,10 +201,13 @@ func TestContract_Sign(t *testing.T) {
 		},
 	}
 
-	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
-	n := nonce + 1
-	gasPrice := provider.GetMinimumGasPrice().Result.(string)
+	result, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
 
+	nonce, _ := result.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	n := nonce + 1
+
+	result, _ = provider.GetMinimumGasPrice()
+	gasPrice := result.Result.(string)
 
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
@@ -217,17 +223,21 @@ func TestContract_Sign(t *testing.T) {
 		fmt.Printf(err.Error())
 	}
 
-	pl :=  tx.ToTransactionPayload()
-	j,_ := pl.ToJson()
+	pl := tx.ToTransactionPayload()
+	j, _ := pl.ToJson()
 	fmt.Println(string(j))
 
 	payload2, err3 := provider2.NewFromJson(j)
 	if err3 != nil {
 		t.Error(err3.Error())
 	}
-	rsp := provider.CreateTransaction(*payload2)
+	rsp, err := provider.CreateTransaction(*payload2)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
 	fmt.Println(rsp.Error)
 	fmt.Println(rsp.Result)
-
 
 }

@@ -81,9 +81,14 @@ func TestNewFromJson(t *testing.T) {
 		t.Error(err3.Error())
 	}
 	provider := NewProvider("https://dev-api.zilliqa.com")
-	rsp := provider.CreateTransaction(*payload2)
-	fmt.Println(rsp.Error)
-	fmt.Println(rsp.Result)
+	rsp,err := provider.CreateTransaction(*payload2)
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		fmt.Println(rsp.Error)
+		fmt.Println(rsp.Result)
+	}
+
 }
 
 func TestTransactionPayload_ToJson(t *testing.T) {
