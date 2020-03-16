@@ -202,25 +202,35 @@ func TestSendTransaction(t *testing.T) {
 	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
 
+	result, err := provider.GetMinimumGasPrice()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	gasPrice := result.Result.(string)
+
 	tx := &transaction.Transaction{
-		Version:      strconv.FormatInt(int64(LaksaGo.Pack(333, 2)), 10),
+		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 		Amount:       "10000000",
-		GasPrice:     "1000000000",
+		GasPrice:     gasPrice,
 		GasLimit:     "1",
 		Code:         "",
 		Data:         "",
 		Priority:     false,
 	}
 
-	err := wallet.Sign(tx, *provider)
+	err = wallet.Sign(tx, *provider)
 	if err != nil {
 		fmt.Println(err)
 		t.Error(err)
 	}
 
-	rsp := provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp, err := provider.CreateTransaction(tx.ToTransactionPayload())
+
+	if err != nil {
+		t.Error(err.Error())
+	}
 
 	if rsp.Error != nil {
 		fmt.Println(rsp.Error)
@@ -228,7 +238,7 @@ func TestSendTransaction(t *testing.T) {
 	} else {
 		result := rsp.Result.(map[string]interface{})
 		hash := result["TranID"].(string)
-		fmt.Printf("hash is %s", hash)
+		fmt.Printf("hash is %s\n", hash)
 		tx.Confirm(hash, 1000, 3, provider)
 	}
 }
@@ -238,9 +248,18 @@ func TestSendTransaction(t *testing.T) {
 
 ```go
 func TestContract_Deploy(t *testing.T) {
+	host := "https://dev-api.zilliqa.com/"
+	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+	chainID := 333
+	msgVersion := 1
+
+	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
+	address := keytools.GetAddressFromPublic(publickKey)
+	pubkey := util.EncodeHex(publickKey)
+	provider := provider2.NewProvider(host)
+
 	wallet := account.NewWallet()
-	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
-	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
+	wallet.AddByPrivateKey(privateKey)
 
 	code, _ := ioutil.ReadFile("./fungible.scilla")
 	init := []Value{
@@ -252,7 +271,7 @@ func TestContract_Deploy(t *testing.T) {
 		{
 			"owner",
 			"ByStr20",
-			"0x9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a",
+			"0x" + address,
 		},
 		{
 			"total_tokens",
@@ -282,14 +301,19 @@ func TestContract_Deploy(t *testing.T) {
 		Provider: provider,
 	}
 
-	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	result, _ := provider.GetBalance(address)
+
+	nonce, _ := result.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+
+	result, _ = provider.GetMinimumGasPrice()
+	gasPrice := result.Result.(string)
 
 	deployParams := DeployParams{
-		Version:      strconv.FormatInt(int64(LaksaGo.Pack(333, 1)), 10),
+		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
 		Nonce:        strconv.FormatInt(nonce+1, 10),
-		GasPrice:     "10000000000",
+		GasPrice:     gasPrice,
 		GasLimit:     "10000",
-		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
+		SenderPubKey: pubkey,
 	}
 
 	tx, err := contract.Deploy(deployParams)
@@ -306,9 +330,18 @@ func TestContract_Deploy(t *testing.T) {
 
 ```go
 func TestContract_Call(t *testing.T) {
+	host := "https://dev-api.zilliqa.com/"
+	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+	chainID := 333
+	msgVersion := 1
+
+	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
+	address := keytools.GetAddressFromPublic(publickKey)
+	pubkey := util.EncodeHex(publickKey)
+	provider := provider2.NewProvider(host)
+
 	wallet := account.NewWallet()
-	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
-	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
+	wallet.AddByPrivateKey(privateKey)
 
 	contract := Contract{
 		Address:  "bd7198209529dC42320db4bC8508880BcD22a9f2",
@@ -320,7 +353,7 @@ func TestContract_Call(t *testing.T) {
 		{
 			"to",
 			"ByStr20",
-			"0x381f4008505e940ad7681ec3468a719060caf796",
+			"0x" + address,
 		},
 		{
 			"tokens",
@@ -329,18 +362,22 @@ func TestContract_Call(t *testing.T) {
 		},
 	}
 
-	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	res, err := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	nonce, _ := res.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 	n := nonce + 1
+	result, _ := provider.GetMinimumGasPrice()
+	gasPrice := result.Result.(string)
+
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
-		Version:      strconv.FormatInt(int64(LaksaGo.Pack(333, 1)), 10),
-		GasPrice:     "1000000000",
+		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
+		GasPrice:     gasPrice,
 		GasLimit:     "1000",
-		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
+		SenderPubKey: pubkey,
 		Amount:       "0",
 	}
 
-	err, tx := contract.Call("Transfer", args, params, true, 1000, 3)
+	tx, err := contract.Call("Transfer", args, params, true)
 	if err != nil {
 		fmt.Printf(err.Error())
 	}
