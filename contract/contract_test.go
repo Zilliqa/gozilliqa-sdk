@@ -18,8 +18,10 @@ package contract
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/Zilliqa/gozilliqa-sdk/transaction"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
+	"os"
 	"strconv"
 	"testing"
 
@@ -30,6 +32,9 @@ import (
 )
 
 func TestContract_Deploy(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 	host := "https://dev-api.zilliqa.com/"
 	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
 	chainID := 333
@@ -99,15 +104,15 @@ func TestContract_Deploy(t *testing.T) {
 	}
 
 	tx, err := contract.Deploy(deployParams)
-
-	if err != nil {
-		panic(err.Error())
-	}
-
+	assert.Nil(t, err, err)
 	tx.Confirm(tx.ID, 1000, 10, provider)
+	assert.True(t, tx.Status == transaction.Confirmed)
 }
 
 func TestContract_Call(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 	host := "https://dev-api.zilliqa.com/"
 	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
 	chainID := 333
@@ -141,6 +146,7 @@ func TestContract_Call(t *testing.T) {
 	}
 
 	res, err := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	assert.Nil(t, err, err)
 	nonce, _ := res.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 	n := nonce + 1
 	result, _ := provider.GetMinimumGasPrice()
@@ -155,16 +161,16 @@ func TestContract_Call(t *testing.T) {
 		Amount:       "0",
 	}
 
-	tx, err := contract.Call("Transfer", args, params, true)
-	if err != nil {
-		fmt.Printf(err.Error())
-	}
-
+	tx, err2 := contract.Call("Transfer", args, params, true)
+	assert.Nil(t, err2, err2)
 	tx.Confirm(tx.ID, 1000, 3, provider)
-
+	assert.True(t, tx.Status == transaction.Confirmed)
 }
 
 func TestContract_Sign(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 	host := "https://dev-api.zilliqa.com/"
 	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
 	chainID := 333
@@ -219,25 +225,13 @@ func TestContract_Sign(t *testing.T) {
 	}
 
 	err, tx := contract.Sign("SubmitCustomMintTransaction", args, params, true)
-	if err != nil {
-		fmt.Printf(err.Error())
-	}
+	assert.Nil(t, err, err)
+
 
 	pl := tx.ToTransactionPayload()
 	j, _ := pl.ToJson()
-	fmt.Println(string(j))
 
-	payload2, err3 := provider2.NewFromJson(j)
-	if err3 != nil {
-		t.Error(err3.Error())
-	}
-	rsp, err := provider.CreateTransaction(*payload2)
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-
-	fmt.Println(rsp.Error)
-	fmt.Println(rsp.Result)
+	_, err2 := provider2.NewFromJson(j)
+	assert.Nil(t, err2, err2)
 
 }

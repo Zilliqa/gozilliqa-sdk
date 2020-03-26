@@ -20,6 +20,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/google/uuid"
+	"os"
 	"testing"
 	"time"
 )
@@ -45,6 +46,9 @@ func (t FakeTask) Run() {
 }
 
 func TestNewWorkPool(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 	quit := make(chan struct{})
 	wp := NewWorkPool(10)
 	for i := 0; i < 10; i++ {

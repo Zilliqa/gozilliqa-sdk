@@ -17,15 +17,18 @@
 package subscription
 
 import (
-	"fmt"
-	"log"
+	"github.com/stretchr/testify/assert"
 	"net/url"
+	"os"
 	"testing"
 )
 
 func TestWebsocket_Start(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 	u := url.URL{Scheme: "wss", Host: "dev-ws.zilliqa.com", Path: ""}
-	log.Printf("connecting to %s", u.String())
+	t.Logf("connecting to %s\n", u.String())
 	topic := &NewBlockQuery{Query: "NewBlock"}
 	ws := &Websocket{
 		Topic: topic,
@@ -35,18 +38,16 @@ func TestWebsocket_Start(t *testing.T) {
 	}
 
 	err := ws.Subscribe()
-	if err != nil {
-		fmt.Println("Init websocket failed: ", err)
-	}
+	assert.Nil(t, err, err)
 
 	ws.Start()
 	for {
 		select {
 		case message := <-ws.Msg:
-			fmt.Println("Get new message: ", string(message))
+			t.Log("Get new message: ", string(message))
 
 		case err := <-ws.Err:
-			fmt.Println("Get error: ", err.Error())
+			t.Log("Get error: ", err.Error())
 		}
 
 	}

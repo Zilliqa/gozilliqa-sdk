@@ -17,12 +17,16 @@
 package transaction
 
 import (
-	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
+	"github.com/stretchr/testify/assert"
+	"os"
 	"testing"
 )
 
 func TestTransaction_TrackTx(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 	provider := provider.NewProvider("https://dev-api.zilliqa.com/")
 	tx := Transaction{
 		ID:           "",
@@ -45,6 +49,7 @@ func TestTransaction_TrackTx(t *testing.T) {
 	}
 
 	tx.Confirm("846cda64971e259b1739bf15710758803abcf5754507af5af3f779777cd1b0b0",1000,3,provider)
+	assert.True(t, tx.Status == Confirmed)
 }
 
 func TestNewFromPayload(t *testing.T) {
@@ -111,11 +116,9 @@ func TestNewFromPayload(t *testing.T) {
 }`)
 
 	payload, err2 := provider.NewFromJson(data)
-	if err2 != nil {
-		t.Error(err2.Error())
-	}
+	assert.Nil(t, err2, err2)
 	tx := NewFromPayload(payload)
-	fmt.Println(tx)
+	t.Log(tx)
 }
 
 func TestNewFromPayload2(t *testing.T) {
@@ -136,9 +139,6 @@ func TestNewFromPayload2(t *testing.T) {
 
 	payload := tx.ToTransactionPayload()
 	data,err := payload.ToJson()
-	if err != nil {
-		t.Error(err.Error())
-	}
-
-	fmt.Println(string(data))
+	assert.Nil(t, err, err)
+	t.Log(string(data))
 }

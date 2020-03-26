@@ -17,19 +17,20 @@
 package subscription
 
 import (
-	"fmt"
+	"github.com/stretchr/testify/assert"
 	"net/url"
+	"os"
 	"testing"
 )
 
 func TestBuildNewBlockSubscriber(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 	u := url.URL{Scheme: "wss", Host: "dev-ws.zilliqa.com", Path: ""}
 	subscriber := BuildNewBlockSubscriber(u)
 	err, ec, msg := subscriber.Start()
-	if err != nil {
-		fmt.Println(err.Error())
-		t.Fail()
-	}
+	assert.Nil(t, err, err)
 	cancel := false
 
 	for {
@@ -39,10 +40,10 @@ func TestBuildNewBlockSubscriber(t *testing.T) {
 		}
 		select {
 		case message := <-msg:
-			fmt.Println("Get new message: ", string(message))
+			t.Log("Get new message: ", string(message))
 
 		case err := <-ec:
-			fmt.Println("Get error: ", err.Error())
+			t.Log("Get error: ", err.Error())
 			cancel = true
 		}
 

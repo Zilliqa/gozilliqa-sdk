@@ -17,8 +17,8 @@
 package contract
 
 import (
-	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -38,11 +38,6 @@ func TestGetAddressFromContract(t *testing.T) {
 		Data:         "",
 		Status:       0,
 	}
-
 	address := GetAddressFromContract(tx)
-	fmt.Printf(address)
-
-	if address != "8f14cb1735b2b5fba397bea1c223d65d12b9a887" {
-		t.Error("get address from contract tx failed")
-	}
+	assert.Equal(t,address,"8f14cb1735b2b5fba397bea1c223d65d12b9a887")
 }
