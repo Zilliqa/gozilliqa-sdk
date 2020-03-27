@@ -2,7 +2,7 @@ package transaction
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
@@ -45,8 +45,6 @@ func TestTransactionReceipt(t *testing.T) {
         }`)
 	var receipt TransactionReceipt
 	err := json.Unmarshal(js,&receipt)
-	if err != nil {
-		t.Error(err.Error())
-	}
-	fmt.Println(receipt)
+	assert.Nil(t, err, err)
+	t.Log(receipt)
 }

@@ -18,6 +18,7 @@ package crypto
 
 import (
 	util2 "github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 )
@@ -25,11 +26,8 @@ import (
 func TestKeystore_EncryptPrivateKey(t *testing.T) {
 	ks := NewDefaultKeystore()
 	kv, err := ks.EncryptPrivateKey(util2.DecodeHex("24180e6b0c3021aedb8f5a86f75276ee6fc7ff46e67e98e716728326102e91c9"), []byte("xiaohuo"), 0)
-	if err != nil {
-		t.Error(err.Error())
-	} else {
-		println(kv)
-	}
+	assert.Nil(t, err, err)
+	t.Log(kv)
 }
 
 func TestKeystore_DecryptPrivateKey(t *testing.T) {
@@ -37,11 +35,6 @@ func TestKeystore_DecryptPrivateKey(t *testing.T) {
 
 	ks := NewDefaultKeystore()
 	privateKey, err := ks.DecryptPrivateKey(json, "xiaohuo")
-	if err != nil {
-		t.Error(err.Error())
-	} else {
-		if strings.Compare(strings.ToLower(privateKey), "24180e6b0c3021aedb8f5a86f75276ee6fc7ff46e67e98e716728326102e91c9") != 0 {
-			t.Error("decrypt private key failed")
-		}
-	}
+	assert.Nil(t, err, err)
+	assert.Equal(t,strings.ToLower(privateKey),"24180e6b0c3021aedb8f5a86f75276ee6fc7ff46e67e98e716728326102e91c9")
 }

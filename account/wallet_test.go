@@ -21,27 +21,40 @@ import (
 	provider2 "github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/stretchr/testify/assert"
+	"os"
 	"strconv"
 	"testing"
 )
 
 func TestWallet_SignWith(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 	wallet := NewWallet()
 	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
-	tx := &transaction.Transaction{}
+	tx := &transaction.Transaction{
+		Version:  "65535",
+		Amount:   "0",
+		GasPrice: "100000",
+		GasLimit: "1",
+	}
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
-	_ = wallet.SignWith(tx, "9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a", *provider)
+	err := wallet.SignWith(tx, "9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a", *provider)
+	assert.Nil(t, err, err)
+	assert.NotEmpty(t, tx.Signature)
 }
 
 func TestSendTransaction(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 	wallet := NewWallet()
 	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
 
 	result, err := provider.GetMinimumGasPrice()
-	if err != nil {
-		t.Error(err.Error())
-	}
+	assert.Nil(t, err, err)
 	gasPrice := result.Result.(string)
 
 	tx := &transaction.Transaction{
@@ -56,25 +69,16 @@ func TestSendTransaction(t *testing.T) {
 		Priority:     false,
 	}
 
-	err = wallet.Sign(tx, *provider)
-	if err != nil {
-		fmt.Println(err)
-		t.Error(err)
-	}
+	err2 := wallet.Sign(tx, *provider)
+	assert.Nil(t, err2, err2)
 
-	rsp, err := provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp, err3 := provider.CreateTransaction(tx.ToTransactionPayload())
+	assert.Nil(t, err3, err3)
+	assert.Nil(t, rsp.Error, rsp.Error)
 
-	if err != nil {
-		t.Error(err.Error())
-	}
-
-	if rsp.Error != nil {
-		fmt.Println(rsp.Error)
-		t.Error(err)
-	} else {
-		result := rsp.Result.(map[string]interface{})
-		hash := result["TranID"].(string)
-		fmt.Printf("hash is %s\n", hash)
-		tx.Confirm(hash, 1000, 3, provider)
-	}
+	resMap := rsp.Result.(map[string]interface{})
+	hash := resMap["TranID"].(string)
+	fmt.Printf("hash is %s\n", hash)
+	tx.Confirm(hash, 1000, 3, provider)
+	assert.True(t, tx.Status == transaction.Confirmed)
 }

@@ -193,10 +193,10 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		return nil, errors.New("parse payload json failed: limit")
 	}
 
-	pubkey, ok6 := middle["pubKey"].(string)
-	if !ok6 {
-		return nil, errors.New("parse payload json failed: public key")
-	}
+	//pubkey, ok6 := middle["pubKey"].(string)
+	//if !ok6 {
+	//	return nil, errors.New("parse payload json failed: public key")
+	//}
 
 	code, ok7 := middle["code"].(string)
 	if !ok7 {
@@ -241,7 +241,7 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		Nonce:     int(n),
 		ToAddr:    toAddr.(string),
 		Amount:    fmt.Sprintf("%.0f", amount),
-		PubKey:    pubkey,
+		//PubKey:    pubkey,
 		GasPrice:  fmt.Sprintf("%.0f", price),
 		GasLimit:  fmt.Sprintf("%.0f", limit),
 		Code:      code,
