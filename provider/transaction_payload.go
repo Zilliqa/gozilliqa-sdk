@@ -237,10 +237,10 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 	}
 
 	return &TransactionPayload{
-		Version:   int(v),
-		Nonce:     int(n),
-		ToAddr:    toAddr.(string),
-		Amount:    fmt.Sprintf("%.0f", amount),
+		Version: int(v),
+		Nonce:   int(n),
+		ToAddr:  toAddr.(string),
+		Amount:  fmt.Sprintf("%.0f", amount),
 		//PubKey:    pubkey,
 		GasPrice:  fmt.Sprintf("%.0f", price),
 		GasLimit:  fmt.Sprintf("%.0f", limit),

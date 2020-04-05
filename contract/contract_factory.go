@@ -28,7 +28,7 @@ import (
 func GetAddressFromContract(tx *transaction.Transaction) string {
 	senderAddress := keytools.GetAddressFromPublic(util.DecodeHex(tx.SenderPubKey))
 	sha256Ctx := sha256.New()
-	fmt.Printf("send address = %s",senderAddress)
+	fmt.Printf("send address = %s", senderAddress)
 	sha256Ctx.Write(util.DecodeHex(senderAddress))
 
 	var nonce int64
@@ -39,7 +39,7 @@ func GetAddressFromContract(tx *transaction.Transaction) string {
 		nonce = nonce - 1
 	}
 
-	hexNonce := util.IntToHex(int(nonce),16)
+	hexNonce := util.IntToHex(int(nonce), 16)
 
 	sha256Ctx.Write(util.DecodeHex(hexNonce))
 

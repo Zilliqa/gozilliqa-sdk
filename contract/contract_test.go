@@ -227,7 +227,6 @@ func TestContract_Sign(t *testing.T) {
 	err, tx := contract.Sign("SubmitCustomMintTransaction", args, params, true)
 	assert.Nil(t, err, err)
 
-
 	pl := tx.ToTransactionPayload()
 	j, _ := pl.ToJson()
 

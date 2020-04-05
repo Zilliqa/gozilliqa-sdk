@@ -32,7 +32,7 @@ func BuildEventLogSubscriber(url url.URL, addresses []string) *EventLogSubscribe
 	msg := make(chan []byte, 10)
 	ws := NewWebsocket(topic, url, err, msg)
 
-	return &EventLogSubscriber{Ws:ws}
+	return &EventLogSubscriber{Ws: ws}
 }
 
 func (subscriber *EventLogSubscriber) Start() (error, chan error, chan []byte) {
@@ -44,4 +44,3 @@ func (subscriber *EventLogSubscriber) Start() (error, chan error, chan []byte) {
 	subscriber.Ws.Start()
 	return nil, subscriber.Ws.Err, subscriber.Ws.Msg
 }
-
