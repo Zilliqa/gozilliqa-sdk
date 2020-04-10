@@ -18,10 +18,11 @@ package keytools
 
 import (
 	"crypto/rand"
-	"github.com/Zilliqa/gozilliqa-sdk/util"
-	"github.com/btcsuite/btcd/btcec"
 	"io"
 	"math/big"
+
+	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/btcsuite/btcd/btcec"
 )
 
 var (

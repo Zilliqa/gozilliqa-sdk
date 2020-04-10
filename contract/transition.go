@@ -17,7 +17,7 @@
 package contract
 
 type Transition struct {
-	Name string
+	Name   string
 	Params []Field
 }
 

@@ -33,7 +33,7 @@ func (c *pbkdf2Wapper) GetDerivedKey(password, salt []byte, iterationCount, keyS
 }
 
 type Pbkdf2Params struct {
-	Salt []byte
+	Salt  []byte
 	DkLen int
 	Count int
 }

@@ -29,14 +29,14 @@ func TestTransaction_TrackTx(t *testing.T) {
 	}
 	provider := provider.NewProvider("https://dev-api.zilliqa.com/")
 	tx := Transaction{
-		ID:           "",
-		Version:      "",
-		Nonce:        "",
-		Amount:       "",
-		GasPrice:     "",
-		GasLimit:     "",
-		Signature:    "",
-		Receipt:      TransactionReceipt{
+		ID:        "",
+		Version:   "",
+		Nonce:     "",
+		Amount:    "",
+		GasPrice:  "",
+		GasLimit:  "",
+		Signature: "",
+		Receipt: TransactionReceipt{
 			Success:       false,
 			CumulativeGas: "",
 			EpochNum:      "",
@@ -48,7 +48,7 @@ func TestTransaction_TrackTx(t *testing.T) {
 		Status:       0,
 	}
 
-	tx.Confirm("846cda64971e259b1739bf15710758803abcf5754507af5af3f779777cd1b0b0",1000,3,provider)
+	tx.Confirm("846cda64971e259b1739bf15710758803abcf5754507af5af3f779777cd1b0b0", 1000, 3, provider)
 	assert.True(t, tx.Status == Confirmed)
 }
 
@@ -138,7 +138,7 @@ func TestNewFromPayload2(t *testing.T) {
 	}
 
 	payload := tx.ToTransactionPayload()
-	data,err := payload.ToJson()
+	data, err := payload.ToJson()
 	assert.Nil(t, err, err)
 	t.Log(string(data))
 }
