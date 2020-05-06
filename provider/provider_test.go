@@ -232,6 +232,14 @@ func TestGetTransactionsForTxBlock(t *testing.T) {
 	fmt.Println(string(result))
 }
 
+func TestProvider_GetTxnBodiesForTxBlock(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	response, _ := provider.GetTxnBodiesForTxBlock("1364221")
+	result, _ := json.Marshal(response)
+	fmt.Println(string(result))
+}
+
 func TestGetNumTxnsTxEpoch(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
