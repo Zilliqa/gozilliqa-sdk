@@ -36,5 +36,5 @@ func TestKeystore_DecryptPrivateKey(t *testing.T) {
 	ks := NewDefaultKeystore()
 	privateKey, err := ks.DecryptPrivateKey(json, "xiaohuo")
 	assert.Nil(t, err, err)
-	assert.Equal(t,strings.ToLower(privateKey),"24180e6b0c3021aedb8f5a86f75276ee6fc7ff46e67e98e716728326102e91c9")
+	assert.Equal(t, strings.ToLower(privateKey), "24180e6b0c3021aedb8f5a86f75276ee6fc7ff46e67e98e716728326102e91c9")
 }

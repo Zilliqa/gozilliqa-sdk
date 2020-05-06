@@ -41,17 +41,17 @@ func TestGeneratePrivateKey(t *testing.T) {
 func TestGetPublicKeyFromPrivateKey(t *testing.T) {
 	privateKey := "24180e6b0c3021aedb8f5a86f75276ee6fc7ff46e67e98e716728326102e91c9"
 	publicKey := GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), false)
-	assert.Equal(t,util.EncodeHex(publicKey),"04163fa604c65aebeb7048c5548875c11418d6d106a20a0289d67b59807abdd299d4cf0efcf07e96e576732dae122b9a8ac142214a6bc133b77aa5b79ba46b3e20")
+	assert.Equal(t, util.EncodeHex(publicKey), "04163fa604c65aebeb7048c5548875c11418d6d106a20a0289d67b59807abdd299d4cf0efcf07e96e576732dae122b9a8ac142214a6bc133b77aa5b79ba46b3e20")
 }
 
 func TestGetAddressFromPublic(t *testing.T) {
 	publicKey := "0246e7178dc8253201101e18fd6f6eb9972451d121fc57aa2a06dd5c111e58dc6a"
 	address := GetAddressFromPublic(util.DecodeHex(publicKey))
-	assert.Equal(t,address,"9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	assert.Equal(t, address, "9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
 }
 
 func TestGetAddressFromPrivateKey(t *testing.T) {
 	privateKey := "24180e6b0c3021aedb8f5a86f75276ee6fc7ff46e67e98e716728326102e91c9"
 	addr := GetAddressFromPrivateKey(util.DecodeHex(privateKey))
-	assert.Equal(t,addr,"b5c2cdd79c37209c3cb59e04b7c4062a8f5d5271")
+	assert.Equal(t, addr, "b5c2cdd79c37209c3cb59e04b7c4062a8f5d5271")
 }

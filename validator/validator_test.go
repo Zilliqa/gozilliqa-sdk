@@ -52,5 +52,5 @@ func TestIsChecksumAddress(t *testing.T) {
 }
 
 func TestIsBech32(t *testing.T) {
-	assert.True(t,IsBech32("zil16jrfrs8vfdtc74yzhyy83je4s4c5sqrcasjlc4"))
+	assert.True(t, IsBech32("zil16jrfrs8vfdtc74yzhyy83je4s4c5sqrcasjlc4"))
 }

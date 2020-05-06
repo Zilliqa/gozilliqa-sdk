@@ -3,11 +3,12 @@ package transaction
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk/provider"
-	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/Zilliqa/gozilliqa-sdk/provider"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 )
 
 type State int

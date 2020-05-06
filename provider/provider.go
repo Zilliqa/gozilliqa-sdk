@@ -186,6 +186,10 @@ func (provider *Provider) GetTransactionsForTxBlock(tx_block_number string) (*js
 	return provider.call("GetTransactionsForTxBlock", tx_block_number)
 }
 
+func (provider *Provider) GetTxnBodiesForTxBlock(tx_block_number string) (*jsonrpc.RPCResponse, error) {
+	return provider.call("GetTxnBodiesForTxBlock", tx_block_number)
+}
+
 // Returns the number of validated transactions included in this Transaction epoch.
 // This is represented as String.
 func (provider *Provider) GetNumTxnsTxEpoch() (*jsonrpc.RPCResponse, error) {

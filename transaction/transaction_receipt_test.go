@@ -44,7 +44,7 @@ func TestTransactionReceipt(t *testing.T) {
             "success": true
         }`)
 	var receipt TransactionReceipt
-	err := json.Unmarshal(js,&receipt)
+	err := json.Unmarshal(js, &receipt)
 	assert.Nil(t, err, err)
 	t.Log(receipt)
 }

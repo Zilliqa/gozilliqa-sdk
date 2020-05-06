@@ -19,9 +19,10 @@ package bech32
 import (
 	"errors"
 	"fmt"
+	"strings"
+
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/Zilliqa/gozilliqa-sdk/validator"
-	"strings"
 )
 
 const charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l"
@@ -312,5 +313,5 @@ func FromBech32Addr(address string) (string, error) {
 		return "", errors.New("could not convert buffer to bytes")
 	}
 
-	return strings.TrimPrefix(util.ToCheckSumAddress(util.EncodeHex(buf)),"0x"), nil
+	return strings.TrimPrefix(util.ToCheckSumAddress(util.EncodeHex(buf)), "0x"), nil
 }

@@ -39,5 +39,5 @@ func TestGetAddressFromContract(t *testing.T) {
 		Status:       0,
 	}
 	address := GetAddressFromContract(tx)
-	assert.Equal(t,address,"8f14cb1735b2b5fba397bea1c223d65d12b9a887")
+	assert.Equal(t, address, "8f14cb1735b2b5fba397bea1c223d65d12b9a887")
 }
