@@ -28,6 +28,7 @@ import (
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/Zilliqa/gozilliqa-sdk/validator"
+	"math/big"
 	"strconv"
 	"strings"
 )
@@ -104,6 +105,31 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 		if response.Error == nil {
 			result := response.Result.(map[string]interface{})
 			n := result["nonce"].(json.Number)
+			bal := result["balance"].(string)
+			balNumber, ok := new(big.Int).SetString(bal, 10)
+			if !ok {
+				return errors.New("parse balance error")
+			}
+			amount, ok2 := new(big.Int).SetString(tx.Amount, 10)
+			if !ok2 {
+				return errors.New("parse amount error")
+			}
+			gasPrice, ok3 := new(big.Int).SetString(tx.GasPrice, 10)
+			if !ok3 {
+				return errors.New("parse gas price error")
+			}
+			gasLimit, ok4 := new(big.Int).SetString(tx.GasLimit, 10)
+			if !ok4 {
+				return errors.New("parse gas limit error")
+			}
+
+			gasFee := new(big.Int).Mul(gasPrice, gasLimit)
+			needed := new(big.Int).Add(gasFee, amount)
+
+			if needed.Cmp(balNumber) > 0 {
+				return errors.New("balance is not sufficient")
+			}
+
 			nonce, _ := n.Int64()
 			tx.Nonce = strconv.FormatInt(nonce+1, 10)
 		} else {
