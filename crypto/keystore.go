@@ -26,7 +26,7 @@ import (
 
 	"github.com/Zilliqa/gozilliqa-sdk/keytools"
 	util2 "github.com/Zilliqa/gozilliqa-sdk/util"
-	uuid "github.com/satori/go.uuid"
+	"github.com/google/uuid"
 )
 
 // 0: p 1:s
@@ -180,15 +180,11 @@ func (ks *Keystore) EncryptPrivateKey(privateKey, passphrase []byte, t KDFType) 
 		MAC:          util2.EncodeHex(mac),
 	}
 
-	uid, err := uuid.NewV4()
-	if err != nil {
-		panic(err)
-	}
-	uidString := uid.String()
+	uid := uuid.New()
 	kv := KeystoreV3{
 		Address: address,
 		Crypto:  crypto,
-		ID:      uidString,
+		ID:      uid.String(),
 		Version: 3,
 	}
 
