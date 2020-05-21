@@ -200,6 +200,14 @@ func TestProvider_GetTotalCoinSupply(t *testing.T) {
 	fmt.Println(string(result))
 }
 
+func TestProvider_GetMinerInfo(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	response, _ := provider.GetMinerInfo("5500")
+	result, _ := json.Marshal(response)
+	fmt.Println(string(result))
+}
+
 func TestGetPrevDSDifficulty(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")

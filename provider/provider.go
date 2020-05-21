@@ -150,6 +150,13 @@ func (provider *Provider) GetTotalCoinSupply() (*jsonrpc.RPCResponse, error) {
 	return provider.call("GetTotalCoinSupply")
 }
 
+// Returns the mining nodes (i.e., the members of the DS committee and shards) at the specified DS block.
+// Notes: 1. Nodes owned by Zilliqa Research are omitted. 2. dscommittee has no size field since the DS committee size
+// is fixed for a given chain. 3. For the Zilliqa Mainnet, this API is only available from DS block 5500 onwards.
+func (provider *Provider) GetMinerInfo(dsNumber string) (*jsonrpc.RPCResponse, error) {
+	return provider.call("GetMinerInfo",dsNumber)
+}
+
 // Create a new Transaction object and send it to the network to be process.
 func (provider *Provider) CreateTransaction(payload TransactionPayload) (*jsonrpc.RPCResponse, error) {
 	r, _ := json.Marshal(payload)
