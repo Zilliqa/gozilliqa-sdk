@@ -135,8 +135,29 @@ func (provider *Provider) GetPrevDifficulty() (*jsonrpc.RPCResponse, error) {
 	return provider.call("GetPrevDifficulty")
 }
 
+
+// Returns the pending status of a specified Transaction. Possible results are:
+//
+//  confirmed	code	info
+//  false	0	Txn not pending
+//  false	1	Nonce too high
+//  false	2	Could not fit in as microblock gas limit reached
+//  false	3	Transaction valid but consensus not reached
 func (provider *Provider) GetPendingTxn(tx string) (*jsonrpc.RPCResponse, error) {
 	return provider.call("GetPendingTxn", tx)
+}
+
+// Returns the pending status of all unvalidated Transactions.
+//
+//  For each entry, the possible results are:
+//
+//  confirmed	code	info
+//  false	0	Txn not pending
+//  false	1	Nonce too high
+//  false	2	Could not fit in as microblock gas limit reached
+//  false	3	Transaction valid but consensus not reached
+func (provider *Provider) GetPendingTxns() (*jsonrpc.RPCResponse,error) {
+	return provider.call("GetPendingTxn")
 }
 
 // Returns the minimum DS difficulty of the previous block.
