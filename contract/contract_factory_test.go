@@ -17,6 +17,7 @@
 package contract
 
 import (
+	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -31,7 +32,7 @@ func TestGetAddressFromContract(t *testing.T) {
 		GasPrice:     "",
 		GasLimit:     "",
 		Signature:    "",
-		Receipt:      transaction.TransactionReceipt{},
+		Receipt:      core.TransactionReceipt{},
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
 		ToAddr:       "",
 		Code:         "",

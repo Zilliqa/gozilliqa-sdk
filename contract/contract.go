@@ -19,6 +19,7 @@ package contract
 import (
 	"errors"
 	"github.com/Zilliqa/gozilliqa-sdk/account"
+	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"strings"
@@ -33,25 +34,19 @@ const (
 )
 
 type Contract struct {
-	Init           []Value        `json:"init"`
-	Abi            string         `json:"abi"`
-	State          State          `json:"state"`
-	Address        string         `json:"address"`
-	Code           string         `json:"code"`
-	ContractStatus ContractStatus `json:"contractStatus"`
+	Init           []core.ContractValue `json:"init"`
+	Abi            string               `json:"abi"`
+	State          State                `json:"state"`
+	Address        string               `json:"address"`
+	Code           string               `json:"code"`
+	ContractStatus ContractStatus       `json:"contractStatus"`
 
 	Signer   *account.Wallet
 	Provider *provider.Provider
 }
 
-type Value struct {
-	VName string      `json:"vname"`
-	Type  string      `json:"type"`
-	Value interface{} `json:"value"`
-}
-
 type State struct {
-	Value
+	core.ContractValue
 }
 
 func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error) {
@@ -67,7 +62,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		GasPrice:     params.GasPrice,
 		GasLimit:     params.GasLimit,
 		Signature:    "",
-		Receipt:      transaction.TransactionReceipt{},
+		Receipt:      core.TransactionReceipt{},
 		SenderPubKey: params.SenderPubKey,
 		ToAddr:       "0000000000000000000000000000000000000000",
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
@@ -103,7 +98,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 	return tx, nil
 
 }
-func (c *Contract) Sign(transition string, args []Value, params CallParams, priority bool) (error, *transaction.Transaction) {
+func (c *Contract) Sign(transition string, args []core.ContractValue, params CallParams, priority bool) (error, *transaction.Transaction) {
 	if c.Address == "" {
 		_ = errors.New("Contract has not been deployed!")
 	}
@@ -121,7 +116,7 @@ func (c *Contract) Sign(transition string, args []Value, params CallParams, prio
 		GasPrice:     params.GasPrice,
 		GasLimit:     params.GasLimit,
 		Signature:    "",
-		Receipt:      transaction.TransactionReceipt{},
+		Receipt:      core.TransactionReceipt{},
 		SenderPubKey: params.SenderPubKey,
 		ToAddr:       c.Address,
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
@@ -138,7 +133,7 @@ func (c *Contract) Sign(transition string, args []Value, params CallParams, prio
 	return nil, tx
 }
 
-func (c *Contract) Call(transition string, args []Value, params CallParams, priority bool) (*transaction.Transaction, error) {
+func (c *Contract) Call(transition string, args []core.ContractValue, params CallParams, priority bool) (*transaction.Transaction, error) {
 	if c.Address == "" {
 		_ = errors.New("Contract has not been deployed!")
 	}
@@ -156,7 +151,7 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, prio
 		GasPrice:     params.GasPrice,
 		GasLimit:     params.GasLimit,
 		Signature:    "",
-		Receipt:      transaction.TransactionReceipt{},
+		Receipt:      core.TransactionReceipt{},
 		SenderPubKey: params.SenderPubKey,
 		ToAddr:       c.Address,
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
@@ -188,7 +183,7 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, prio
 	hash := result["TranID"].(string)
 	tx.ID = hash
 
-	if tx.Status == transaction.Rejected {
+	if tx.Status == core.Rejected {
 		c.ContractStatus = Rejected
 		return tx, nil
 	}

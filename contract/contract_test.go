@@ -17,8 +17,7 @@
 package contract
 
 import (
-	"encoding/json"
-	"github.com/Zilliqa/gozilliqa-sdk/transaction"
+	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"os"
@@ -49,7 +48,7 @@ func TestContract_Deploy(t *testing.T) {
 	wallet.AddByPrivateKey(privateKey)
 
 	code, _ := ioutil.ReadFile("./fungible.scilla")
-	init := []Value{
+	init := []core.ContractValue{
 		{
 			"_scilla_version",
 			"Uint32",
@@ -88,16 +87,13 @@ func TestContract_Deploy(t *testing.T) {
 		Provider: provider,
 	}
 
-	result, _ := provider.GetBalance(address)
+	balAndNonce, _ := provider.GetBalance(address)
 
-	nonce, _ := result.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
-
-	result, _ = provider.GetMinimumGasPrice()
-	gasPrice := result.Result.(string)
+	gasPrice, _ := provider.GetMinimumGasPrice()
 
 	deployParams := DeployParams{
 		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
-		Nonce:        strconv.FormatInt(nonce+1, 10),
+		Nonce:        strconv.FormatInt(balAndNonce.Nonce+1, 10),
 		GasPrice:     gasPrice,
 		GasLimit:     "10000",
 		SenderPubKey: pubkey,
@@ -106,7 +102,7 @@ func TestContract_Deploy(t *testing.T) {
 	tx, err := contract.Deploy(deployParams)
 	assert.Nil(t, err, err)
 	tx.Confirm(tx.ID, 1000, 10, provider)
-	assert.True(t, tx.Status == transaction.Confirmed)
+	assert.True(t, tx.Status == core.Confirmed)
 }
 
 func TestContract_Call(t *testing.T) {
@@ -132,7 +128,7 @@ func TestContract_Call(t *testing.T) {
 		Provider: provider,
 	}
 
-	args := []Value{
+	args := []core.ContractValue{
 		{
 			"to",
 			"ByStr20",
@@ -145,12 +141,10 @@ func TestContract_Call(t *testing.T) {
 		},
 	}
 
-	res, err := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	balAndNonce, err := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
 	assert.Nil(t, err, err)
-	nonce, _ := res.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
-	n := nonce + 1
-	result, _ := provider.GetMinimumGasPrice()
-	gasPrice := result.Result.(string)
+	n := balAndNonce.Nonce + 1
+	gasPrice, _ := provider.GetMinimumGasPrice()
 
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
@@ -164,7 +158,7 @@ func TestContract_Call(t *testing.T) {
 	tx, err2 := contract.Call("Transfer", args, params, true)
 	assert.Nil(t, err2, err2)
 	tx.Confirm(tx.ID, 1000, 3, provider)
-	assert.True(t, tx.Status == transaction.Confirmed)
+	assert.True(t, tx.Status == core.Confirmed)
 }
 
 func TestContract_Sign(t *testing.T) {
@@ -189,7 +183,7 @@ func TestContract_Sign(t *testing.T) {
 		Provider: provider,
 	}
 
-	args := []Value{
+	args := []core.ContractValue{
 		{
 			"proxyTokenContract",
 			"ByStr20",
@@ -207,13 +201,11 @@ func TestContract_Sign(t *testing.T) {
 		},
 	}
 
-	result, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	balAndNonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
 
-	nonce, _ := result.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
-	n := nonce + 1
+	n := balAndNonce.Nonce + 1
 
-	result, _ = provider.GetMinimumGasPrice()
-	gasPrice := result.Result.(string)
+	gasPrice, _ := provider.GetMinimumGasPrice()
 
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),

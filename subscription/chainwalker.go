@@ -89,22 +89,19 @@ func (t GetEventReceiptTask) Run() {
 	t.Complete.Lock()
 	defer t.Complete.Unlock()
 	t.Complete.Number++
-	rsp, _ := t.Provider.GetTransaction(t.Id)
-	resultMap := rsp.Result.(map[string]interface{})
-	receipt := resultMap["receipt"].(map[string]interface{})
-	addr := resultMap["toAddr"].(string)
-	success, ok1 := receipt["success"]
-	if success == nil || success.(bool) == false {
+	tnx, _ := t.Provider.GetTransaction(t.Id)
+	receipt := tnx.Receipt
+	addr := tnx.ToAddr
+	if receipt.Success == false {
 		return
 	} else {
-		eventLogs, ok := receipt["event_logs"]
-		if ok {
-			els := eventLogs.([]interface{})
+		if receipt.EventLogs != nil {
+			els := receipt.EventLogs
 			for _, el := range els {
 				log := el.(map[string]interface{})
 				eventName, ok2 := log["_eventname"]
 				// important: currently we only compare contract address to toAddr
-				if ok1 && ok2 && strings.Compare(strings.ToLower(addr), strings.ToLower(t.Walker.Address[2:])) == 0 && strings.Compare(eventName.(string), t.Walker.EventName) == 0 {
+				if ok2 && strings.Compare(strings.ToLower(addr), strings.ToLower(t.Walker.Address[2:])) == 0 && strings.Compare(eventName.(string), t.Walker.EventName) == 0 {
 					logData := Log{
 						Hash:      t.Id,
 						EventName: eventName.(string),
@@ -120,28 +117,21 @@ func (t GetEventReceiptTask) Run() {
 
 func (w *Walker) StartTraversalBlock() {
 	for i := w.FromBlock; i < w.ToBlock; i++ {
-		rsp, err := w.Provider.GetTransactionsForTxBlock(strconv.FormatUint(i, 10))
+		transactions, err := w.Provider.GetTransactionsForTxBlock(strconv.FormatUint(i, 10))
 
-		if err != nil || rsp.Error != nil {
-			if err != nil {
-				fmt.Println("tx for block ", i, " = ", err)
-			} else {
-				fmt.Println("tx for block ", i, " = ", rsp.Error)
-			}
-
+		if err != nil {
+			fmt.Println("tx for block ", i, " = ", err)
 		} else {
-			txResult := rsp.Result.([]interface{})
 			var txns []string
 
 			// flat tx hash
-			for _, txs := range txResult {
+			for _, txs := range transactions {
 				if txs == nil {
 					continue
 				}
-				txList := txs.([]interface{})
-				if len(txList) > 0 {
-					for _, tx := range txList {
-						txns = append(txns, tx.(string))
+				if len(txs) > 0 {
+					for _, tx := range txs {
+						txns = append(txns, tx)
 					}
 				} else {
 					continue

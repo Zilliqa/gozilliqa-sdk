@@ -3,41 +3,15 @@ package transaction
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/Zilliqa/gozilliqa-sdk/core"
+	"github.com/Zilliqa/gozilliqa-sdk/provider"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/Zilliqa/gozilliqa-sdk/provider"
-	"github.com/Zilliqa/gozilliqa-sdk/util"
 )
 
-type State int
-
-const (
-	Initialised State = iota
-	Pending
-	Confirmed
-	Rejected
-)
-
-type Transaction struct {
-	ID           string
-	Version      string
-	Nonce        string
-	Amount       string
-	GasPrice     string
-	GasLimit     string
-	Signature    string
-	Receipt      TransactionReceipt
-	SenderPubKey string
-	ToAddr       string
-	Code         string
-	Data         interface{}
-
-	Status          State
-	ContractAddress string
-	Priority        bool
-}
+type Transaction core.Transaction
 
 func NewFromPayload(payload *provider.TransactionPayload) *Transaction {
 	v := strconv.FormatInt(int64(payload.Version), 10)
@@ -50,7 +24,7 @@ func NewFromPayload(payload *provider.TransactionPayload) *Transaction {
 		GasPrice:        payload.GasPrice,
 		GasLimit:        payload.GasLimit,
 		Signature:       payload.Signature,
-		Receipt:         TransactionReceipt{},
+		Receipt:         core.TransactionReceipt{},
 		SenderPubKey:    payload.PubKey,
 		ToAddr:          payload.ToAddr,
 		Code:            payload.Code,
@@ -114,46 +88,24 @@ func (t *Transaction) ToTransactionPayload() provider.TransactionPayload {
 }
 
 func (t *Transaction) TrackTx(hash string, provider *provider.Provider) bool {
-	response, err := provider.GetTransaction(hash)
-
+	txn, err := provider.GetTransaction(hash)
 	if err != nil {
 		fmt.Println("Track error: " + err.Error())
 		return false
 	}
-
-	if response == nil || response.Error != nil {
-		return false
-	}
-
-	result := response.Result.(map[string]interface{})
-	t.ID = result["ID"].(string)
-
-	receipt, ok := result["receipt"].(map[string]interface{})
-	if !ok {
-		return false
-	}
-
-	epochNum, ok := receipt["epoch_num"]
-	if ok {
-		t.Receipt.EpochNum = epochNum.(string)
-	}
-
-	t.Receipt.CumulativeGas = receipt["cumulative_gas"].(string)
-	t.Receipt.Success = receipt["success"].(bool)
-	if receipt["event_logs"] != nil {
-		t.Receipt.EventLogs = receipt["event_logs"].([]interface{})
-	}
+	t.ID = txn.ID
+	t.Receipt = txn.Receipt
 
 	if !t.Receipt.Success {
-		t.Status = Rejected
+		t.Status = core.Rejected
 	} else {
-		t.Status = Confirmed
+		t.Status = core.Confirmed
 	}
 	return true
 }
 
 func (t *Transaction) Confirm(hash string, maxAttempts, interval int, provider *provider.Provider) {
-	t.Status = Pending
+	t.Status = core.Pending
 	for i := 0; i < maxAttempts; i++ {
 		fmt.Println("track " + hash)
 		tracked := t.TrackTx(hash, provider)
@@ -163,7 +115,7 @@ func (t *Transaction) Confirm(hash string, maxAttempts, interval int, provider *
 			return
 		}
 	}
-	t.Status = Rejected
+	t.Status = core.Rejected
 }
 
 func (t *Transaction) Bytes() ([]byte, error) {
@@ -178,17 +130,17 @@ func (t *Transaction) Bytes() ([]byte, error) {
 }
 
 func (t *Transaction) isPending() bool {
-	return t.Status == Pending
+	return t.Status == core.Pending
 }
 
 func (t *Transaction) isInitialised() bool {
-	return t.Status == Initialised
+	return t.Status == core.Initialised
 }
 
 func (t *Transaction) isConfirmed() bool {
-	return t.Status == Confirmed
+	return t.Status == core.Confirmed
 }
 
 func (t *Transaction) isRejected() bool {
-	return t.Status == Rejected
+	return t.Status == core.Rejected
 }
