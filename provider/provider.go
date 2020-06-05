@@ -135,8 +135,29 @@ func (provider *Provider) GetPrevDifficulty() (*jsonrpc.RPCResponse, error) {
 	return provider.call("GetPrevDifficulty")
 }
 
+
+// Returns the pending status of a specified Transaction. Possible results are:
+//
+//  confirmed	code	info
+//  false	0	Txn not pending
+//  false	1	Nonce too high
+//  false	2	Could not fit in as microblock gas limit reached
+//  false	3	Transaction valid but consensus not reached
 func (provider *Provider) GetPendingTxn(tx string) (*jsonrpc.RPCResponse, error) {
 	return provider.call("GetPendingTxn", tx)
+}
+
+// Returns the pending status of all unvalidated Transactions.
+//
+//  For each entry, the possible results are:
+//
+//  confirmed	code	info
+//  false	0	Txn not pending
+//  false	1	Nonce too high
+//  false	2	Could not fit in as microblock gas limit reached
+//  false	3	Transaction valid but consensus not reached
+func (provider *Provider) GetPendingTxns() (*jsonrpc.RPCResponse,error) {
+	return provider.call("GetPendingTxn")
 }
 
 // Returns the minimum DS difficulty of the previous block.
@@ -148,6 +169,13 @@ func (provider *Provider) GetPrevDSDifficulty() (*jsonrpc.RPCResponse, error) {
 // Returns the total supply (ZIL) of coins in the network. This is represented as a String.
 func (provider *Provider) GetTotalCoinSupply() (*jsonrpc.RPCResponse, error) {
 	return provider.call("GetTotalCoinSupply")
+}
+
+// Returns the mining nodes (i.e., the members of the DS committee and shards) at the specified DS block.
+// Notes: 1. Nodes owned by Zilliqa Research are omitted. 2. dscommittee has no size field since the DS committee size
+// is fixed for a given chain. 3. For the Zilliqa Mainnet, this API is only available from DS block 5500 onwards.
+func (provider *Provider) GetMinerInfo(dsNumber string) (*jsonrpc.RPCResponse, error) {
+	return provider.call("GetMinerInfo",dsNumber)
 }
 
 // Create a new Transaction object and send it to the network to be process.
