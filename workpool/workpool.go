@@ -71,7 +71,6 @@ func (wp *WorkerPool) Poll(ctx context.Context, quit <-chan struct{}) {
 			task := wp.Top()
 			if task == nil {
 				time.Sleep(time.Second * 3)
-				fmt.Println("no task for now...")
 			} else {
 				if err := wp.sem.Acquire(ctx, 1); err != nil {
 					break
