@@ -32,49 +32,43 @@ func SkipIfCI(t *testing.T) {
 func TestGetNetworkId(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetNetworkId()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	id, _ := provider.GetNetworkId()
+	fmt.Println(id)
 }
 
 func TestGetBlockchainInfo(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetBlockchainInfo()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	info, _ := provider.GetBlockchainInfo()
+	fmt.Println(info)
 }
 
 func TestGetShardingStructure(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetShardingStructure()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetShardingStructure()
+	fmt.Println(result)
 }
 
 func TestGetDsBlock(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetDsBlock("40")
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetDsBlock("40")
+	fmt.Println(result)
 }
 
 func TestGetLatestDsBlock(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetLatestDsBlock()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetLatestDsBlock()
+	fmt.Println(result)
 }
 
 func TestGetNumDSBlocks(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetNumDSBlocks()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetNumDSBlocks()
+	fmt.Println(result)
 }
 
 func TestProvider_GetSmartContractSubState(t *testing.T) {
@@ -91,97 +85,85 @@ func TestProvider_GetSmartContractSubState(t *testing.T) {
 func TestGetDSBlockRate(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetDSBlockRate()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetDSBlockRate()
+	fmt.Println(result)
 }
 
 func TestDSBlockListing(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.DSBlockListing(1)
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.DSBlockListing(1)
+	fmt.Println(result)
 }
 
 func TestGetTxBlock(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetTxBlock("40")
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetTxBlock("40")
+	fmt.Println(result)
 }
 
 func TestGetLatestTxBlock(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetLatestTxBlock()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetLatestTxBlock()
+	fmt.Println(result)
 }
 
 func TestGetNumTxBlocks(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetNumTxBlocks()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetNumTxBlocks()
+	fmt.Println(result)
 }
 
 func TestGetTxBlockRate(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetTxBlockRate()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetTxBlockRate()
+	fmt.Println(result)
 }
 
 func TestTxBlockListing(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.TxBlockListing(1)
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.TxBlockListing(1)
+	fmt.Println(result)
 }
 
 func TestGetNumTransactions(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetNumTransactions()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetNumTransactions()
+	fmt.Println(result)
 }
 
 func TestGetTransactionRate(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetTransactionRate()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetTransactionRate()
+	fmt.Println(result)
 }
 
 func TestGetCurrentMiniEpoch(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetCurrentMiniEpoch()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetCurrentMiniEpoch()
+	fmt.Println(result)
 }
 
 func TestGetCurrentDSEpoch(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetCurrentDSEpoch()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetCurrentDSEpoch()
+	fmt.Println(result)
 }
 
 func TestGetPrevDifficulty(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetPrevDifficulty()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetPrevDifficulty()
+	fmt.Println(result)
 }
 
 func TestProvider_GetPendingTxn(t *testing.T) {
@@ -195,17 +177,15 @@ func TestProvider_GetPendingTxn(t *testing.T) {
 func TestProvider_GetTotalCoinSupply(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetTotalCoinSupply()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetTotalCoinSupply()
+	fmt.Println(result)
 }
 
 func TestProvider_GetMinerInfo(t *testing.T) {
 	SkipIfCI(t)
-	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetMinerInfo("5500")
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	provider := NewProvider("https://api.zilliqa.com/")
+	result, _ := provider.GetMinerInfo("6000")
+	fmt.Println(result)
 }
 
 func TestGetPrevDSDifficulty(t *testing.T) {
@@ -219,73 +199,64 @@ func TestGetPrevDSDifficulty(t *testing.T) {
 func TestGetTransaction(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetTransaction("655107c300e86ee6e819af1cbfce097db1510e8cd971d99f32ce2772dcad42f2")
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetTransaction("c7d6550a6558edcddbf4b3c7cf14db9f1025200b89bcbcd6a570c84db58d554f")
+	fmt.Println(result)
 }
 
 func TestGetRecentTransactions(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetRecentTransactions()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetRecentTransactions()
+	fmt.Println(result)
 }
 
 func TestGetTransactionsForTxBlock(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetTransactionsForTxBlock("1")
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetTransactionsForTxBlock("1442201")
+	fmt.Println(result)
 }
 
 func TestProvider_GetTxnBodiesForTxBlock(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetTxnBodiesForTxBlock("1364221")
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetTxnBodiesForTxBlock("1364221")
+	fmt.Println(result)
 }
 
 func TestGetNumTxnsTxEpoch(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetNumTxnsTxEpoch()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetNumTxnsTxEpoch()
+	fmt.Println(result)
 }
 
 func TestGetNumTxnsDSEpoch(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetNumTxnsDSEpoch()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetNumTxnsDSEpoch()
+	fmt.Println(result)
 }
 
 func TestGetMinimumGasPrice(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetMinimumGasPrice()
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetMinimumGasPrice()
+	fmt.Println(result)
 }
 
 func TestGetSmartContractCode(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetSmartContractCode("fe001824823b12b58708bf24edd94d8b5e1cfcf7")
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetSmartContractCode("fe001824823b12b58708bf24edd94d8b5e1cfcf7")
+	fmt.Println(result)
 }
 
 func TestGetSmartContractInit(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetSmartContractInit("fe001824823b12b58708bf24edd94d8b5e1cfcf7")
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetSmartContractInit("fe001824823b12b58708bf24edd94d8b5e1cfcf7")
+	fmt.Println(result)
 }
 
 func TestGetSmartContractState(t *testing.T) {
@@ -315,9 +286,8 @@ func TestGetContractAddressFromTransactionID(t *testing.T) {
 func TestGetBalance(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
-	result, _ := json.Marshal(response)
-	fmt.Println(string(result))
+	result, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	fmt.Println(result)
 }
 
 func TestProvider_CreateTransactionRaw(t *testing.T) {

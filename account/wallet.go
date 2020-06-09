@@ -17,7 +17,6 @@
 package account
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/bech32"
@@ -95,18 +94,9 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 	}
 
 	if tx.Nonce == "" {
-		response, err := provider.GetBalance(signer)
-		if err != nil {
-			return err
-		}
-		if response == nil {
-			return errors.New("get balance response err")
-		}
-		if response.Error == nil {
-			result := response.Result.(map[string]interface{})
-			n := result["nonce"].(json.Number)
-			bal := result["balance"].(string)
-			balNumber, ok := new(big.Int).SetString(bal, 10)
+		balAndNonce, err := provider.GetBalance(signer)
+		if err == nil {
+			balNumber, ok := new(big.Int).SetString(balAndNonce.Balance, 10)
 			if !ok {
 				return errors.New("parse balance error")
 			}
@@ -130,8 +120,7 @@ func (w *Wallet) SignWith(tx *transaction.Transaction, signer string, provider p
 				return errors.New("balance is not sufficient")
 			}
 
-			nonce, _ := n.Int64()
-			tx.Nonce = strconv.FormatInt(nonce+1, 10)
+			tx.Nonce = strconv.FormatInt(balAndNonce.Nonce+1, 10)
 		} else {
 			tx.Nonce = "1"
 		}
