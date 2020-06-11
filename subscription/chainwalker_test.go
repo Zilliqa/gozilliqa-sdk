@@ -26,8 +26,8 @@ func TestWalker_TraversalBlock(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")
 	}
-	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
-	walker := NewWalker(provider, 933750, 933770, "0xab14b0fd133721d7c47ef410908e8ffc2b39167f", 50, "Transfer")
+	provider := provider2.NewProvider("https://api.zilliqa.com/")
+	walker := NewWalker(provider, 613524, 613525, "0x367093f076490df47b9d7ec3400d8104649175d6", 50, "Burnt")
 	walker.StartTraversalBlock()
 	t.Log(walker.EventLogs)
 }
