@@ -17,6 +17,7 @@
 package transaction
 
 import (
+	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/stretchr/testify/assert"
 	"os"
@@ -36,7 +37,7 @@ func TestTransaction_TrackTx(t *testing.T) {
 		GasPrice:  "",
 		GasLimit:  "",
 		Signature: "",
-		Receipt: TransactionReceipt{
+		Receipt: core.TransactionReceipt{
 			Success:       false,
 			CumulativeGas: "",
 			EpochNum:      "",
@@ -49,7 +50,7 @@ func TestTransaction_TrackTx(t *testing.T) {
 	}
 
 	tx.Confirm("846cda64971e259b1739bf15710758803abcf5754507af5af3f779777cd1b0b0", 1000, 3, provider)
-	assert.True(t, tx.Status == Confirmed)
+	assert.True(t, tx.Status == core.Confirmed)
 }
 
 func TestNewFromPayload(t *testing.T) {

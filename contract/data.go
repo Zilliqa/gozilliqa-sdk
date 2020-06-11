@@ -16,7 +16,9 @@
  */
 package contract
 
+import "github.com/Zilliqa/gozilliqa-sdk/core"
+
 type Data struct {
-	Tag    string  `json:"_tag"`
-	Params []Value `json:"params"`
+	Tag    string               `json:"_tag"`
+	Params []core.ContractValue `json:"params"`
 }

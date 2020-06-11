@@ -21,6 +21,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/ybbus/jsonrpc"
 	"io/ioutil"
 	"net/http"
@@ -38,103 +39,435 @@ func NewProvider(host string) *Provider {
 }
 
 // Returns the CHAIN_ID of the specified network. This is represented as a String.
-func (provider *Provider) GetNetworkId() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetNetworkId")
+func (provider *Provider) GetNetworkId() (string, error) {
+	result, err := provider.call("GetNetworkId")
+	if err != nil {
+		return "", nil
+	}
+	if result.Error != nil {
+		return "", result.Error
+	}
+	return result.Result.(string), nil
 }
 
 // Returns the current network statistics for the specified network.
-func (provider *Provider) GetBlockchainInfo() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetBlockchainInfo")
+func (provider *Provider) GetBlockchainInfo() (*core.BlockchainInfo, error) {
+	result, err := provider.call("GetBlockchainInfo")
+	if err != nil {
+		return nil, nil
+	}
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var blockchainInfo core.BlockchainInfo
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &blockchainInfo)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &blockchainInfo, nil
+
 }
 
-func (provider *Provider) GetShardingStructure() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetShardingStructure")
+func (provider *Provider) GetShardingStructure() (*core.ShardingStructure, error) {
+	result, err := provider.call("GetShardingStructure")
+	if err != nil {
+		return nil, nil
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var shardingStructure core.ShardingStructure
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &shardingStructure)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &shardingStructure, nil
+
 }
 
 // Returns the details of a specified Directory Service block.
-func (provider *Provider) GetDsBlock(block_number string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetDsBlock", block_number)
+func (provider *Provider) GetDsBlock(block_number string) (*core.DSBlock, error) {
+	result, err := provider.call("GetDsBlock", block_number)
+	if err != nil {
+		return nil, nil
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var dsBlock core.DSBlock
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &dsBlock)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &dsBlock, nil
 }
 
 // Returns the details of the most recent Directory Service block.
-func (provider *Provider) GetLatestDsBlock() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetLatestDsBlock")
+func (provider *Provider) GetLatestDsBlock() (*core.DSBlock, error) {
+	result, err := provider.call("GetLatestDsBlock")
+	if err != nil {
+		return nil, nil
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var dsBlock core.DSBlock
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &dsBlock)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &dsBlock, nil
 }
 
 // Returns the current number of validated Directory Service blocks in the network.
 // This is represented as a String.
-func (provider *Provider) GetNumDSBlocks() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetNumDSBlocks")
+func (provider *Provider) GetNumDSBlocks() (string, error) {
+	result, err := provider.call("GetNumDSBlocks")
+	if err != nil {
+		return "", nil
+	}
+	if result.Error != nil {
+		return "", result.Error
+	}
+	return result.Result.(string), nil
 }
 
 // Returns the current Directory Service blockrate per second.
-func (provider *Provider) GetDSBlockRate() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetDSBlockRate")
+func (provider *Provider) GetDSBlockRate() (float64, error) {
+	result, err := provider.call("GetDSBlockRate")
+	if err != nil {
+		return 0, err
+	}
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	rate, err2 := result.Result.(json.Number).Float64()
+	if err2 != nil {
+		return 0, err2
+	}
+
+	return rate, nil
 }
 
 // Returns a paginated list of up to 10 Directory Service (DS) blocks and their block hashes for a specified page.
 // The maxPages variable that specifies the maximum number of pages available is also returned.
-func (provider *Provider) DSBlockListing(ds_block_listing int) (*jsonrpc.RPCResponse, error) {
-	return provider.call("DSBlockListing", ds_block_listing)
+func (provider *Provider) DSBlockListing(ds_block_listing int) (*core.BlockList, error) {
+	result, err := provider.call("DSBlockListing", ds_block_listing)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var list core.BlockList
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &list)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &list, nil
 }
 
 // Returns the details of a specified Transaction block.
-func (provider *Provider) GetTxBlock(tx_block string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetTxBlock", tx_block)
+func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlock, error) {
+	result, err := provider.call("GetTxBlock", tx_block)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var txBlock core.TxBlock
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &txBlock)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &txBlock, nil
 }
 
 // Returns the details of the most recent Transaction block.
-func (provider *Provider) GetLatestTxBlock() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetLatestTxBlock")
+func (provider *Provider) GetLatestTxBlock() (*core.TxBlock, error) {
+	result, err := provider.call("GetLatestTxBlock")
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var txBlock core.TxBlock
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &txBlock)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &txBlock, nil
 }
 
 // Returns the current number of Transaction blocks in the network.
 // This is represented as a String.
-func (provider *Provider) GetNumTxBlocks() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetNumTxBlocks")
+func (provider *Provider) GetNumTxBlocks() (string, error) {
+	result, err := provider.call("GetNumTxBlocks")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
 }
 
 // Returns the current Transaction blockrate per second for the network.
-func (provider *Provider) GetTxBlockRate() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetTxBlockRate")
+func (provider *Provider) GetTxBlockRate() (float64, error) {
+	result, err := provider.call("GetTxBlockRate")
+	if err != nil {
+		return 0, err
+	}
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	rate, err2 := result.Result.(json.Number).Float64()
+	if err2 != nil {
+		return 0, err2
+	}
+
+	return rate, nil
 }
 
 // Returns a paginated list of up to 10 Transaction blocks and their block hashes for a specified page.
 // The maxPages variable that specifies the maximum number of pages available is also returned.
-func (provider *Provider) TxBlockListing(page int) (*jsonrpc.RPCResponse, error) {
-	return provider.call("TxBlockListing", page)
+func (provider *Provider) TxBlockListing(page int) (*core.BlockList, error) {
+	result, err := provider.call("TxBlockListing", page)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var list core.BlockList
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &list)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &list, nil
 }
 
 // Returns the current number of validated Transactions in the network.
 // This is represented as a String.
-func (provider *Provider) GetNumTransactions() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetNumTransactions")
+func (provider *Provider) GetNumTransactions() (string, error) {
+	result, err := provider.call("GetNumTransactions")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
 }
 
 // Returns the current Transaction rate per second (TPS) of the network.
 // This is represented as an Number.
-func (provider *Provider) GetTransactionRate() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetTransactionRate")
+func (provider *Provider) GetTransactionRate() (float64, error) {
+	result, err := provider.call("GetTransactionRate")
+
+	if err != nil {
+		return 0, err
+	}
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	rate, err2 := result.Result.(json.Number).Float64()
+	if err2 != nil {
+		return 0, err2
+	}
+
+	return rate, nil
 }
 
 // Returns the current TX block number of the network.
 // This is represented as a String.
-func (provider *Provider) GetCurrentMiniEpoch() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetCurrentMiniEpoch")
+func (provider *Provider) GetCurrentMiniEpoch() (string, error) {
+	result, err := provider.call("GetCurrentMiniEpoch")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
 }
 
 // Returns the current number of DS blocks in the network.
 // This is represented as a String.
-func (provider *Provider) GetCurrentDSEpoch() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetCurrentDSEpoch")
+func (provider *Provider) GetCurrentDSEpoch() (string, error) {
+	result, err := provider.call("GetCurrentDSEpoch")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
 }
 
 // Returns the minimum shard difficulty of the previous block.
 // This is represented as an Number.
-func (provider *Provider) GetPrevDifficulty() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetPrevDifficulty")
+func (provider *Provider) GetPrevDifficulty() (int64, error) {
+	result, err := provider.call("GetPrevDifficulty")
+	if err != nil {
+		return 0, err
+	}
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	difficulty, err2 := result.Result.(json.Number).Int64()
+	if err2 != nil {
+		return 0, err2
+	}
+
+	return difficulty, nil
 }
 
+// Returns the minimum DS difficulty of the previous block.
+// This is represented as an Number.
+func (provider *Provider) GetPrevDSDifficulty() (int64, error) {
+	result, err := provider.call("GetPrevDSDifficulty")
+	if err != nil {
+		return 0, err
+	}
+
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	difficulty, err2 := result.Result.(json.Number).Int64()
+	if err2 != nil {
+		return 0, err2
+	}
+
+	return difficulty, nil
+}
+
+// Returns the total supply (ZIL) of coins in the network. This is represented as a String.
+func (provider *Provider) GetTotalCoinSupply() (string, error) {
+	result, err := provider.call("GetTotalCoinSupply")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
+}
+
+// Returns the mining nodes (i.e., the members of the DS committee and shards) at the specified DS block.
+// Notes: 1. Nodes owned by Zilliqa Research are omitted. 2. dscommittee has no size field since the DS committee size
+// is fixed for a given chain. 3. For the Zilliqa Mainnet, this API is only available from DS block 5500 onwards.
+func (provider *Provider) GetMinerInfo(dsNumber string) (*core.MinerInfo, error) {
+	result, err := provider.call("GetMinerInfo", dsNumber)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var minerInfo core.MinerInfo
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &minerInfo)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &minerInfo, nil
+}
 
 // Returns the pending status of a specified Transaction. Possible results are:
 //
@@ -156,26 +489,8 @@ func (provider *Provider) GetPendingTxn(tx string) (*jsonrpc.RPCResponse, error)
 //  false	1	Nonce too high
 //  false	2	Could not fit in as microblock gas limit reached
 //  false	3	Transaction valid but consensus not reached
-func (provider *Provider) GetPendingTxns() (*jsonrpc.RPCResponse,error) {
+func (provider *Provider) GetPendingTxns() (*jsonrpc.RPCResponse, error) {
 	return provider.call("GetPendingTxn")
-}
-
-// Returns the minimum DS difficulty of the previous block.
-// This is represented as an Number.
-func (provider *Provider) GetPrevDSDifficulty() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetPrevDSDifficulty")
-}
-
-// Returns the total supply (ZIL) of coins in the network. This is represented as a String.
-func (provider *Provider) GetTotalCoinSupply() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetTotalCoinSupply")
-}
-
-// Returns the mining nodes (i.e., the members of the DS committee and shards) at the specified DS block.
-// Notes: 1. Nodes owned by Zilliqa Research are omitted. 2. dscommittee has no size field since the DS committee size
-// is fixed for a given chain. 3. For the Zilliqa Mainnet, this API is only available from DS block 5500 onwards.
-func (provider *Provider) GetMinerInfo(dsNumber string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetMinerInfo",dsNumber)
 }
 
 // Create a new Transaction object and send it to the network to be process.
@@ -197,54 +512,191 @@ func (provider *Provider) CreateTransactionRaw(payload []byte) (*jsonrpc.RPCResp
 
 // Returns the details of a specified Transaction.
 // Note: If the transaction had an data field or code field, it will be displayed
-func (provider *Provider) GetTransaction(transaction_hash string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetTransaction", transaction_hash)
+func (provider *Provider) GetTransaction(transaction_hash string) (*core.Transaction, error) {
+	result, err := provider.call("GetTransaction", transaction_hash)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var transaction core.Transaction
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &transaction)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &transaction, nil
 }
 
 // Returns the most recent 100 transactions that are validated by the Zilliqa network.
-func (provider *Provider) GetRecentTransactions() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetRecentTransactions")
+func (provider *Provider) GetRecentTransactions() (*core.Transactions, error) {
+	result, err := provider.call("GetRecentTransactions")
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var transactions core.Transactions
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &transactions)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &transactions, nil
 }
 
 // Returns the validated transactions included within a specfied final transaction block as an array of length i,
 // where i is the number of shards plus the DS committee. The transactions are grouped based on the group that processed
 // the transaction. The first element of the array refers to the first shard. The last element of the array at index, i,
 // refers to the transactions processed by the DS Committee.
-func (provider *Provider) GetTransactionsForTxBlock(tx_block_number string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetTransactionsForTxBlock", tx_block_number)
+func (provider *Provider) GetTransactionsForTxBlock(tx_block_number string) ([][]string, error) {
+	result, err := provider.call("GetTransactionsForTxBlock", tx_block_number)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var transactions [][]string
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &transactions)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return transactions, nil
 }
 
-func (provider *Provider) GetTxnBodiesForTxBlock(tx_block_number string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetTxnBodiesForTxBlock", tx_block_number)
+func (provider *Provider) GetTxnBodiesForTxBlock(tx_block_number string) ([]core.Transaction, error) {
+	result, err := provider.call("GetTxnBodiesForTxBlock", tx_block_number)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var transactions []core.Transaction
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &transactions)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return transactions, nil
 }
 
 // Returns the number of validated transactions included in this Transaction epoch.
 // This is represented as String.
-func (provider *Provider) GetNumTxnsTxEpoch() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetNumTxnsTxEpoch")
+func (provider *Provider) GetNumTxnsTxEpoch() (string, error) {
+	result, err := provider.call("GetNumTxnsTxEpoch")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
 }
 
 // Returns the number of validated transactions included in this DS epoch.
 // This is represented as String.
-func (provider *Provider) GetNumTxnsDSEpoch() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetNumTxnsDSEpoch")
+func (provider *Provider) GetNumTxnsDSEpoch() (string, error) {
+	result, err := provider.call("GetNumTxnsDSEpoch")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
 }
 
 // Returns the minimum gas price for this DS epoch, measured in the smallest price unit Qa (or 10^-12 Zil) in Zilliqa.
 // This is represented as a String.
-func (provider *Provider) GetMinimumGasPrice() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetMinimumGasPrice")
+func (provider *Provider) GetMinimumGasPrice() (string, error) {
+	result, err := provider.call("GetMinimumGasPrice")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
+
 }
 
 // Returns the Scilla code associated with a smart contract address.
 // This is represented as a String.
-func (provider *Provider) GetSmartContractCode(contract_address string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetSmartContractCode", contract_address)
+func (provider *Provider) GetSmartContractCode(contract_address string) (string, error) {
+	result, err := provider.call("GetSmartContractCode")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
 }
 
 // Returns the initialization (immutable) parameters of a given smart contract, represented in a JSON format.
-func (provider *Provider) GetSmartContractInit(contract_address string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetSmartContractInit", contract_address)
+func (provider *Provider) GetSmartContractInit(contract_address string) ([]core.ContractValue, error) {
+	result, err := provider.call("GetSmartContractInit", contract_address)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var init []core.ContractValue
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &init)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return init, nil
 }
 
 // Returns the state (mutable) variables of a smart contract address, represented in a JSON format.
@@ -307,15 +759,47 @@ func (provider *Provider) GetSmartContracts(user_address string) (*jsonrpc.RPCRe
 
 // Returns a smart contract address of 20 bytes. This is represented as a String.
 // NOTE: This only works for contract deployment transactions.
-func (provider *Provider) GetContractAddressFromTransactionID(transaction_id string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetContractAddressFromTransactionID", transaction_id)
+func (provider *Provider) GetContractAddressFromTransactionID(transaction_id string) (string, error) {
+	result, err := provider.call("GetContractAddressFromTransactionID")
+	if err != nil {
+		return "", err
+	}
+
+	if result.Error != nil {
+		return "", result.Error
+	}
+
+	return result.Result.(string), nil
 }
 
 // Returns the current balance of an account, measured in the smallest accounting unit Qa (or 10^-12 Zil).
 // This is represented as a String
 // Returns the current nonce of an account. This is represented as an Number.
-func (provider *Provider) GetBalance(user_address string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetBalance", user_address)
+func (provider *Provider) GetBalance(user_address string) (*core.BalanceAndNonce, error) {
+	result, err := provider.call("GetBalance", user_address)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	balanceAndNonce := core.BalanceAndNonce{
+		Balance: "0",
+		Nonce:   0,
+	}
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &balanceAndNonce)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &balanceAndNonce, nil
 }
 
 func (provider *Provider) call(method_name string, params ...interface{}) (*jsonrpc.RPCResponse, error) {

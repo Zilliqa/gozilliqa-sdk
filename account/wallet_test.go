@@ -18,6 +18,7 @@ package account
 
 import (
 	"fmt"
+	"github.com/Zilliqa/gozilliqa-sdk/core"
 	provider2 "github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
@@ -53,9 +54,8 @@ func TestSendTransaction(t *testing.T) {
 	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
 
-	result, err := provider.GetMinimumGasPrice()
+	gasPrice, err := provider.GetMinimumGasPrice()
 	assert.Nil(t, err, err)
-	gasPrice := result.Result.(string)
 
 	tx := &transaction.Transaction{
 		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
@@ -80,7 +80,7 @@ func TestSendTransaction(t *testing.T) {
 	hash := resMap["TranID"].(string)
 	fmt.Printf("hash is %s\n", hash)
 	tx.Confirm(hash, 1000, 3, provider)
-	assert.True(t, tx.Status == transaction.Confirmed)
+	assert.True(t, tx.Status == core.Confirmed)
 }
 
 func TestSendTransactionInsufficientAmount(t *testing.T) {
@@ -91,9 +91,8 @@ func TestSendTransactionInsufficientAmount(t *testing.T) {
 	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
 
-	result, err := provider.GetMinimumGasPrice()
+	gasPrice, err := provider.GetMinimumGasPrice()
 	assert.Nil(t, err, err)
-	gasPrice := result.Result.(string)
 
 	tx := &transaction.Transaction{
 		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
