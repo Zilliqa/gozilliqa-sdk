@@ -1,5 +1,7 @@
 module github.com/Zilliqa/gozilliqa-sdk
 
+go 1.14
+
 require (
 	github.com/btcsuite/btcd v0.0.0-20190315201642-aa6e0f35703c
 	github.com/btcsuite/btcutil v0.0.0-20190425235716-9e5f4b9a998d
