@@ -24,7 +24,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
 type Walker struct {
@@ -140,27 +139,21 @@ func (w *Walker) StartTraversalBlock() {
 
 			// get detail
 			fmt.Println("tx for block ", i, " = ", txns)
-			totalTxNumber := len(txns)
 			complete := &Complete{
 				Number: 0,
 			}
 
 			wp := workpool.NewWorkPool(w.WorkerNumber)
-			quit := make(chan struct{})
+			quit := make(chan int,1)
 			for _, tx := range txns {
 				task := NewGetReceiptTask(tx, w.Provider, complete, w, i)
 				wp.AddTask(task)
 			}
-			go func(q chan struct{}) {
-				wp.Poll(context.TODO(), quit)
-				for {
-					time.Sleep(time.Second)
-					if totalTxNumber == complete.Number {
-						close(q)
-						break
-					}
-				}
-			}(quit)
+			wp.Poll(context.TODO(), quit)
+			select {
+			case <-quit:
+				break
+			}
 		}
 	}
 }

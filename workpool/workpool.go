@@ -18,16 +18,18 @@ package workpool
 
 import (
 	"context"
-	"fmt"
 	"golang.org/x/sync/semaphore"
-	"time"
+	"sync"
 )
 
 type WorkerPool struct {
-	maxWorkers int64
-	sem        *semaphore.Weighted
-	takes      map[string]Task
-	ids        []string
+	maxWorkers     int64
+	sem            *semaphore.Weighted
+	tasks          map[string]Task
+	ids            []string
+	taskNumber     int64
+	completeNumber int64
+	sync.Mutex
 }
 
 func NewWorkPool(max int64) *WorkerPool {
@@ -37,14 +39,15 @@ func NewWorkPool(max int64) *WorkerPool {
 	return &WorkerPool{
 		maxWorkers: max,
 		sem:        m,
-		takes:      ts,
+		tasks:      ts,
 		ids:        ids,
 	}
 }
 
 func (wp *WorkerPool) AddTask(task Task) {
+	wp.taskNumber++
 	wp.ids = append(wp.ids, task.UUID())
-	wp.takes[task.UUID()] = task
+	wp.tasks[task.UUID()] = task
 }
 
 func (wp *WorkerPool) Top() Task {
@@ -53,34 +56,34 @@ func (wp *WorkerPool) Top() Task {
 	}
 
 	id := wp.ids[0]
-	t := wp.takes[id]
+	t := wp.tasks[id]
 
-	delete(wp.takes, id)
+	delete(wp.tasks, id)
 	wp.ids = wp.ids[1:]
 	return t
 
 }
 
-func (wp *WorkerPool) Poll(ctx context.Context, quit <-chan struct{}) {
-	for {
-		select {
-		case <-quit:
-			fmt.Println("quit now..")
-			break
-		default:
-			task := wp.Top()
-			if task == nil {
-				time.Sleep(time.Second * 3)
-			} else {
-				if err := wp.sem.Acquire(ctx, 1); err != nil {
-					break
-				}
-				go func() {
-					defer wp.sem.Release(1)
-					task.Run()
-				}()
-			}
-		}
+func (wp * WorkerPool) Empty() bool {
+	return len(wp.ids) == 0
+}
 
+func (wp *WorkerPool) Poll(ctx context.Context, quit chan int) {
+	for !wp.Empty() {
+		t := wp.Top()
+		if err := wp.sem.Acquire(ctx, 1); err != nil {
+			break
+		}
+		go func() {
+			defer wp.sem.Release(1)
+			t.Run()
+
+			wp.Mutex.Lock()
+			wp.completeNumber++
+			if wp.completeNumber == wp.taskNumber {
+				quit <- 0
+			}
+			wp.Mutex.Unlock()
+		}()
 	}
 }
