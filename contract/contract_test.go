@@ -83,9 +83,13 @@ func TestContract_Deploy(t *testing.T) {
 		Provider: provider,
 	}
 
-	nonce, _ := provider.GetBalance(address).Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	rsp,_ := provider.GetBalance(address)
 
-	gasPrice := provider.GetMinimumGasPrice().Result.(string)
+	nonce,_ := rsp.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+
+	rsp,_ = provider.GetMinimumGasPrice()
+
+	gasPrice := rsp.Result.(string)
 
 	deployParams := DeployParams{
 		Version:      strconv.FormatInt(int64(util.Pack(chainID, msgVersion)), 10),
@@ -137,10 +141,11 @@ func TestContract_Call(t *testing.T) {
 		},
 	}
 
-	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	rsp, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	nonce,_ := rsp.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 	n := nonce + 1
-	gasPrice := provider.GetMinimumGasPrice().Result.(string)
-
+	rsp,_ = provider.GetMinimumGasPrice()
+	gasPrice := rsp.Result.(string)
 
 	params := CallParams{
 		Nonce:        strconv.FormatInt(n, 10),
@@ -198,9 +203,11 @@ func TestContract_Sign(t *testing.T) {
 		},
 	}
 
-	nonce, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a").Result.(map[string]interface{})["nonce"].(json.Number).Int64()
+	rsp, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	nonce,_ := rsp.Result.(map[string]interface{})["nonce"].(json.Number).Int64()
 	n := nonce + 1
-	gasPrice := provider.GetMinimumGasPrice().Result.(string)
+	rsp,_ = provider.GetMinimumGasPrice()
+	gasPrice := rsp.Result.(string)
 
 
 	params := CallParams{
@@ -225,7 +232,7 @@ func TestContract_Sign(t *testing.T) {
 	if err3 != nil {
 		t.Error(err3.Error())
 	}
-	rsp := provider.CreateTransaction(*payload2)
+	rsp,_ = provider.CreateTransaction(*payload2)
 	fmt.Println(rsp.Error)
 	fmt.Println(rsp.Result)
 

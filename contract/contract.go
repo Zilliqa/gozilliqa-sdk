@@ -80,7 +80,11 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		return nil, err2
 	}
 
-	rsp := c.Provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp,err := c.Provider.CreateTransaction(tx.ToTransactionPayload())
+
+	if err != nil {
+		return nil,err
+	}
 
 	if rsp.Error != nil {
 		return nil, errors.New(rsp.Error.Message)
@@ -162,7 +166,11 @@ func (c *Contract) Call(transition string, args []Value, params CallParams, prio
 		return err2, nil
 	}
 
-	rsp := c.Provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp,err := c.Provider.CreateTransaction(tx.ToTransactionPayload())
+
+	if err != nil {
+		return err,nil
+	}
 
 	if rsp.Error != nil {
 		return errors.New(rsp.Error.Message), nil

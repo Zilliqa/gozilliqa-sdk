@@ -38,7 +38,8 @@ func TestSendTransaction(t *testing.T) {
 	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
 
-	gasPrice := provider.GetMinimumGasPrice().Result.(string)
+	rsp ,_ := provider.GetMinimumGasPrice()
+	gasPrice := rsp.Result.(string)
 
 	tx := &transaction.Transaction{
 		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
@@ -58,7 +59,7 @@ func TestSendTransaction(t *testing.T) {
 		t.Error(err)
 	}
 
-	rsp := provider.CreateTransaction(tx.ToTransactionPayload())
+	rsp,_ = provider.CreateTransaction(tx.ToTransactionPayload())
 
 	if rsp.Error != nil {
 		fmt.Println(rsp.Error)
