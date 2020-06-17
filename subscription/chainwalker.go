@@ -21,9 +21,11 @@ import (
 	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/workpool"
+	"github.com/ybbus/jsonrpc"
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 )
 
 type Walker struct {
@@ -35,6 +37,8 @@ type Walker struct {
 	EventLogs    map[uint64]Log
 	WorkerNumber int64
 	EventName    string
+	Retry        int
+	Interval     int64
 }
 
 type Log struct {
@@ -44,7 +48,7 @@ type Log struct {
 	Logs      interface{}
 }
 
-func NewWalker(p *provider.Provider, from, to uint64, address string, workerNumber int64, eventName string) *Walker {
+func NewWalker(p *provider.Provider, from, to uint64, address string, workerNumber int64, eventName string, retry int, interval int64) *Walker {
 	eventLogs := make(map[uint64]Log)
 	return &Walker{
 		Provider:     p,
@@ -54,6 +58,8 @@ func NewWalker(p *provider.Provider, from, to uint64, address string, workerNumb
 		EventLogs:    eventLogs,
 		WorkerNumber: workerNumber,
 		EventName:    eventName,
+		Retry:        retry,
+		Interval:     interval,
 	}
 }
 
@@ -84,11 +90,7 @@ func NewGetReceiptTask(tx string, provider2 *provider.Provider, c *Complete, w *
 	}
 }
 
-func (t GetEventReceiptTask) Run() {
-	t.Complete.Lock()
-	defer t.Complete.Unlock()
-	t.Complete.Number++
-	rsp,_ := t.Provider.GetTransaction(t.Id)
+func (t GetEventReceiptTask) handleTxn(rsp *jsonrpc.RPCResponse) {
 	resultMap := rsp.Result.(map[string]interface{})
 	receipt := resultMap["receipt"].(map[string]interface{})
 	addr := resultMap["toAddr"].(string)
@@ -117,47 +119,94 @@ func (t GetEventReceiptTask) Run() {
 	}
 }
 
+func (t GetEventReceiptTask) Run() {
+	t.Complete.Lock()
+	defer t.Complete.Unlock()
+	t.Complete.Number++
+	fmt.Println("start to get transaction " + t.Id)
+	var rpcResult *jsonrpc.RPCResponse
+	for i := 0; i < t.Walker.Retry; i++ {
+		rsp, err := t.Provider.GetTransaction(t.Id)
+		if err != nil || rsp.Error != nil {
+			if err != nil {
+				fmt.Printf("get transaction failed, id = %s, error = %s\n", t.Id, err.Error())
+			} else {
+				fmt.Printf("get transaction failed, id = %s, error = %s\n", t.Id, rsp.Error.Error())
+			}
+			fmt.Println("start to retry")
+			time.Sleep(time.Millisecond * time.Duration(t.Walker.Interval))
+		} else {
+			rpcResult = rsp
+			break
+		}
+	}
+
+	if rpcResult == nil {
+		fmt.Printf("still cannot get transaction = %s\n",t.Id)
+	} else {
+		t.handleTxn(rpcResult)
+	}
+}
+
 func (w *Walker) StartTraversalBlock() {
 	for i := w.FromBlock; i < w.ToBlock; i++ {
-		rsp,_ := w.Provider.GetTransactionsForTxBlock(strconv.FormatUint(i, 10))
-		if rsp.Error != nil {
-			fmt.Println("tx for block ", i, " = ", rsp.Error)
-		} else {
-			txResult := rsp.Result.([]interface{})
-			var txns []string
-
-			// flat tx hash
-			for _, txs := range txResult {
-				if txs == nil {
-					continue
-				}
-				txList := txs.([]interface{})
-				if len(txList) > 0 {
-					for _, tx := range txList {
-						txns = append(txns, tx.(string))
-					}
+		var rpcResult *jsonrpc.RPCResponse
+		for j := 0; j < w.Retry; j++ {
+			rsp, err := w.Provider.GetTransactionsForTxBlock(strconv.FormatUint(i, 10))
+			if err != nil || rsp.Error != nil {
+				if err != nil {
+					fmt.Printf("get block failed, number = %d, error = %s\n", i, err.Error())
 				} else {
-					continue
+					fmt.Printf("get block failed, number = %d, error = %s\n", i, rsp.Error.Error())
 				}
-			}
-
-			// get detail
-			fmt.Println("tx for block ", i, " = ", txns)
-			complete := &Complete{
-				Number: 0,
-			}
-
-			wp := workpool.NewWorkPool(w.WorkerNumber)
-			quit := make(chan int,1)
-			for _, tx := range txns {
-				task := NewGetReceiptTask(tx, w.Provider, complete, w, i)
-				wp.AddTask(task)
-			}
-			wp.Poll(context.TODO(), quit)
-			select {
-			case <-quit:
+				fmt.Println("start to retry")
+				time.Sleep(time.Millisecond * time.Duration(w.Interval))
+			} else {
+				rpcResult = rsp
 				break
 			}
 		}
+
+		if rpcResult == nil {
+			fmt.Printf("still cannot get result, block = %d\n", i)
+			continue
+		}
+
+		txResult := rpcResult.Result.([]interface{})
+		var txns []string
+
+		// flat tx hash
+		for _, txs := range txResult {
+			if txs == nil {
+				continue
+			}
+			txList := txs.([]interface{})
+			if len(txList) > 0 {
+				for _, tx := range txList {
+					txns = append(txns, tx.(string))
+				}
+			} else {
+				continue
+			}
+		}
+
+		// get detail
+		fmt.Println("tx for block ", i, " = ", txns)
+		complete := &Complete{
+			Number: 0,
+		}
+
+		wp := workpool.NewWorkPool(w.WorkerNumber)
+		quit := make(chan int, 1)
+		for _, tx := range txns {
+			task := NewGetReceiptTask(tx, w.Provider, complete, w, i)
+			wp.AddTask(task)
+		}
+		wp.Poll(context.TODO(), quit)
+		select {
+		case <-quit:
+			break
+		}
+
 	}
 }
