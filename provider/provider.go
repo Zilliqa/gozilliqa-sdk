@@ -173,6 +173,10 @@ func (provider *Provider) GetSmartContractState(contract_address string) (*jsonr
 	return provider.call("GetSmartContractState", contract_address)
 }
 
+func (provider *Provider) GetTxnBodiesForTxBlock(tx_block_number string) (*jsonrpc.RPCResponse, error) {
+	return provider.call("GetTxnBodiesForTxBlock", tx_block_number)
+}
+
 func (provider *Provider) GetSmartContractSubState(contractAddress string, params ...interface{}) (string, error) {
 	//we should hack here for now
 	type req struct {
