@@ -123,7 +123,7 @@ func (t GetEventReceiptTask) Run() {
 	t.Complete.Lock()
 	defer t.Complete.Unlock()
 	t.Complete.Number++
-	fmt.Println("start to get transaction " + t.Id)
+	//fmt.Println("start to get transaction " + t.Id)
 	var rpcResult *jsonrpc.RPCResponse
 	for i := 0; i < t.Walker.Retry; i++ {
 		rsp, err := t.Provider.GetTransaction(t.Id)
@@ -156,6 +156,12 @@ func (w *Walker) StartTraversalBlock() {
 			if err != nil || rsp.Error != nil {
 				if err != nil {
 					fmt.Printf("get block failed, number = %d, error = %s\n", i, err.Error())
+				} else if rsp.Error.Message == "TxBlock has no transactions" {
+					rsp = &jsonrpc.RPCResponse{
+						JSONRPC: "empty",
+					}
+					rpcResult = rsp
+					break
 				} else {
 					fmt.Printf("get block failed, number = %d, error = %s\n", i, rsp.Error.Error())
 				}
@@ -169,6 +175,11 @@ func (w *Walker) StartTraversalBlock() {
 
 		if rpcResult == nil {
 			fmt.Printf("still cannot get result, block = %d\n", i)
+			continue
+		}
+
+		if rpcResult.JSONRPC == "empty" {
+			fmt.Printf("block is empty, block = %d\n", i)
 			continue
 		}
 
