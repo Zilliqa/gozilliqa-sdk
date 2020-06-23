@@ -44,13 +44,42 @@ func NewWallet() *Wallet {
 	}
 }
 
+type BatchSendingResult struct {
+	Index  int
+	Hash   string
+	ErrMsg string
+}
+
+func (w *Wallet) SendBatch(signedTransactions []*transaction.Transaction, provider provider.Provider) []BatchSendingResult {
+	var batchSendingResult []BatchSendingResult
+	for index, txn := range signedTransactions {
+		sendingResult := BatchSendingResult{
+			Index: index,
+		}
+		rsp, err := provider.CreateTransaction(txn.ToTransactionPayload())
+		if err != nil {
+			sendingResult.ErrMsg = err.Error()
+		} else if rsp.Error != nil {
+			sendingResult.ErrMsg = rsp.Error.Message
+		} else {
+			resMap := rsp.Result.(map[string]interface{})
+			hash := resMap["TranID"].(string)
+			sendingResult.Hash = hash
+		}
+
+		batchSendingResult = append(batchSendingResult, sendingResult)
+	}
+
+	return batchSendingResult
+}
+
 func (w *Wallet) SignBatch(transactions []*transaction.Transaction, provider provider.Provider) error {
 	balAndNonce, err := provider.GetBalance(w.DefaultAccount.Address)
 	if err != nil {
 		return err
 	}
 
-	return w.signBatch(transactions, balAndNonce.Nonce + 1,provider)
+	return w.signBatch(transactions, balAndNonce.Nonce+1, provider)
 }
 
 func (w *Wallet) signBatch(transactions []*transaction.Transaction, initNonce int64, provider provider.Provider) error {
