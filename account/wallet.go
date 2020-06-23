@@ -44,6 +44,27 @@ func NewWallet() *Wallet {
 	}
 }
 
+func (w *Wallet) SignBatch(transactions []*transaction.Transaction, provider provider.Provider) error {
+	balAndNonce, err := provider.GetBalance(w.DefaultAccount.Address)
+	if err != nil {
+		return err
+	}
+
+	return w.signBatch(transactions, balAndNonce.Nonce + 1,provider)
+}
+
+func (w *Wallet) signBatch(transactions []*transaction.Transaction, initNonce int64, provider provider.Provider) error {
+	for index, txn := range transactions {
+		currentNonce := int64(index) + initNonce
+		txn.Nonce = strconv.FormatInt(currentNonce, 10)
+		err := w.Sign(txn, provider)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) error {
 	if strings.HasPrefix(tx.ToAddr, "0x") {
 		tx.ToAddr = strings.TrimPrefix(tx.ToAddr, "0x")
@@ -54,11 +75,11 @@ func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) e
 	}
 
 	if validator.IsBech32(tx.ToAddr) {
-		adddress, err := bech32.FromBech32Addr(tx.ToAddr)
+		address, err := bech32.FromBech32Addr(tx.ToAddr)
 		if err != nil {
 			return err
 		}
-		tx.ToAddr = adddress
+		tx.ToAddr = address
 	}
 
 	if validator.IsChecksumAddress("0x" + tx.ToAddr) {
