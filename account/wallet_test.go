@@ -24,6 +24,7 @@ import (
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/stretchr/testify/assert"
 	"os"
+	"runtime"
 	"strconv"
 	"testing"
 )
@@ -83,8 +84,8 @@ func TestSendTransaction(t *testing.T) {
 	assert.True(t, tx.Status == core.Confirmed)
 }
 
-
 func TestBatchSendTransaction(t *testing.T) {
+	runtime.GOMAXPROCS(runtime.NumCPU())
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")
 	}
@@ -95,8 +96,9 @@ func TestBatchSendTransaction(t *testing.T) {
 	gasPrice, err := provider.GetMinimumGasPrice()
 	assert.Nil(t, err, err)
 
-	transactions := []*transaction.Transaction{
-		{
+	var transactions []*transaction.Transaction
+	for i := 0; i < 15000; i++ {
+		txn := &transaction.Transaction{
 			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 			SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
 			ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
@@ -106,39 +108,18 @@ func TestBatchSendTransaction(t *testing.T) {
 			Code:         "",
 			Data:         "",
 			Priority:     false,
-		},
-		{
-			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
-			SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
-			ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
-			Amount:       "10000000",
-			GasPrice:     gasPrice,
-			GasLimit:     "1",
-			Code:         "",
-			Data:         "",
-			Priority:     false,
-		},
-		{
-			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
-			SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
-			ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
-			Amount:       "10000000",
-			GasPrice:     gasPrice,
-			GasLimit:     "1",
-			Code:         "",
-			Data:         "",
-			Priority:     false,
-		},
+		}
+
+		transactions = append(transactions, txn)
 	}
 
 	err2 := wallet.SignBatch(transactions, *provider)
 	assert.Nil(t, err2, err2)
 
-	batchSendingResult := wallet.SendBatch(transactions,*provider)
+	batchSendingResult := wallet.SendBatchAsync(transactions, *provider,200)
 	fmt.Println(batchSendingResult)
 
 }
-
 
 func TestSendTransactionInsufficientAmount(t *testing.T) {
 	if os.Getenv("CI") != "" {
