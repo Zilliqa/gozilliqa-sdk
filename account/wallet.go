@@ -30,6 +30,7 @@ import (
 	"math/big"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type Wallet struct {
@@ -45,16 +46,54 @@ func NewWallet() *Wallet {
 }
 
 type BatchSendingResult struct {
-	Index  int
-	Hash   string
-	ErrMsg string
+	Index       int
+	Hash        string
+	ErrMsg      string
+	Transaction *transaction.Transaction
+}
+
+func (w *Wallet) SendBatchAsync(signedTransactions []*transaction.Transaction, provider provider.Provider, batchNum int) []BatchSendingResult {
+	var batchSendingResult []BatchSendingResult
+	total := len(signedTransactions)
+	batch := total / batchNum
+	for i := 0; i < batch; i++ {
+		var wg sync.WaitGroup
+		start := batchNum * i
+		end := batchNum*(i+1)
+		for j := start; j < end; j++ {
+			wg.Add(1)
+			go func(index int) {
+				defer wg.Done()
+				sendingResult := BatchSendingResult{
+					Index:       index,
+					Transaction: signedTransactions[index],
+				}
+				rsp, err := provider.CreateTransaction(signedTransactions[index].ToTransactionPayload())
+				if err != nil {
+					sendingResult.ErrMsg = err.Error()
+				} else if rsp.Error != nil {
+					sendingResult.ErrMsg = rsp.Error.Message
+				} else {
+					resMap := rsp.Result.(map[string]interface{})
+					hash := resMap["TranID"].(string)
+					sendingResult.Hash = hash
+				}
+
+				batchSendingResult = append(batchSendingResult, sendingResult)
+			}(j)
+		}
+		wg.Wait()
+	}
+
+	return batchSendingResult
 }
 
 func (w *Wallet) SendBatch(signedTransactions []*transaction.Transaction, provider provider.Provider) []BatchSendingResult {
 	var batchSendingResult []BatchSendingResult
 	for index, txn := range signedTransactions {
 		sendingResult := BatchSendingResult{
-			Index: index,
+			Index:       index,
+			Transaction: txn,
 		}
 		rsp, err := provider.CreateTransaction(txn.ToTransactionPayload())
 		if err != nil {
