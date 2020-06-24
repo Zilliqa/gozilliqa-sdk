@@ -112,6 +112,37 @@ func (w *Wallet) SendBatch(signedTransactions []*transaction.Transaction, provid
 	return batchSendingResult
 }
 
+func (w *Wallet) SendBatchOneGo(signedTransactions []*transaction.Transaction, p provider.Provider) ([]BatchSendingResult,error){
+	var payloads [][]provider.TransactionPayload
+	for _,tnx := range signedTransactions {
+		payload := []provider.TransactionPayload{tnx.ToTransactionPayload()}
+		payloads = append(payloads,payload)
+	}
+
+	responses,err := p.CreateTransactionBatch(payloads)
+	if err != nil {
+		return nil, err
+
+	}
+	var batchSendingResult []BatchSendingResult
+	for _,response := range responses {
+		sendingResult := BatchSendingResult{
+			Index:       response.ID,
+			Transaction: signedTransactions[response.ID],
+		}
+		if response.Error != nil {
+			sendingResult.ErrMsg = response.Error.Message
+		} else {
+			resMap := response.Result.(map[string]interface{})
+			hash := resMap["TranID"].(string)
+			sendingResult.Hash = hash
+		}
+		batchSendingResult = append(batchSendingResult, sendingResult)
+	}
+
+	return batchSendingResult,nil
+}
+
 func (w *Wallet) SignBatch(transactions []*transaction.Transaction, provider provider.Provider) error {
 	balAndNonce, err := provider.GetBalance(w.DefaultAccount.Address)
 	if err != nil {

@@ -97,7 +97,7 @@ func TestBatchSendTransaction(t *testing.T) {
 	assert.Nil(t, err, err)
 
 	var transactions []*transaction.Transaction
-	for i := 0; i < 15000; i++ {
+	for i := 0; i < 100; i++ {
 		txn := &transaction.Transaction{
 			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 			SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
@@ -116,9 +116,12 @@ func TestBatchSendTransaction(t *testing.T) {
 	err2 := wallet.SignBatch(transactions, *provider)
 	assert.Nil(t, err2, err2)
 
-	batchSendingResult := wallet.SendBatchAsync(transactions, *provider,200)
-	fmt.Println(batchSendingResult)
-
+	batchSendingResult,err := wallet.SendBatchOneGo(transactions, *provider)
+	if err != nil {
+		t.Fail()
+	} else {
+		fmt.Println(batchSendingResult)
+	}
 }
 
 func TestSendTransactionInsufficientAmount(t *testing.T) {
