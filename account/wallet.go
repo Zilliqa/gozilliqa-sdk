@@ -52,6 +52,65 @@ type BatchSendingResult struct {
 	Transaction *transaction.Transaction
 }
 
+// Send transactions sequentially
+func (w *Wallet) SendBatch(signedTransactions []*transaction.Transaction, provider provider.Provider) []BatchSendingResult {
+	var batchSendingResult []BatchSendingResult
+	for index, txn := range signedTransactions {
+		sendingResult := BatchSendingResult{
+			Index:       index,
+			Transaction: txn,
+		}
+		rsp, err := provider.CreateTransaction(txn.ToTransactionPayload())
+		if err != nil {
+			sendingResult.ErrMsg = err.Error()
+		} else if rsp.Error != nil {
+			sendingResult.ErrMsg = rsp.Error.Message
+		} else {
+			resMap := rsp.Result.(map[string]interface{})
+			hash := resMap["TranID"].(string)
+			sendingResult.Hash = hash
+		}
+
+		batchSendingResult = append(batchSendingResult, sendingResult)
+	}
+
+	return batchSendingResult
+}
+
+// Send transactions using JSON-RPC batch request
+// https://www.jsonrpc.org/specification#batch
+func (w *Wallet) SendBatchOneGo(signedTransactions []*transaction.Transaction, p provider.Provider) ([]BatchSendingResult, error) {
+	var payloads [][]provider.TransactionPayload
+	for _, tnx := range signedTransactions {
+		payload := []provider.TransactionPayload{tnx.ToTransactionPayload()}
+		payloads = append(payloads, payload)
+	}
+
+	responses, err := p.CreateTransactionBatch(payloads)
+	if err != nil {
+		return nil, err
+
+	}
+	var batchSendingResult []BatchSendingResult
+	for _, response := range responses {
+		sendingResult := BatchSendingResult{
+			Index:       response.ID,
+			Transaction: signedTransactions[response.ID],
+		}
+		if response.Error != nil {
+			sendingResult.ErrMsg = response.Error.Message
+		} else {
+			resMap := response.Result.(map[string]interface{})
+			hash := resMap["TranID"].(string)
+			sendingResult.Hash = hash
+		}
+		batchSendingResult = append(batchSendingResult, sendingResult)
+	}
+
+	return batchSendingResult, nil
+}
+
+// Send transactions using golang WaitGroup
 func (w *Wallet) SendBatchAsync(signedTransactions []*transaction.Transaction, provider provider.Provider, batchNum int) []BatchSendingResult {
 	var batchSendingResult []BatchSendingResult
 	total := len(signedTransactions)
@@ -59,7 +118,7 @@ func (w *Wallet) SendBatchAsync(signedTransactions []*transaction.Transaction, p
 	for i := 0; i < batch; i++ {
 		var wg sync.WaitGroup
 		start := batchNum * i
-		end := batchNum*(i+1)
+		end := batchNum * (i + 1)
 		for j := start; j < end; j++ {
 			wg.Add(1)
 			go func(index int) {
@@ -86,61 +145,6 @@ func (w *Wallet) SendBatchAsync(signedTransactions []*transaction.Transaction, p
 	}
 
 	return batchSendingResult
-}
-
-func (w *Wallet) SendBatch(signedTransactions []*transaction.Transaction, provider provider.Provider) []BatchSendingResult {
-	var batchSendingResult []BatchSendingResult
-	for index, txn := range signedTransactions {
-		sendingResult := BatchSendingResult{
-			Index:       index,
-			Transaction: txn,
-		}
-		rsp, err := provider.CreateTransaction(txn.ToTransactionPayload())
-		if err != nil {
-			sendingResult.ErrMsg = err.Error()
-		} else if rsp.Error != nil {
-			sendingResult.ErrMsg = rsp.Error.Message
-		} else {
-			resMap := rsp.Result.(map[string]interface{})
-			hash := resMap["TranID"].(string)
-			sendingResult.Hash = hash
-		}
-
-		batchSendingResult = append(batchSendingResult, sendingResult)
-	}
-
-	return batchSendingResult
-}
-
-func (w *Wallet) SendBatchOneGo(signedTransactions []*transaction.Transaction, p provider.Provider) ([]BatchSendingResult,error){
-	var payloads [][]provider.TransactionPayload
-	for _,tnx := range signedTransactions {
-		payload := []provider.TransactionPayload{tnx.ToTransactionPayload()}
-		payloads = append(payloads,payload)
-	}
-
-	responses,err := p.CreateTransactionBatch(payloads)
-	if err != nil {
-		return nil, err
-
-	}
-	var batchSendingResult []BatchSendingResult
-	for _,response := range responses {
-		sendingResult := BatchSendingResult{
-			Index:       response.ID,
-			Transaction: signedTransactions[response.ID],
-		}
-		if response.Error != nil {
-			sendingResult.ErrMsg = response.Error.Message
-		} else {
-			resMap := response.Result.(map[string]interface{})
-			hash := resMap["TranID"].(string)
-			sendingResult.Hash = hash
-		}
-		batchSendingResult = append(batchSendingResult, sendingResult)
-	}
-
-	return batchSendingResult,nil
 }
 
 func (w *Wallet) SignBatch(transactions []*transaction.Transaction, provider provider.Provider) error {
