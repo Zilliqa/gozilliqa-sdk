@@ -168,6 +168,10 @@ func (w *Wallet) signBatch(transactions []*transaction.Transaction, initNonce in
 	return nil
 }
 
+func (w Wallet) SignBatchWithNonce(transactions []*transaction.Transaction, provider provider.Provider, nonce int64) error {
+	return w.signBatch(transactions, nonce, provider)
+}
+
 func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) error {
 	if strings.HasPrefix(tx.ToAddr, "0x") {
 		tx.ToAddr = strings.TrimPrefix(tx.ToAddr, "0x")
