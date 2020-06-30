@@ -20,7 +20,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/ybbus/jsonrpc"
 	"io/ioutil"
@@ -495,10 +494,16 @@ func (provider *Provider) GetPendingTxns() (*jsonrpc.RPCResponse, error) {
 
 // Create a new Transaction object and send it to the network to be process.
 func (provider *Provider) CreateTransaction(payload TransactionPayload) (*jsonrpc.RPCResponse, error) {
-	r, _ := json.Marshal(payload)
-	fmt.Println(string(r))
-	//fmt.Println(payload)
 	return provider.call("CreateTransaction", &payload)
+}
+
+func (provider *Provider) CreateTransactionBatch(payloads [][]TransactionPayload) (jsonrpc.RPCResponses, error) {
+	var requests jsonrpc.RPCRequests
+	for _, payload := range payloads {
+		r := jsonrpc.NewRequest("CreateTransaction", payload)
+		requests = append(requests, r)
+	}
+	return provider.rpcClient.CallBatch(requests)
 }
 
 func (provider *Provider) CreateTransactionRaw(payload []byte) (*jsonrpc.RPCResponse, error) {
@@ -760,7 +765,7 @@ func (provider *Provider) GetSmartContracts(user_address string) (*jsonrpc.RPCRe
 // Returns a smart contract address of 20 bytes. This is represented as a String.
 // NOTE: This only works for contract deployment transactions.
 func (provider *Provider) GetContractAddressFromTransactionID(transaction_id string) (string, error) {
-	result, err := provider.call("GetContractAddressFromTransactionID")
+	result, err := provider.call("GetContractAddressFromTransactionID",transaction_id)
 	if err != nil {
 		return "", err
 	}

@@ -24,6 +24,7 @@ import (
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/stretchr/testify/assert"
 	"os"
+	"runtime"
 	"strconv"
 	"testing"
 )
@@ -81,6 +82,46 @@ func TestSendTransaction(t *testing.T) {
 	fmt.Printf("hash is %s\n", hash)
 	tx.Confirm(hash, 1000, 3, provider)
 	assert.True(t, tx.Status == core.Confirmed)
+}
+
+func TestBatchSendTransaction(t *testing.T) {
+	runtime.GOMAXPROCS(runtime.NumCPU())
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
+	wallet := NewWallet()
+	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
+	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
+
+	gasPrice, err := provider.GetMinimumGasPrice()
+	assert.Nil(t, err, err)
+
+	var transactions []*transaction.Transaction
+	for i := 0; i < 100; i++ {
+		txn := &transaction.Transaction{
+			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
+			SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
+			ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
+			Amount:       "10000000",
+			GasPrice:     gasPrice,
+			GasLimit:     "1",
+			Code:         "",
+			Data:         "",
+			Priority:     false,
+		}
+
+		transactions = append(transactions, txn)
+	}
+
+	err2 := wallet.SignBatch(transactions, *provider)
+	assert.Nil(t, err2, err2)
+
+	batchSendingResult,err := wallet.SendBatchOneGo(transactions, *provider)
+	if err != nil {
+		t.Fail()
+	} else {
+		fmt.Println(batchSendingResult)
+	}
 }
 
 func TestSendTransactionInsufficientAmount(t *testing.T) {

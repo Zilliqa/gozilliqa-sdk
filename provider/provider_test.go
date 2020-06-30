@@ -278,7 +278,7 @@ func TestGetSmartContracts(t *testing.T) {
 func TestGetContractAddressFromTransactionID(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
-	response, _ := provider.GetContractAddressFromTransactionID("AAF3089596437A7C6984FA2627B6F38B5F5B80FAEAAC6993C2E82C6A8EE2615E")
+	response, _ := provider.GetContractAddressFromTransactionID("5283d3a37d90b960ff2e7c6b2a6e8b0f5e62ed74f63b268b1b9485aa08026551")
 	result, _ := json.Marshal(response)
 	fmt.Println(string(result))
 }

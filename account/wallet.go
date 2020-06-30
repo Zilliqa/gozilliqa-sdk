@@ -30,6 +30,7 @@ import (
 	"math/big"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type Wallet struct {
@@ -44,6 +45,133 @@ func NewWallet() *Wallet {
 	}
 }
 
+type BatchSendingResult struct {
+	Index       int
+	Hash        string
+	ErrMsg      string
+	Transaction *transaction.Transaction
+}
+
+// Send transactions sequentially
+func (w *Wallet) SendBatch(signedTransactions []*transaction.Transaction, provider provider.Provider) []BatchSendingResult {
+	var batchSendingResult []BatchSendingResult
+	for index, txn := range signedTransactions {
+		sendingResult := BatchSendingResult{
+			Index:       index,
+			Transaction: txn,
+		}
+		rsp, err := provider.CreateTransaction(txn.ToTransactionPayload())
+		if err != nil {
+			sendingResult.ErrMsg = err.Error()
+		} else if rsp.Error != nil {
+			sendingResult.ErrMsg = rsp.Error.Message
+		} else {
+			resMap := rsp.Result.(map[string]interface{})
+			hash := resMap["TranID"].(string)
+			sendingResult.Hash = hash
+		}
+
+		batchSendingResult = append(batchSendingResult, sendingResult)
+	}
+
+	return batchSendingResult
+}
+
+// Send transactions using JSON-RPC batch request
+// https://www.jsonrpc.org/specification#batch
+func (w *Wallet) SendBatchOneGo(signedTransactions []*transaction.Transaction, p provider.Provider) ([]BatchSendingResult, error) {
+	var payloads [][]provider.TransactionPayload
+	for _, tnx := range signedTransactions {
+		payload := []provider.TransactionPayload{tnx.ToTransactionPayload()}
+		payloads = append(payloads, payload)
+	}
+
+	responses, err := p.CreateTransactionBatch(payloads)
+	if err != nil {
+		return nil, err
+
+	}
+	var batchSendingResult []BatchSendingResult
+	for _, response := range responses {
+		sendingResult := BatchSendingResult{
+			Index:       response.ID,
+			Transaction: signedTransactions[response.ID],
+		}
+		if response.Error != nil {
+			sendingResult.ErrMsg = response.Error.Message
+		} else {
+			resMap := response.Result.(map[string]interface{})
+			hash := resMap["TranID"].(string)
+			sendingResult.Hash = hash
+		}
+		batchSendingResult = append(batchSendingResult, sendingResult)
+	}
+
+	return batchSendingResult, nil
+}
+
+// Send transactions using golang WaitGroup
+func (w *Wallet) SendBatchAsync(signedTransactions []*transaction.Transaction, provider provider.Provider, batchNum int) []BatchSendingResult {
+	var batchSendingResult []BatchSendingResult
+	total := len(signedTransactions)
+	batch := total / batchNum
+	for i := 0; i < batch; i++ {
+		var wg sync.WaitGroup
+		start := batchNum * i
+		end := batchNum * (i + 1)
+		for j := start; j < end; j++ {
+			wg.Add(1)
+			go func(index int) {
+				defer wg.Done()
+				sendingResult := BatchSendingResult{
+					Index:       index,
+					Transaction: signedTransactions[index],
+				}
+				rsp, err := provider.CreateTransaction(signedTransactions[index].ToTransactionPayload())
+				if err != nil {
+					sendingResult.ErrMsg = err.Error()
+				} else if rsp.Error != nil {
+					sendingResult.ErrMsg = rsp.Error.Message
+				} else {
+					resMap := rsp.Result.(map[string]interface{})
+					hash := resMap["TranID"].(string)
+					sendingResult.Hash = hash
+				}
+
+				batchSendingResult = append(batchSendingResult, sendingResult)
+			}(j)
+		}
+		wg.Wait()
+	}
+
+	return batchSendingResult
+}
+
+func (w *Wallet) SignBatch(transactions []*transaction.Transaction, provider provider.Provider) error {
+	balAndNonce, err := provider.GetBalance(w.DefaultAccount.Address)
+	if err != nil {
+		return err
+	}
+
+	return w.signBatch(transactions, balAndNonce.Nonce+1, provider)
+}
+
+func (w *Wallet) signBatch(transactions []*transaction.Transaction, initNonce int64, provider provider.Provider) error {
+	for index, txn := range transactions {
+		currentNonce := int64(index) + initNonce
+		txn.Nonce = strconv.FormatInt(currentNonce, 10)
+		err := w.Sign(txn, provider)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (w Wallet) SignBatchWithNonce(transactions []*transaction.Transaction, provider provider.Provider, nonce int64) error {
+	return w.signBatch(transactions, nonce, provider)
+}
+
 func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) error {
 	if strings.HasPrefix(tx.ToAddr, "0x") {
 		tx.ToAddr = strings.TrimPrefix(tx.ToAddr, "0x")
@@ -54,11 +182,11 @@ func (w *Wallet) Sign(tx *transaction.Transaction, provider provider.Provider) e
 	}
 
 	if validator.IsBech32(tx.ToAddr) {
-		adddress, err := bech32.FromBech32Addr(tx.ToAddr)
+		address, err := bech32.FromBech32Addr(tx.ToAddr)
 		if err != nil {
 			return err
 		}
-		tx.ToAddr = adddress
+		tx.ToAddr = address
 	}
 
 	if validator.IsChecksumAddress("0x" + tx.ToAddr) {
