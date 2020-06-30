@@ -117,10 +117,33 @@ type Transaction struct {
 }
 
 type TransactionReceipt struct {
+	Accept bool `json:"accept"`
+	Errors interface{} `json:"errors"`
+	Exceptions []TransactionException `json:"exceptions"`
 	Success       bool          `json:"success"`
 	CumulativeGas string        `json:"cumulative_gas"`
 	EpochNum      string        `json:"epoch_num"`
 	EventLogs     []interface{} `json:"event_logs"`
+	Transitions []Transition `json:"transitions"`
+}
+
+type TransactionException struct {
+	Line int `json:"line"`
+	Message string `json:"message"`
+}
+
+type Transition struct {
+	Accept bool `json:"accept"`
+	Addr string `json:"addr"`
+	Depth int `json:"depth"`
+	Msg TransactionMessage `json:"msg"`
+}
+
+type TransactionMessage struct {
+	Amount string `json:"_amount"`
+	Receipt string `json:"_receipt"`
+	Tag string `json:"_tag"`
+	Params []ContractValue `json:"params"`
 }
 
 type Transactions struct {
