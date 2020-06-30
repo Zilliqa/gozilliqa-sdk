@@ -765,7 +765,7 @@ func (provider *Provider) GetSmartContracts(user_address string) (*jsonrpc.RPCRe
 // Returns a smart contract address of 20 bytes. This is represented as a String.
 // NOTE: This only works for contract deployment transactions.
 func (provider *Provider) GetContractAddressFromTransactionID(transaction_id string) (string, error) {
-	result, err := provider.call("GetContractAddressFromTransactionID")
+	result, err := provider.call("GetContractAddressFromTransactionID",transaction_id)
 	if err != nil {
 		return "", err
 	}
