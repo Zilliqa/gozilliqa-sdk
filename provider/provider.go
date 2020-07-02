@@ -41,7 +41,7 @@ func NewProvider(host string) *Provider {
 func (provider *Provider) GetNetworkId() (string, error) {
 	result, err := provider.call("GetNetworkId")
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	if result.Error != nil {
 		return "", result.Error
@@ -53,7 +53,7 @@ func (provider *Provider) GetNetworkId() (string, error) {
 func (provider *Provider) GetBlockchainInfo() (*core.BlockchainInfo, error) {
 	result, err := provider.call("GetBlockchainInfo")
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 	if result.Error != nil {
 		return nil, result.Error
@@ -77,7 +77,7 @@ func (provider *Provider) GetBlockchainInfo() (*core.BlockchainInfo, error) {
 func (provider *Provider) GetShardingStructure() (*core.ShardingStructure, error) {
 	result, err := provider.call("GetShardingStructure")
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	if result.Error != nil {
@@ -103,7 +103,7 @@ func (provider *Provider) GetShardingStructure() (*core.ShardingStructure, error
 func (provider *Provider) GetDsBlock(block_number string) (*core.DSBlock, error) {
 	result, err := provider.call("GetDsBlock", block_number)
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	if result.Error != nil {
@@ -129,7 +129,7 @@ func (provider *Provider) GetDsBlock(block_number string) (*core.DSBlock, error)
 func (provider *Provider) GetLatestDsBlock() (*core.DSBlock, error) {
 	result, err := provider.call("GetLatestDsBlock")
 	if err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	if result.Error != nil {
@@ -156,7 +156,7 @@ func (provider *Provider) GetLatestDsBlock() (*core.DSBlock, error) {
 func (provider *Provider) GetNumDSBlocks() (string, error) {
 	result, err := provider.call("GetNumDSBlocks")
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	if result.Error != nil {
 		return "", result.Error
@@ -744,13 +744,13 @@ func (provider *Provider) GetSmartContractSubState(contractAddress string, param
 	client := http.Client{}
 	resp, err := client.Do(request)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	result, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	return string(result), nil
