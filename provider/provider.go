@@ -744,13 +744,13 @@ func (provider *Provider) GetSmartContractSubState(contractAddress string, param
 	client := http.Client{}
 	resp, err := client.Do(request)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	defer resp.Body.Close()
 
 	result, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 
 	return string(result), nil
