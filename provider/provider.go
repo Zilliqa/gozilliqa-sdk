@@ -489,7 +489,7 @@ func (provider *Provider) GetPendingTxn(tx string) (*jsonrpc.RPCResponse, error)
 //  false	2	Could not fit in as microblock gas limit reached
 //  false	3	Transaction valid but consensus not reached
 func (provider *Provider) GetPendingTxns() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetPendingTxn")
+	return provider.call("GetPendingTxns")
 }
 
 // Create a new Transaction object and send it to the network to be process.
