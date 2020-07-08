@@ -203,6 +203,14 @@ func TestGetTransaction(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestProvider_GetTransactionBatch(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	transactions,_ := provider.GetTransactionBatch([]string{"c7d6550a6558edcddbf4b3c7cf14db9f1025200b89bcbcd6a570c84db58d554f","c7d6550a6558edcddbf4b3c7cf14db9f1025200b89bcbcd6a570c84db58d554f"})
+	st,_ := json.Marshal(transactions)
+	fmt.Println(string(st))
+}
+
 func TestGetRecentTransactions(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
