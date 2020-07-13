@@ -468,28 +468,61 @@ func (provider *Provider) GetMinerInfo(dsNumber string) (*core.MinerInfo, error)
 	return &minerInfo, nil
 }
 
-// Returns the pending status of a specified Transaction. Possible results are:
-//
-//  confirmed	code	info
-//  false	0	Txn not pending
-//  false	1	Nonce too high
-//  false	2	Could not fit in as microblock gas limit reached
-//  false	3	Transaction valid but consensus not reached
-func (provider *Provider) GetPendingTxn(tx string) (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetPendingTxn", tx)
+// Returns the pending status of a specified Transaction.
+func (provider *Provider) GetPendingTxn(tx string) (*core.PendingTxnResult, error) {
+	result, err := provider.call("GetPendingTxn", tx)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var pendingResult core.PendingTxnResult
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &pendingResult)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	pendingResult.Info = core.PendingTxnError[pendingResult.Code]
+
+	return &pendingResult, nil
+
 }
 
 // Returns the pending status of all unvalidated Transactions.
-//
-//  For each entry, the possible results are:
-//
-//  confirmed	code	info
-//  false	0	Txn not pending
-//  false	1	Nonce too high
-//  false	2	Could not fit in as microblock gas limit reached
-//  false	3	Transaction valid but consensus not reached
-func (provider *Provider) GetPendingTxns() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetPendingTxns")
+func (provider *Provider) GetPendingTxns() (*core.PendingTxns, error) {
+	result, err := provider.call("GetPendingTxns")
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var pendingTxns core.PendingTxns
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &pendingTxns)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	for _, tnx := range pendingTxns.Txns {
+		tnx.Info = core.PendingTxnError[tnx.Code]
+	}
+
+	return &pendingTxns, err
 }
 
 // Create a new Transaction object and send it to the network to be process.
@@ -544,18 +577,18 @@ func (provider *Provider) GetTransaction(transaction_hash string) (*core.Transac
 func (provider *Provider) GetTransactionBatch(transactionHashes []string) ([]*core.Transaction, error) {
 	var requests jsonrpc.RPCRequests
 	for _, hash := range transactionHashes {
-		r := jsonrpc.NewRequest("GetTransaction",[]string{hash})
-		requests = append(requests,r)
+		r := jsonrpc.NewRequest("GetTransaction", []string{hash})
+		requests = append(requests, r)
 	}
 
-	results,err := provider.rpcClient.CallBatch(requests)
+	results, err := provider.rpcClient.CallBatch(requests)
 	if err != nil {
 		return nil, err
 	}
 
 	var transactions []*core.Transaction
 
-	for _,result := range results {
+	for _, result := range results {
 		var transaction core.Transaction
 		jsonString, err2 := json.Marshal(result.Result)
 		if err2 != nil {
@@ -566,10 +599,10 @@ func (provider *Provider) GetTransactionBatch(transactionHashes []string) ([]*co
 			return transactions, err3
 		}
 
-		transactions = append(transactions,&transaction)
+		transactions = append(transactions, &transaction)
 	}
 
-	return transactions,nil
+	return transactions, nil
 
 }
 
@@ -797,7 +830,7 @@ func (provider *Provider) GetSmartContracts(user_address string) (*jsonrpc.RPCRe
 // Returns a smart contract address of 20 bytes. This is represented as a String.
 // NOTE: This only works for contract deployment transactions.
 func (provider *Provider) GetContractAddressFromTransactionID(transaction_id string) (string, error) {
-	result, err := provider.call("GetContractAddressFromTransactionID",transaction_id)
+	result, err := provider.call("GetContractAddressFromTransactionID", transaction_id)
 	if err != nil {
 		return "", err
 	}

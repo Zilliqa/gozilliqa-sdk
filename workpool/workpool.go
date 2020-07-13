@@ -64,7 +64,7 @@ func (wp *WorkerPool) Top() Task {
 
 }
 
-func (wp * WorkerPool) Empty() bool {
+func (wp *WorkerPool) Empty() bool {
 	return len(wp.ids) == 0
 }
 
