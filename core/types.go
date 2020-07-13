@@ -199,5 +199,5 @@ type TransactionStatus struct {
 }
 
 type PendingTxns struct {
-	Txns []TransactionStatus
+	Txns []*TransactionStatus
 }
