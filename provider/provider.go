@@ -518,7 +518,7 @@ func (provider *Provider) GetPendingTxns() (*core.PendingTxns, error) {
 		return nil, err3
 	}
 
-	for _,tnx := range pendingTxns.Txns {
+	for _, tnx := range pendingTxns.Txns {
 		tnx.Info = core.PendingTxnError[tnx.Code]
 	}
 
