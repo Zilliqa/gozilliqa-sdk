@@ -117,33 +117,33 @@ type Transaction struct {
 }
 
 type TransactionReceipt struct {
-	Accept bool `json:"accept"`
-	Errors interface{} `json:"errors"`
-	Exceptions []TransactionException `json:"exceptions"`
-	Success       bool          `json:"success"`
-	CumulativeGas string        `json:"cumulative_gas"`
-	EpochNum      string        `json:"epoch_num"`
-	EventLogs     []interface{} `json:"event_logs"`
-	Transitions []Transition `json:"transitions"`
+	Accept        bool                   `json:"accept"`
+	Errors        interface{}            `json:"errors"`
+	Exceptions    []TransactionException `json:"exceptions"`
+	Success       bool                   `json:"success"`
+	CumulativeGas string                 `json:"cumulative_gas"`
+	EpochNum      string                 `json:"epoch_num"`
+	EventLogs     []interface{}          `json:"event_logs"`
+	Transitions   []Transition           `json:"transitions"`
 }
 
 type TransactionException struct {
-	Line int `json:"line"`
+	Line    int    `json:"line"`
 	Message string `json:"message"`
 }
 
 type Transition struct {
-	Accept bool `json:"accept"`
-	Addr string `json:"addr"`
-	Depth int `json:"depth"`
-	Msg TransactionMessage `json:"msg"`
+	Accept bool               `json:"accept"`
+	Addr   string             `json:"addr"`
+	Depth  int                `json:"depth"`
+	Msg    TransactionMessage `json:"msg"`
 }
 
 type TransactionMessage struct {
-	Amount string `json:"_amount"`
-	Receipt string `json:"_receipt"`
-	Tag string `json:"_tag"`
-	Params []ContractValue `json:"params"`
+	Amount  string          `json:"_amount"`
+	Receipt string          `json:"_receipt"`
+	Tag     string          `json:"_tag"`
+	Params  []ContractValue `json:"params"`
 }
 
 type Transactions struct {
@@ -159,4 +159,45 @@ type ContractValue struct {
 type BalanceAndNonce struct {
 	Balance string `json:"balance"`
 	Nonce   int64  `json:"nonce"`
+}
+
+var PendingTxnError = map[int]string{
+	0:  "Txn was already processed and confirmed",
+	1:  "Pending - nonce too high",
+	2:  "Pending - blk gas limit exceeded",
+	3:  "Pending - consensus failure",
+	4:  "Error - txn not found",
+	10: "Dropped - math error",
+	11: "Dropped - scilla invocation error",
+	12: "Dropped - account init error",
+	13: "Dropped - invalid source account",
+	14: "Dropped - gas limit too high",
+	15: "Dropped - txn type unknown",
+	16: "Dropped - txn in wrong shard",
+	17: "Dropped - account in wrong shard",
+	18: "Dropped - code size too large",
+	19: "Dropped - txn verification error",
+	20: "Dropped - gas limit too low",
+	21: "Dropped - insuff balance",
+	22: "Dropped - insuff gas for checker",
+	23: "Dropped - duplicate txn found",
+	24: "Dropped - txn w/ higher gas found",
+	25: "Dropped - invalid dest account",
+	26: "Dropped - state addition error",
+}
+
+type PendingTxnResult struct {
+	Code      int  `json:"code"`
+	Confirmed bool `json:"confirmed"`
+	Info      string
+}
+
+type TransactionStatus struct {
+	Code    int    `json:"code"`
+	TxnHash string `json:"TxnHash"`
+	Info    string
+}
+
+type PendingTxns struct {
+	Txns []TransactionStatus
 }

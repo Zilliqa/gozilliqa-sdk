@@ -116,7 +116,7 @@ func TestBatchSendTransaction(t *testing.T) {
 	err2 := wallet.SignBatch(transactions, *provider)
 	assert.Nil(t, err2, err2)
 
-	batchSendingResult,err := wallet.SendBatchOneGo(transactions, *provider)
+	batchSendingResult, err := wallet.SendBatchOneGo(transactions, *provider)
 	if err != nil {
 		t.Fail()
 	} else {
