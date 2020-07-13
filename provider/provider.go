@@ -489,7 +489,7 @@ func (provider *Provider) GetPendingTxn(tx string) (*jsonrpc.RPCResponse, error)
 //  false	2	Could not fit in as microblock gas limit reached
 //  false	3	Transaction valid but consensus not reached
 func (provider *Provider) GetPendingTxns() (*jsonrpc.RPCResponse, error) {
-	return provider.call("GetPendingTxn")
+	return provider.call("GetPendingTxns")
 }
 
 // Create a new Transaction object and send it to the network to be process.
@@ -539,6 +539,38 @@ func (provider *Provider) GetTransaction(transaction_hash string) (*core.Transac
 	}
 
 	return &transaction, nil
+}
+
+func (provider *Provider) GetTransactionBatch(transactionHashes []string) ([]*core.Transaction, error) {
+	var requests jsonrpc.RPCRequests
+	for _, hash := range transactionHashes {
+		r := jsonrpc.NewRequest("GetTransaction",[]string{hash})
+		requests = append(requests,r)
+	}
+
+	results,err := provider.rpcClient.CallBatch(requests)
+	if err != nil {
+		return nil, err
+	}
+
+	var transactions []*core.Transaction
+
+	for _,result := range results {
+		var transaction core.Transaction
+		jsonString, err2 := json.Marshal(result.Result)
+		if err2 != nil {
+			return transactions, err2
+		}
+		err3 := json.Unmarshal(jsonString, &transaction)
+		if err3 != nil {
+			return transactions, err3
+		}
+
+		transactions = append(transactions,&transaction)
+	}
+
+	return transactions,nil
+
 }
 
 // Returns the most recent 100 transactions that are validated by the Zilliqa network.
