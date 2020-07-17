@@ -16,23 +16,75 @@ type Transaction core.Transaction
 func NewFromPayload(payload *provider.TransactionPayload) *Transaction {
 	v := strconv.FormatInt(int64(payload.Version), 10)
 	n := strconv.FormatInt(int64(payload.Nonce), 10)
-	return &Transaction{
-		ID:              "",
-		Version:         v,
-		Nonce:           n,
-		Amount:          payload.Amount,
-		GasPrice:        payload.GasPrice,
-		GasLimit:        payload.GasLimit,
-		Signature:       payload.Signature,
-		Receipt:         core.TransactionReceipt{},
-		SenderPubKey:    payload.PubKey,
-		ToAddr:          "0x"+payload.ToAddr,
-		Code:            payload.Code,
-		Data:            payload.Data,
-		Status:          0,
-		ContractAddress: "",
-		Priority:        payload.Priority,
+	var toAddr string
+	if payload.ToAddr == "0x0000000000000000000000000000000000000000" {
+		toAddr = "0x0000000000000000000000000000000000000000"
+	} else {
+		toAddr = "0x" + payload.ToAddr
 	}
+	if payload.Data == "" {
+		// payment
+		return &Transaction{
+			ID:              "",
+			Version:         v,
+			Nonce:           n,
+			Amount:          payload.Amount,
+			GasPrice:        payload.GasPrice,
+			GasLimit:        payload.GasLimit,
+			Signature:       payload.Signature,
+			Receipt:         core.TransactionReceipt{},
+			SenderPubKey:    payload.PubKey,
+			ToAddr:          toAddr,
+			Code:            payload.Code,
+			Data:            "",
+			Status:          0,
+			ContractAddress: "",
+			Priority:        payload.Priority,
+		}
+	} else if strings.Contains(payload.Data, "_tag") {
+		// contract call
+		var data provider.Data
+		json.Unmarshal([]byte(payload.Data), &data)
+		return &Transaction{
+			ID:              "",
+			Version:         v,
+			Nonce:           n,
+			Amount:          payload.Amount,
+			GasPrice:        payload.GasPrice,
+			GasLimit:        payload.GasLimit,
+			Signature:       payload.Signature,
+			Receipt:         core.TransactionReceipt{},
+			SenderPubKey:    payload.PubKey,
+			ToAddr:          toAddr,
+			Code:            payload.Code,
+			Data:            data,
+			Status:          0,
+			ContractAddress: "",
+			Priority:        payload.Priority,
+		}
+	} else {
+		// contract deployment
+		var data []provider.Value
+		json.Unmarshal([]byte(payload.Data), &data)
+		return &Transaction{
+			ID:              "",
+			Version:         v,
+			Nonce:           n,
+			Amount:          payload.Amount,
+			GasPrice:        payload.GasPrice,
+			GasLimit:        payload.GasLimit,
+			Signature:       payload.Signature,
+			Receipt:         core.TransactionReceipt{},
+			SenderPubKey:    payload.PubKey,
+			ToAddr:          toAddr,
+			Code:            payload.Code,
+			Data:            data,
+			Status:          0,
+			ContractAddress: "",
+			Priority:        payload.Priority,
+		}
+	}
+
 }
 
 func (t *Transaction) toTransactionParam() TxParams {
