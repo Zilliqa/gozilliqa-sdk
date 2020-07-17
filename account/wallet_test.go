@@ -73,6 +73,9 @@ func TestSendTransaction(t *testing.T) {
 	err2 := wallet.Sign(tx, *provider)
 	assert.Nil(t, err2, err2)
 
+	h,_ := tx.Hash()
+	fmt.Println("local transaction hash: ",util.EncodeHex(h))
+
 	rsp, err3 := provider.CreateTransaction(tx.ToTransactionPayload())
 	assert.Nil(t, err3, err3)
 	assert.Nil(t, rsp.Error, rsp.Error)
