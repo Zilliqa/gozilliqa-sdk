@@ -2,71 +2,15 @@ package provider
 
 import (
 	"fmt"
+	"os"
 	"testing"
 )
 
 func TestNewFromJson(t *testing.T) {
-	data := []byte(`{
-  "version": 65537,
-  "nonce": 1,
-  "toAddr": "0x0000000000000000000000000000000000000000",
-  "amount": 0,
-  "gasPrice": 10000000,
-  "gasLimit": 9000,
-  "code": "",
-  "data": [
-      {
-          "vname": "_scilla_version",
-          "type": "Uint32",
-          "value": "0"
-      },
-      {
-          "vname": "initial_owners",
-          "type": "List ByStr20",
-          "value": {
-              "constructor": "Cons",
-              "argtypes": [
-                  "ByStr20"
-              ],
-              "arguments": [
-                  "0x1234567890123456789012345678906784567890",
-                  {
-                      "constructor": "Cons",
-                      "argtypes": [
-                          "ByStr20"
-                      ],
-                      "arguments": [
-                          "0xabcdeabcde123456786782345678901234567890",
-                          {
-                              "constructor": "Cons",
-                              "argtypes": [
-                                  "ByStr20"
-                              ],
-                              "arguments": [
-                                  "0xffcdeabcde126786789012345678901234567890",
-                                  {
-                                      "constructor": "Nil",
-                                      "argtypes": [
-                                          "ByStr20"
-                                      ],
-                                      "arguments": []
-                                  }
-                              ]
-                          }
-                      ]
-                  }
-              ]
-          }
-      },
-      {
-          "vname": "required_signatures",
-          "type": "Uint32",
-          "value": "2"
-      }
-  ],
-      "signature": "",
-		"pubKey": ""
-}`)
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
+	data := []byte(`{"version":21823489,"nonce":166471,"toAddr":"bd7198209529dC42320db4bC8508880BcD22a9f2","amount":0,"pubKey":"0246e7178dc8253201101e18fd6f6eb9972451d121fc57aa2a06dd5c111e58dc6a","gasPrice":1000000000,"gasLimit":1000,"code":"","data":{"_tag":"Transfer","params":[{"vname":"to","type":"ByStr20","value":"0x9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a"},{"vname":"tokens","type":"Uint128","value":"10"}]},"signature":"e4ae77ba4534598a723a3792705dd7477ffef8a475da94388d1af0cd29b38a3737b64fbedc4eb72c66b28303ac1b0bb8c45a68da2d40d6def367cbf20e751747"}`)
 
 	payload, err2 := NewFromJson(data)
 	if err2 != nil {
@@ -75,7 +19,6 @@ func TestNewFromJson(t *testing.T) {
 
 	fmt.Println(payload)
 
-	data = []byte(`{"version":21823489,"nonce":959,"toAddr":"84eb5C96Bec8d29eDdFBe36865E9B7F26b816f0F","amount":0,"pubKey":"0246e7178dc8253201101e18fd6f6eb9972451d121fc57aa2a06dd5c111e58dc6a","gasPrice":1000000000,"gasLimit":10000,"code":"","data":{"_tag":"SubmitCustomMintTransaction","params":[{"vname":"proxyTokenContract","type":"ByStr20","value":"0x39550ab45d74cce5fef70e857c1326b2d9bee096"},{"vname":"to","type":"ByStr20","value":"0x39550ab45d74cce5fef70e857c1326b2d9bee096"},{"vname":"value","type":"Uint128","value":"10000000"}]},"signature":"c0dcffb4f5ef80b9e426c16fc1fb62b31356219deb84c5689ab6a73915ea962c0bc4d4a49985803cd1db8aabb6870e8c749003cab41246e17493767acc6cca90"}`)
 	payload2, err3 := NewFromJson(data)
 	if err3 != nil {
 		t.Error(err3.Error())

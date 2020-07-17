@@ -55,7 +55,7 @@ type payload struct {
 	Nonce   int    `json:"nonce"`
 	ToAddr  string `json:"toAddr"`
 	Amount  int64  `json:"amount"`
-	//PubKey    string `json:"pubKey"`
+	PubKey    string `json:"pubKey"`
 	GasPrice  int64  `json:"gasPrice"`
 	GasLimit  int64  `json:"gasLimit"`
 	Code      string `json:"code"`
@@ -69,7 +69,7 @@ type Init struct {
 	Nonce   int    `json:"nonce"`
 	ToAddr  string `json:"toAddr"`
 	Amount  int64  `json:"amount"`
-	//PubKey    string        `json:"pubKey"`
+	PubKey    string        `json:"pubKey"`
 	GasPrice  int64         `json:"gasPrice"`
 	GasLimit  int64         `json:"gasLimit"`
 	Code      string        `json:"code"`
@@ -110,7 +110,7 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 				Nonce:   pl.Nonce,
 				ToAddr:  pl.ToAddr,
 				Amount:  a,
-				//PubKey:    pl.PubKey,
+				PubKey:    pl.PubKey,
 				GasPrice:  price,
 				GasLimit:  limit,
 				Code:      pl.Code,
@@ -126,7 +126,7 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 			Nonce:   pl.Nonce,
 			ToAddr:  pl.ToAddr,
 			Amount:  a,
-			//PubKey:    pl.PubKey,
+			PubKey:    pl.PubKey,
 			GasPrice:  price,
 			GasLimit:  limit,
 			Code:      pl.Code,
@@ -193,10 +193,10 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		return nil, errors.New("parse payload json failed: limit")
 	}
 
-	//pubkey, ok6 := middle["pubKey"].(string)
-	//if !ok6 {
-	//	return nil, errors.New("parse payload json failed: public key")
-	//}
+	pubkey, ok6 := middle["pubKey"].(string)
+	if !ok6 {
+		return nil, errors.New("parse payload json failed: public key")
+	}
 
 	code, ok7 := middle["code"].(string)
 	if !ok7 {
@@ -241,7 +241,7 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 		Nonce:   int(n),
 		ToAddr:  toAddr.(string),
 		Amount:  fmt.Sprintf("%.0f", amount),
-		//PubKey:    pubkey,
+		PubKey:    pubkey,
 		GasPrice:  fmt.Sprintf("%.0f", price),
 		GasLimit:  fmt.Sprintf("%.0f", limit),
 		Code:      code,
