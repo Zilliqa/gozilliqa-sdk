@@ -26,7 +26,7 @@ func NewFromPayload(payload *provider.TransactionPayload) *Transaction {
 		Signature:       payload.Signature,
 		Receipt:         core.TransactionReceipt{},
 		SenderPubKey:    payload.PubKey,
-		ToAddr:          payload.ToAddr,
+		ToAddr:          "0x"+payload.ToAddr,
 		Code:            payload.Code,
 		Data:            payload.Data,
 		Status:          0,
