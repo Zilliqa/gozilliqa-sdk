@@ -129,13 +129,13 @@ func (t *Transaction) Bytes() ([]byte, error) {
 	}
 }
 
-func (t *Transaction) Hash() ([]byte,error){
-	bytes,err := t.Bytes()
+func (t *Transaction) Hash() ([]byte, error) {
+	bytes, err := t.Bytes()
 	if err != nil {
 		return nil, err
 	}
 	hash := util.Sha256(bytes)
-	return hash,nil
+	return hash, nil
 }
 
 func (t *Transaction) isPending() bool {

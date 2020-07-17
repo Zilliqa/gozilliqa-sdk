@@ -55,11 +55,10 @@ func TestPayload(t *testing.T) {
 	assert.Nil(t, err2, err2)
 
 	pl := tx.ToTransactionPayload()
-	payloadJson,err3 := pl.ToJson()
+	payloadJson, err3 := pl.ToJson()
 	assert.Nil(t, err3, err3)
 	fmt.Println(string(payloadJson))
 }
-
 
 func TestWallet_SignWith(t *testing.T) {
 	if os.Getenv("CI") != "" {
@@ -104,8 +103,8 @@ func TestSendTransaction(t *testing.T) {
 	err2 := wallet.Sign(tx, *provider)
 	assert.Nil(t, err2, err2)
 
-	h,_ := tx.Hash()
-	fmt.Println("local transaction hash: ",util.EncodeHex(h))
+	h, _ := tx.Hash()
+	fmt.Println("local transaction hash: ", util.EncodeHex(h))
 
 	rsp, err3 := provider.CreateTransaction(tx.ToTransactionPayload())
 	assert.Nil(t, err3, err3)

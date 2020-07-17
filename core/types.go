@@ -140,10 +140,10 @@ type Transition struct {
 }
 
 type TransactionMessage struct {
-	Amount  string          `json:"_amount"`
+	Amount    string          `json:"_amount"`
 	Recipient string          `json:"_recipient"`
-	Tag     string          `json:"_tag"`
-	Params  []ContractValue `json:"params"`
+	Tag       string          `json:"_tag"`
+	Params    []ContractValue `json:"params"`
 }
 
 type Transactions struct {
