@@ -77,6 +77,19 @@ type Init struct {
 	Signature string        `json:"signature"`
 }
 
+type Payment struct {
+	Version int    `json:"version"`
+	Nonce   int    `json:"nonce"`
+	ToAddr  string `json:"toAddr"`
+	Amount  int64  `json:"amount"`
+	PubKey    string        `json:"pubKey"`
+	GasPrice  int64         `json:"gasPrice"`
+	GasLimit  int64         `json:"gasLimit"`
+	Code      string        `json:"code"`
+	Data    string `json:"data"`
+	Signature string        `json:"signature"`
+}
+
 func (pl *TransactionPayload) ToJson() ([]byte, error) {
 	a, err := strconv.ParseInt(pl.Amount, 10, 64)
 	if err != nil {
@@ -92,6 +105,24 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 	if err3 != nil {
 		return nil, err3
 	}
+
+	if pl.Data == "" {
+		p := Payment{
+			Version: pl.Version,
+			Nonce:   pl.Nonce,
+			ToAddr:  pl.ToAddr,
+			Amount:  a,
+			PubKey:    pl.PubKey,
+			GasPrice:  price,
+			GasLimit:  limit,
+			Code:      pl.Code,
+			Data: "",
+			Signature: pl.Signature,
+			//Priority:  pl.Priority,
+		}
+		return json.Marshal(&p)
+	}
+
 
 	originData := strings.TrimPrefix(pl.Data, `"`)
 	originData = strings.TrimSuffix(originData, `"`)
