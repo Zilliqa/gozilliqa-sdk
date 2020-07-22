@@ -164,7 +164,6 @@ func (c *Contract) Call(transition string, args []core.ContractValue, params Cal
 	if err2 != nil {
 		return tx, err2
 	}
-
 	rsp, err := c.Provider.CreateTransaction(tx.ToTransactionPayload())
 
 	if err != nil {

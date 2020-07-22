@@ -51,10 +51,10 @@ type Data struct {
 }
 
 type payload struct {
-	Version int    `json:"version"`
-	Nonce   int    `json:"nonce"`
-	ToAddr  string `json:"toAddr"`
-	Amount  int64  `json:"amount"`
+	Version   int    `json:"version"`
+	Nonce     int    `json:"nonce"`
+	ToAddr    string `json:"toAddr"`
+	Amount    int64  `json:"amount"`
 	PubKey    string `json:"pubKey"`
 	GasPrice  int64  `json:"gasPrice"`
 	GasLimit  int64  `json:"gasLimit"`
@@ -65,16 +65,29 @@ type payload struct {
 }
 
 type Init struct {
-	Version int    `json:"version"`
-	Nonce   int    `json:"nonce"`
-	ToAddr  string `json:"toAddr"`
-	Amount  int64  `json:"amount"`
+	Version   int           `json:"version"`
+	Nonce     int           `json:"nonce"`
+	ToAddr    string        `json:"toAddr"`
+	Amount    int64         `json:"amount"`
 	PubKey    string        `json:"pubKey"`
 	GasPrice  int64         `json:"gasPrice"`
 	GasLimit  int64         `json:"gasLimit"`
 	Code      string        `json:"code"`
 	Data      []interface{} `json:"data"`
 	Signature string        `json:"signature"`
+}
+
+type Payment struct {
+	Version   int    `json:"version"`
+	Nonce     int    `json:"nonce"`
+	ToAddr    string `json:"toAddr"`
+	Amount    int64  `json:"amount"`
+	PubKey    string `json:"pubKey"`
+	GasPrice  int64  `json:"gasPrice"`
+	GasLimit  int64  `json:"gasLimit"`
+	Code      string `json:"code"`
+	Data      string `json:"data"`
+	Signature string `json:"signature"`
 }
 
 func (pl *TransactionPayload) ToJson() ([]byte, error) {
@@ -93,6 +106,23 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 		return nil, err3
 	}
 
+	if pl.Data == "" {
+		p := Payment{
+			Version:   pl.Version,
+			Nonce:     pl.Nonce,
+			ToAddr:    pl.ToAddr,
+			Amount:    a,
+			PubKey:    pl.PubKey,
+			GasPrice:  price,
+			GasLimit:  limit,
+			Code:      pl.Code,
+			Data:      "",
+			Signature: pl.Signature,
+			//Priority:  pl.Priority,
+		}
+		return json.Marshal(&p)
+	}
+
 	originData := strings.TrimPrefix(pl.Data, `"`)
 	originData = strings.TrimSuffix(originData, `"`)
 	originData = strings.ReplaceAll(originData, "\\", "")
@@ -106,10 +136,10 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 			return nil, errors.New("wrong data")
 		} else {
 			p := Init{
-				Version: pl.Version,
-				Nonce:   pl.Nonce,
-				ToAddr:  pl.ToAddr,
-				Amount:  a,
+				Version:   pl.Version,
+				Nonce:     pl.Nonce,
+				ToAddr:    pl.ToAddr,
+				Amount:    a,
 				PubKey:    pl.PubKey,
 				GasPrice:  price,
 				GasLimit:  limit,
@@ -122,10 +152,10 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 		}
 	} else {
 		p := payload{
-			Version: pl.Version,
-			Nonce:   pl.Nonce,
-			ToAddr:  pl.ToAddr,
-			Amount:  a,
+			Version:   pl.Version,
+			Nonce:     pl.Nonce,
+			ToAddr:    pl.ToAddr,
+			Amount:    a,
 			PubKey:    pl.PubKey,
 			GasPrice:  price,
 			GasLimit:  limit,
@@ -217,6 +247,8 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 			return nil, err
 		}
 		sd = string(s)
+	} else if reflect.TypeOf(d).Kind() == reflect.String {
+		sd = d.(string)
 	} else {
 		j, _ := json.Marshal(d)
 		var data Data
@@ -237,10 +269,10 @@ func NewFromMap(middle map[string]interface{}) (*TransactionPayload, error) {
 	}
 
 	return &TransactionPayload{
-		Version: int(v),
-		Nonce:   int(n),
-		ToAddr:  toAddr.(string),
-		Amount:  fmt.Sprintf("%.0f", amount),
+		Version:   int(v),
+		Nonce:     int(n),
+		ToAddr:    toAddr.(string),
+		Amount:    fmt.Sprintf("%.0f", amount),
 		PubKey:    pubkey,
 		GasPrice:  fmt.Sprintf("%.0f", price),
 		GasLimit:  fmt.Sprintf("%.0f", limit),

@@ -143,3 +143,23 @@ func TestNewFromPayload2(t *testing.T) {
 	assert.Nil(t, err, err)
 	t.Log(string(data))
 }
+
+func TestNewFromPayload3(t *testing.T) {
+	data := []byte(`{
+    "version": 65537,
+    "nonce": 1,
+    "toAddr": "0x0000000000000000000000000000000000000000",
+    "amount": 0,
+    "gasPrice": 10000000,
+    "gasLimit": 9000,
+    "code": "",
+    "data":"",
+    "signature": "",
+    "pubKey": ""
+}`)
+
+	payload, err2 := provider.NewFromJson(data)
+	assert.Nil(t, err2, err2)
+	tx := NewFromPayload(payload)
+	t.Log(tx)
+}
