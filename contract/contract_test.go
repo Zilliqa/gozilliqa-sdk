@@ -113,7 +113,6 @@ func TestContract_Call(t *testing.T) {
 	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
 	chainID := 333
 	msgVersion := 1
-
 	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
 	address := keytools.GetAddressFromPublic(publickKey)
 	pubkey := util.EncodeHex(publickKey)

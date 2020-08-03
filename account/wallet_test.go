@@ -29,6 +29,37 @@ import (
 	"testing"
 )
 
+func TestPayload(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
+	wallet := NewWallet()
+	wallet.AddByPrivateKey("e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930")
+	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
+
+	gasPrice, err := provider.GetMinimumGasPrice()
+	assert.Nil(t, err, err)
+
+	tx := &transaction.Transaction{
+		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
+		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
+		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
+		Amount:       "10000000",
+		GasPrice:     gasPrice,
+		GasLimit:     "1",
+		Code:         "",
+		Data:         "",
+		Priority:     false,
+	}
+	err2 := wallet.Sign(tx, *provider)
+	assert.Nil(t, err2, err2)
+
+	pl := tx.ToTransactionPayload()
+	payloadJson, err3 := pl.ToJson()
+	assert.Nil(t, err3, err3)
+	fmt.Println(string(payloadJson))
+}
+
 func TestWallet_SignWith(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")
@@ -69,9 +100,11 @@ func TestSendTransaction(t *testing.T) {
 		Data:         "",
 		Priority:     false,
 	}
-
 	err2 := wallet.Sign(tx, *provider)
 	assert.Nil(t, err2, err2)
+
+	h, _ := tx.Hash()
+	fmt.Println("local transaction hash: ", util.EncodeHex(h))
 
 	rsp, err3 := provider.CreateTransaction(tx.ToTransactionPayload())
 	assert.Nil(t, err3, err3)
