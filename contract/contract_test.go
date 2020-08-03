@@ -30,6 +30,63 @@ import (
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 )
 
+func TestContract_DeployTo(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
+
+	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+	wallet := account.NewWallet()
+	wallet.AddByPrivateKey(privateKey)
+
+	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
+	address := keytools.GetAddressFromPublic(publickKey)
+	code, _ := ioutil.ReadFile("./fungible.scilla")
+	init := []core.ContractValue{
+		{
+			"_scilla_version",
+			"Uint32",
+			"0",
+		},
+		{
+			"owner",
+			"ByStr20",
+			"0x" + address,
+		},
+		{
+			"total_tokens",
+			"Uint128",
+			"1000000000",
+		},
+		{
+			"decimals",
+			"Uint32",
+			"0",
+		},
+		{
+			"name",
+			"String",
+			"BobCoin",
+		},
+		{
+			"symbol",
+			"String",
+			"BOB",
+		},
+	}
+
+	contract := Contract{
+		Code:   string(code),
+		Init:   init,
+		Signer: wallet,
+	}
+
+	tx, err := contract.DeployTo(TestNet)
+	assert.Nil(t, err, err)
+	tx.Confirm(tx.ID, 1000, 10, contract.Provider)
+	assert.True(t, tx.Status == core.Confirmed)
+}
+
 func TestContract_Deploy(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")
