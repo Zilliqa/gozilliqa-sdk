@@ -31,8 +31,10 @@ type ContractStatus int
 
 const MainNet = "mainnet"
 const TestNet = "testnet"
+const Isolated = "isolated"
 const TestNetHost = "https://dev-api.zilliqa.com/"
 const MainNetHost = "https://api.zilliqa.com/"
+const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
 
 const (
 	Deployed ContractStatus = iota
@@ -59,7 +61,7 @@ type State struct {
 // This a shortcut function to deploy smart contract, all following parameters would remain default:
 // network id, message version nonce, gasfee, gaslimit
 // take a note that for gas limit, 40k is safe and recommend setting number
-// value of network can be either testnet or mainnet
+// value of network can be testnet, mainnet or isolated
 func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 	if network == TestNet {
 		c.Provider = provider.NewProvider(TestNetHost)
@@ -77,6 +79,20 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 		return c.Deploy(parameter)
 	} else if network == MainNet {
 		c.Provider = provider.NewProvider(MainNetHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		parameter := DeployParams{
+			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			SenderPubKey: "",
+		}
+		return c.Deploy(parameter)
+	} else if network == Isolated {
+		c.Provider = provider.NewProvider(IsolatedHost)
 		gasPrice, err := c.Provider.GetMinimumGasPrice()
 		if err != nil {
 			return nil, err
