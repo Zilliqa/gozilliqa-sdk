@@ -106,7 +106,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 		}
 		return c.Deploy(parameter)
 	} else {
-		return nil, errors.New("unsupported network, please use testnet or mainnet")
+		return nil, errors.New("unsupported network, please use testnet, mainnet or isolated")
 	}
 }
 
@@ -192,6 +192,58 @@ func (c *Contract) Sign(transition string, args []core.ContractValue, params Cal
 	}
 
 	return nil, tx
+}
+
+func (c *Contract) CallFor(transition string, args []core.ContractValue, priority bool, amount string, network string) (*transaction.Transaction, error) {
+	if network == TestNet {
+		c.Provider = provider.NewProvider(TestNetHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		params := CallParams{
+			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			Amount:       amount,
+			SenderPubKey: "",
+		}
+		return c.Call(transition, args, params, priority)
+	} else if network == MainNet {
+		c.Provider = provider.NewProvider(MainNetHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		params := CallParams{
+			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			Amount:       amount,
+			SenderPubKey: "",
+		}
+		return c.Call(transition, args, params, priority)
+	} else if network == Isolated {
+		c.Provider = provider.NewProvider(IsolatedHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		params := CallParams{
+			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			Amount:       amount,
+			SenderPubKey: "",
+		}
+		return c.Call(transition, args, params, priority)
+	} else {
+		return nil, errors.New("unsupported network, please use testnet, mainnet or isolated")
+	}
+
 }
 
 func (c *Contract) Call(transition string, args []core.ContractValue, params CallParams, priority bool) (*transaction.Transaction, error) {

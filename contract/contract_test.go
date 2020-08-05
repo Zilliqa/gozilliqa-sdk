@@ -17,6 +17,7 @@
 package contract
 
 import (
+	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
@@ -160,6 +161,43 @@ func TestContract_Deploy(t *testing.T) {
 	assert.Nil(t, err, err)
 	tx.Confirm(tx.ID, 1000, 10, provider)
 	assert.True(t, tx.Status == core.Confirmed)
+}
+
+func TestContract_CallFor(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
+
+	privateKey := "e19d05c5452598e24caad4a0d85a49146f7be089515c905ae6a19e8a578a6930"
+	wallet := account.NewWallet()
+	wallet.AddByPrivateKey(privateKey)
+	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
+	address := keytools.GetAddressFromPublic(publickKey)
+	fmt.Println(address)
+
+	contract := Contract{
+		Address: "bd7198209529dC42320db4bC8508880BcD22a9f2",
+		Signer:  wallet,
+	}
+
+	args := []core.ContractValue{
+		{
+			"to",
+			"ByStr20",
+			"0x" + address,
+		},
+		{
+			"tokens",
+			"Uint128",
+			"10",
+		},
+	}
+
+	tx, err2 := contract.CallFor("Transfer", args, true, "0", TestNet)
+	assert.Nil(t, err2, err2)
+	tx.Confirm(tx.ID, 1000, 3, contract.Provider)
+	assert.True(t, tx.Status == core.Confirmed)
+
 }
 
 func TestContract_Call(t *testing.T) {
