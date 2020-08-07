@@ -22,10 +22,19 @@ import (
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"strconv"
 	"strings"
 )
 
 type ContractStatus int
+
+const MainNet = "mainnet"
+const TestNet = "testnet"
+const Isolated = "isolated"
+const TestNetHost = "https://dev-api.zilliqa.com/"
+const MainNetHost = "https://api.zilliqa.com/"
+const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
 
 const (
 	Deployed ContractStatus = iota
@@ -47,6 +56,58 @@ type Contract struct {
 
 type State struct {
 	core.ContractValue
+}
+
+// This a shortcut function to deploy smart contract, all following parameters would remain default:
+// network id, message version nonce, gasfee, gaslimit
+// take a note that for gas limit, 40k is safe and recommend setting number
+// value of network can be testnet, mainnet or isolated
+func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
+	if network == TestNet {
+		c.Provider = provider.NewProvider(TestNetHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		parameter := DeployParams{
+			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			SenderPubKey: "",
+		}
+		return c.Deploy(parameter)
+	} else if network == MainNet {
+		c.Provider = provider.NewProvider(MainNetHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		parameter := DeployParams{
+			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			SenderPubKey: "",
+		}
+		return c.Deploy(parameter)
+	} else if network == Isolated {
+		c.Provider = provider.NewProvider(IsolatedHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		parameter := DeployParams{
+			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			SenderPubKey: "",
+		}
+		return c.Deploy(parameter)
+	} else {
+		return nil, errors.New("unsupported network, please use testnet, mainnet or isolated")
+	}
 }
 
 func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error) {
@@ -131,6 +192,58 @@ func (c *Contract) Sign(transition string, args []core.ContractValue, params Cal
 	}
 
 	return nil, tx
+}
+
+func (c *Contract) CallFor(transition string, args []core.ContractValue, priority bool, amount string, network string) (*transaction.Transaction, error) {
+	if network == TestNet {
+		c.Provider = provider.NewProvider(TestNetHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		params := CallParams{
+			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			Amount:       amount,
+			SenderPubKey: "",
+		}
+		return c.Call(transition, args, params, priority)
+	} else if network == MainNet {
+		c.Provider = provider.NewProvider(MainNetHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		params := CallParams{
+			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			Amount:       amount,
+			SenderPubKey: "",
+		}
+		return c.Call(transition, args, params, priority)
+	} else if network == Isolated {
+		c.Provider = provider.NewProvider(IsolatedHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		params := CallParams{
+			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "40000",
+			Amount:       amount,
+			SenderPubKey: "",
+		}
+		return c.Call(transition, args, params, priority)
+	} else {
+		return nil, errors.New("unsupported network, please use testnet, mainnet or isolated")
+	}
+
 }
 
 func (c *Contract) Call(transition string, args []core.ContractValue, params CallParams, priority bool) (*transaction.Transaction, error) {
