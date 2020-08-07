@@ -18,15 +18,16 @@ package account
 
 import (
 	"fmt"
+	"os"
+	"runtime"
+	"strconv"
+	"testing"
+
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	provider2 "github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/stretchr/testify/assert"
-	"os"
-	"runtime"
-	"strconv"
-	"testing"
 )
 
 func TestPayload(t *testing.T) {
@@ -172,7 +173,7 @@ func TestSendTransactionInsufficientAmount(t *testing.T) {
 		Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 		SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
-		Amount:       "10000000000000000",
+		Amount:       "2000000000000000000",
 		GasPrice:     gasPrice,
 		GasLimit:     "1",
 		Code:         "",
