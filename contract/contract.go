@@ -194,7 +194,7 @@ func (c *Contract) Sign(transition string, args []core.ContractValue, params Cal
 	return nil, tx
 }
 
-func (c *Contract) CallFor(transition string, args []core.ContractValue, priority bool, amount string, network string) (*transaction.Transaction, error) {
+func (c *Contract) CallFor(transition string, args []core.ContractValue, priority bool, amount string, network string, gasLimit string) (*transaction.Transaction, error) {
 	if network == TestNet {
 		c.Provider = provider.NewProvider(TestNetHost)
 		gasPrice, err := c.Provider.GetMinimumGasPrice()
@@ -205,7 +205,7 @@ func (c *Contract) CallFor(transition string, args []core.ContractValue, priorit
 			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
-			GasLimit:     "40000",
+			GasLimit:     gasLimit,
 			Amount:       amount,
 			SenderPubKey: "",
 		}
@@ -220,7 +220,7 @@ func (c *Contract) CallFor(transition string, args []core.ContractValue, priorit
 			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
-			GasLimit:     "40000",
+			GasLimit:     gasLimit,
 			Amount:       amount,
 			SenderPubKey: "",
 		}
@@ -235,7 +235,7 @@ func (c *Contract) CallFor(transition string, args []core.ContractValue, priorit
 			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
-			GasLimit:     "40000",
+			GasLimit:     gasLimit,
 			Amount:       amount,
 			SenderPubKey: "",
 		}
