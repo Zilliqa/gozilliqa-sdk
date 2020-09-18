@@ -32,9 +32,11 @@ type ContractStatus int
 const MainNet = "mainnet"
 const TestNet = "testnet"
 const Isolated = "isolated"
+const HaiChuan = "haichuan"
 const TestNetHost = "https://dev-api.zilliqa.com/"
 const MainNetHost = "https://api.zilliqa.com/"
 const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
+const HaiChuanHost = "https://community700alpha7-18sep-l2api.testnet.z7a.xyz/"
 
 const (
 	Deployed ContractStatus = iota
@@ -65,6 +67,20 @@ type State struct {
 func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 	if network == TestNet {
 		c.Provider = provider.NewProvider(TestNetHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		parameter := DeployParams{
+			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "80000",
+			SenderPubKey: "",
+		}
+		return c.Deploy(parameter)
+	} else if network == HaiChuan {
+		c.Provider = provider.NewProvider(HaiChuanHost)
 		gasPrice, err := c.Provider.GetMinimumGasPrice()
 		if err != nil {
 			return nil, err
@@ -197,6 +213,21 @@ func (c *Contract) Sign(transition string, args []core.ContractValue, params Cal
 func (c *Contract) CallFor(transition string, args []core.ContractValue, priority bool, amount string, network string) (*transaction.Transaction, error) {
 	if network == TestNet {
 		c.Provider = provider.NewProvider(TestNetHost)
+		gasPrice, err := c.Provider.GetMinimumGasPrice()
+		if err != nil {
+			return nil, err
+		}
+		params := CallParams{
+			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
+			Nonce:        "",
+			GasPrice:     gasPrice,
+			GasLimit:     "80000",
+			Amount:       amount,
+			SenderPubKey: "",
+		}
+		return c.Call(transition, args, params, priority)
+	} else if network == HaiChuan {
+		c.Provider = provider.NewProvider(HaiChuanHost)
 		gasPrice, err := c.Provider.GetMinimumGasPrice()
 		if err != nil {
 			return nil, err
