@@ -34,7 +34,7 @@ const TestNet = "testnet"
 const Isolated = "isolated"
 const TestNetHost = "https://dev-api.zilliqa.com/"
 const MainNetHost = "https://api.zilliqa.com/"
-const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
+const IsolatedHost = "https://stg-zilliqa-isolated-server.zilliqa.com/"
 
 const (
 	Deployed ContractStatus = iota
