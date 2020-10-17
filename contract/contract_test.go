@@ -209,7 +209,6 @@ func TestContract_Call(t *testing.T) {
 	chainID := 333
 	msgVersion := 1
 	publickKey := keytools.GetPublicKeyFromPrivateKey(util.DecodeHex(privateKey), true)
-	address := keytools.GetAddressFromPublic(publickKey)
 	pubkey := util.EncodeHex(publickKey)
 	provider := provider2.NewProvider(host)
 
@@ -217,21 +216,16 @@ func TestContract_Call(t *testing.T) {
 	wallet.AddByPrivateKey(privateKey)
 
 	contract := Contract{
-		Address:  "bd7198209529dC42320db4bC8508880BcD22a9f2",
+		Address:  "zil1qhpdmmpwg3y3vppkzvxtf7dcfh5l0mjm7hemjh",
 		Signer:   wallet,
 		Provider: provider,
 	}
 
 	args := []core.ContractValue{
 		{
-			"to",
-			"ByStr20",
-			"0x" + address,
-		},
-		{
-			"tokens",
+			"amt",
 			"Uint128",
-			"10",
+			"10000",
 		},
 	}
 
@@ -249,7 +243,7 @@ func TestContract_Call(t *testing.T) {
 		Amount:       "0",
 	}
 
-	tx, err2 := contract.Call("Transfer", args, params, true)
+	tx, err2 := contract.Call("IsDelegstakeSufficient", args, params, true)
 	assert.Nil(t, err2, err2)
 	tx.Confirm(tx.ID, 1000, 3, provider)
 	assert.True(t, tx.Status == core.Confirmed)
