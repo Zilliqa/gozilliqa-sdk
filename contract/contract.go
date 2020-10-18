@@ -84,7 +84,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 			return nil, err
 		}
 		parameter := DeployParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(2, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
@@ -217,7 +217,7 @@ func (c *Contract) CallFor(transition string, args []core.ContractValue, priorit
 			return nil, err
 		}
 		params := CallParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(2, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
