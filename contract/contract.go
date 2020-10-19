@@ -33,7 +33,7 @@ const MainNet = "mainnet"
 const TestNet = "testnet"
 const Isolated = "isolated"
 const TestNetHost = "https://dev-api.zilliqa.com/"
-const MainNetHost = "https://hc-641-api.dev.z7a.xyz/"
+const MainNetHost = "https://v642test-l2api.mainnet.aws.zilliqa.com"
 const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
 
 const (
@@ -84,7 +84,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 			return nil, err
 		}
 		parameter := DeployParams{
-			Version:      strconv.FormatInt(int64(util.Pack(2, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
@@ -217,7 +217,7 @@ func (c *Contract) CallFor(transition string, args []core.ContractValue, priorit
 			return nil, err
 		}
 		params := CallParams{
-			Version:      strconv.FormatInt(int64(util.Pack(2, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
