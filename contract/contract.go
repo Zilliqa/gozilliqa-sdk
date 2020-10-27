@@ -32,7 +32,7 @@ type ContractStatus int
 const MainNet = "mainnet"
 const TestNet = "testnet"
 const Isolated = "isolated"
-const TestNetHost = "https://dev-api.zilliqa.com/"
+const TestNetHost = "https://scillastuck-l2api.testnet.z7a.xyz/"
 const MainNetHost = "https://v642test-l2api.mainnet.aws.zilliqa.com"
 const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
 
