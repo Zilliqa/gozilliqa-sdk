@@ -68,7 +68,8 @@ func TrySign(privateKey []byte, publicKey []byte, message []byte, k []byte) ([]b
 	//4. Compute s = k - r * prv
 	// 4a. Compute r * prv
 	_r := *r
-	s := new(big.Int).Mod(_r.Sub(bintK, _r.Mul(&_r, priKey)), keytools.Secp256k1.N)
+	s := new(big.Int).Mod(_r.Mul(&_r, priKey),keytools.Secp256k1.N)
+	s = new(big.Int).Mod(new(big.Int).Sub(bintK, s), keytools.Secp256k1.N)
 
 	if s.Cmp(big.NewInt(0)) == 0 {
 		return nil, nil, errors.New("invalid s")
