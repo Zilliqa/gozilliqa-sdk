@@ -88,14 +88,6 @@ func bigIntToBytes(bi *big.Int) []byte {
 	return b1[:]
 }
 
-func Hash(Q []byte, pubKey []byte, msg []byte) []byte {
-	var buffer bytes.Buffer
-	buffer.Write(Q)
-	buffer.Write(pubKey[:33])
-	buffer.Write(msg)
-	return Sha256(buffer.Bytes())
-}
-
 func GenerateMac(derivedKey, cipherText, iv []byte) []byte {
 	buffer := bytes.NewBuffer(nil)
 	buffer.Write(derivedKey[16:32])
