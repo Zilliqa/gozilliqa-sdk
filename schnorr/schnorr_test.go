@@ -78,7 +78,7 @@ func run_verify_test(t *testing.T) {
 		panic("unmarshal failed")
 	}
 
-	fmt.Printf("test data number = %d", len(data))
+	fmt.Printf("test data number = %d\n", len(data))
 
 	n := 0
 

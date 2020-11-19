@@ -17,6 +17,7 @@
 package go_schnorr
 
 import (
+	"bytes"
 	"encoding/hex"
 	"errors"
 	"fmt"
@@ -58,7 +59,7 @@ func TrySign(privateKey []byte, publicKey []byte, message []byte, k []byte) ([]b
 
 	// 3. Compute the challenge r = H(Q || pubKey || msg)
 	// mod reduce r by the order of secp256k1, n
-	r := new(big.Int).SetBytes(util.Hash(Q, publicKey, message[:]))
+	r := new(big.Int).SetBytes(hash(Q, publicKey, message[:]))
 	r = r.Mod(r, keytools.Secp256k1.N)
 
 	if r.Cmp(bintZero) == 0 {
@@ -68,7 +69,8 @@ func TrySign(privateKey []byte, publicKey []byte, message []byte, k []byte) ([]b
 	//4. Compute s = k - r * prv
 	// 4a. Compute r * prv
 	_r := *r
-	s := new(big.Int).Mod(_r.Sub(bintK, _r.Mul(&_r, priKey)), keytools.Secp256k1.N)
+	s := new(big.Int).Mod(_r.Mul(&_r, priKey),keytools.Secp256k1.N)
+	s = new(big.Int).Mod(new(big.Int).Sub(bintK, s), keytools.Secp256k1.N)
 
 	if s.Cmp(big.NewInt(0)) == 0 {
 		return nil, nil, errors.New("invalid s")
@@ -112,10 +114,18 @@ func Verify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
 	Qx, Qy := keytools.Secp256k1.Add(rx, ry, lx, ly)
 	Q := util.Compress(keytools.Secp256k1, Qx, Qy, true)
 
-	_r := util.Hash(Q, publicKey, msg)
+	_r := hash(Q, publicKey, msg)
 
 	rn := new(big.Int).SetBytes(r)
-	_rn := new(big.Int).SetBytes(_r)
+	_rn := new(big.Int).Mod(new(big.Int).SetBytes(_r),keytools.Secp256k1.N)
 	fmt.Printf("r = %s, _r = %s\n", hex.EncodeToString(r), hex.EncodeToString(_r))
 	return rn.Cmp(_rn) == 0
+}
+
+func hash(Q []byte, pubKey []byte, msg []byte) []byte {
+	var buffer bytes.Buffer
+	buffer.Write(Q)
+	buffer.Write(pubKey[:33])
+	buffer.Write(msg)
+	return util.Sha256(buffer.Bytes())
 }
