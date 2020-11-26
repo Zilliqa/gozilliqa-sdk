@@ -43,9 +43,9 @@ func run_sign_verify_test(t *testing.T) {
 	}
 
 	for _, v := range data {
-		msg := hex_bytes(v["msg"])
-		pub := hex_bytes(v["pub"])
-		priv := hex_bytes(v["priv"])
+		msg := HexBytes(v["msg"])
+		pub := HexBytes(v["pub"])
+		priv := HexBytes(v["priv"])
 
 		sig, err := SignMessage(priv, pub, msg)
 
