@@ -11,8 +11,8 @@ import (
 )
 
 var bintZero = big.NewInt(0)
-const ThirdDomainSeparatedHashFunctionByte = 0x11
 
+const ThirdDomainSeparatedHashFunctionByte = 0x11
 
 func AggregatedPubKey(pubKeys [][]byte) ([]byte, error) {
 	if len(pubKeys) == 0 {
@@ -78,7 +78,7 @@ func MultiVerify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
 	Qx, Qy := keytools.Secp256k1.Add(rx, ry, lx, ly)
 	Q := util.Compress(keytools.Secp256k1, Qx, Qy, true)
 
-	_r := hash(0x11,Q,publicKey,msg)
+	_r := hash(ThirdDomainSeparatedHashFunctionByte, Q, publicKey, msg)
 	_rn := new(big.Int).Mod(new(big.Int).SetBytes(_r), keytools.Secp256k1.N)
 
 	rn := new(big.Int).SetBytes(r)

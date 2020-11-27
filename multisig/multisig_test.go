@@ -12,7 +12,7 @@ func TestMultiVerify(t *testing.T) {
 	pubKey := "030C1C24EAA7C656D1DD7AF98FC3DD4D3FBB441BAB9D83D42302E6D0E43F6B1C4D"
 	r := util.DecodeHex(signature[0:64])
 	s := util.DecodeHex(signature[64:128])
-	if !MultiVerify(util.DecodeHex(pubKey), util.DecodeHex(msg), r,s) {
+	if !MultiVerify(util.DecodeHex(pubKey), util.DecodeHex(msg), r, s) {
 		t.Fail()
 	}
 
@@ -21,7 +21,7 @@ func TestMultiVerify(t *testing.T) {
 	pubKey = "030618BBB66FCF69E91A21639FE0962F1CE390093EE67D1D10F54C8C37947051BC"
 	r = util.DecodeHex(signature[0:64])
 	s = util.DecodeHex(signature[64:128])
-	if !MultiVerify(util.DecodeHex(pubKey), util.DecodeHex(msg), r,s) {
+	if !MultiVerify(util.DecodeHex(pubKey), util.DecodeHex(msg), r, s) {
 		t.Fail()
 	}
 }
@@ -57,7 +57,5 @@ func TestAggregatedPubKey(t *testing.T) {
 	if pubKey != strings.ToLower("039954DAC15A65C18A82E122A7B40C8C0BB8771B598CD49396AF57E0E150EE2281") {
 		t.Error("generate aggregated public key failed")
 	}
-
-
 
 }
