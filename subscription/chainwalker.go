@@ -88,7 +88,10 @@ func (t GetEventReceiptTask) Run() {
 	t.Complete.Lock()
 	defer t.Complete.Unlock()
 	t.Complete.Number++
-	tnx, _ := t.Provider.GetTransaction(t.Id)
+	tnx, err := t.Provider.GetTransaction(t.Id)
+	if err != nil {
+		return
+	}
 	receipt := tnx.Receipt
 	addr := tnx.ToAddr
 	if receipt.Success == false {
