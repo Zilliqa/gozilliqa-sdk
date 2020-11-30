@@ -30,8 +30,8 @@ func AggregatedPubKey(pubKeys [][]byte) ([]byte, error) {
 			return nil, err1
 		}
 		x, y := keytools.Secp256k1.Add(aggregatedPubKey.X, aggregatedPubKey.Y, puk.X, puk.Y)
-		bytes := util.Marshal(keytools.Secp256k1, x, y, true)
-		pubKey, err2 := btcec.ParsePubKey(bytes, keytools.Secp256k1)
+		pubKeyBytes := util.Marshal(keytools.Secp256k1, x, y, true)
+		pubKey, err2 := btcec.ParsePubKey(pubKeyBytes, keytools.Secp256k1)
 		if err2 != nil {
 			return nil, err2
 		}
