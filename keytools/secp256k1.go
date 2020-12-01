@@ -42,7 +42,7 @@ func GeneratePrivateKey() (PrivateKey, error) {
 			}
 		}
 	}
-	return bytes,nil
+	return bytes, nil
 }
 
 func GetPublicKeyFromPrivateKey(privateKey []byte, compress bool) []byte {
