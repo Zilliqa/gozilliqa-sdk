@@ -58,7 +58,6 @@ func VerifySignature(publicKey []byte, message []byte, signature []byte) bool {
 	sig := util.EncodeHex(signature)
 
 	if len(sig) != 128 {
-		fmt.Printf("invalid signature length: %v\n", len(sig))
 		return false
 	}
 
