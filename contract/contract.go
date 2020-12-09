@@ -32,7 +32,7 @@ type ContractStatus int
 const MainNet = "mainnet"
 const TestNet = "testnet"
 const Isolated = "isolated"
-const TestNetHost = "https://v700beta6-7dec-l2api.mainnet.aws.zilliqa.com/"
+const TestNetHost = "https://dev-api.zilliqa.com/"
 const MainNetHost = "https://api.zilliqa.com/"
 const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
 
@@ -70,7 +70,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 			return nil, err
 		}
 		parameter := DeployParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
@@ -98,7 +98,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 			return nil, err
 		}
 		parameter := DeployParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(222, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
@@ -202,7 +202,7 @@ func (c *Contract) CallFor(transition string, args []core.ContractValue, priorit
 			return nil, err
 		}
 		params := CallParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
@@ -232,7 +232,7 @@ func (c *Contract) CallFor(transition string, args []core.ContractValue, priorit
 			return nil, err
 		}
 		params := CallParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(222, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
