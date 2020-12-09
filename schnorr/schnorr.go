@@ -114,9 +114,9 @@ func Verify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
 	Q := util.Compress(keytools.Secp256k1, Qx, Qy, true)
 
 	_r := hash(Q, publicKey, msg)
+	_rn := new(big.Int).Mod(new(big.Int).SetBytes(_r), keytools.Secp256k1.N)
 
 	rn := new(big.Int).SetBytes(r)
-	_rn := new(big.Int).Mod(new(big.Int).SetBytes(_r), keytools.Secp256k1.N)
 	return rn.Cmp(_rn) == 0
 }
 
