@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-const polyChainPubKeyLen = 67
+const polyChainPubKeyLen = 67 * 2
 
 func SplitPubKeys(rawBytes string) ([]string, error) {
 	if strings.HasPrefix(rawBytes, "0x") {
