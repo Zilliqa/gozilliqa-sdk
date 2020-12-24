@@ -544,18 +544,18 @@ func (provider *Provider) GetTransaction(transaction_hash string) (*core.Transac
 func (provider *Provider) GetTransactionBatch(transactionHashes []string) ([]*core.Transaction, error) {
 	var requests jsonrpc.RPCRequests
 	for _, hash := range transactionHashes {
-		r := jsonrpc.NewRequest("GetTransaction",[]string{hash})
-		requests = append(requests,r)
+		r := jsonrpc.NewRequest("GetTransaction", []string{hash})
+		requests = append(requests, r)
 	}
 
-	results,err := provider.rpcClient.CallBatch(requests)
+	results, err := provider.rpcClient.CallBatch(requests)
 	if err != nil {
 		return nil, err
 	}
 
 	var transactions []*core.Transaction
 
-	for _,result := range results {
+	for _, result := range results {
 		var transaction core.Transaction
 		jsonString, err2 := json.Marshal(result.Result)
 		if err2 != nil {
@@ -566,10 +566,10 @@ func (provider *Provider) GetTransactionBatch(transactionHashes []string) ([]*co
 			return transactions, err3
 		}
 
-		transactions = append(transactions,&transaction)
+		transactions = append(transactions, &transaction)
 	}
 
-	return transactions,nil
+	return transactions, nil
 
 }
 
@@ -797,7 +797,7 @@ func (provider *Provider) GetSmartContracts(user_address string) (*jsonrpc.RPCRe
 // Returns a smart contract address of 20 bytes. This is represented as a String.
 // NOTE: This only works for contract deployment transactions.
 func (provider *Provider) GetContractAddressFromTransactionID(transaction_id string) (string, error) {
-	result, err := provider.call("GetContractAddressFromTransactionID",transaction_id)
+	result, err := provider.call("GetContractAddressFromTransactionID", transaction_id)
 	if err != nil {
 		return "", err
 	}

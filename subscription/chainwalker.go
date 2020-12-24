@@ -144,7 +144,7 @@ func (w *Walker) StartTraversalBlock() {
 			}
 
 			wp := workpool.NewWorkPool(w.WorkerNumber)
-			quit := make(chan int,1)
+			quit := make(chan int, 1)
 			for _, tx := range txns {
 				task := NewGetReceiptTask(tx, w.Provider, complete, w, i)
 				wp.AddTask(task)
