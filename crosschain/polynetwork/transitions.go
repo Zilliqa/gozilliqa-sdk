@@ -82,7 +82,7 @@ func (p *Proxy) InitGenesisBlock(rawHeader string, pubKeys []string) error {
 	var keys []core.ParamConstructor
 	for _, key := range pubKeys {
 		keys = append(keys, core.ParamConstructor{
-			Constructor: "Pubkey",
+			Constructor: "Polynetwork.Pubkey",
 			ArgTypes:    make([]interface{}, 0),
 			Arguments:   []string{key},
 		})
@@ -96,7 +96,7 @@ func (p *Proxy) InitGenesisBlock(rawHeader string, pubKeys []string) error {
 		},
 		{
 			"pubkeys",
-			"List Pubkey",
+			"List Polynetwork.Pubkey",
 			keys,
 		},
 	}
