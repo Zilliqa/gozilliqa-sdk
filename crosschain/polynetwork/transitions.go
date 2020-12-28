@@ -171,7 +171,7 @@ func (p *Proxy) ChangeBookKeeper(rawHeader string, pubKeys []string, sigList []s
 }
 
 func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, headerProof *ProofEntity, curRawHeader string, headerSig []string) (*transaction.Transaction, error) {
-	var pairs []core.ParamConstructor
+	pairs := []core.ParamConstructor{}
 
 	for _, pair := range proof.Pair {
 		pairs = append(pairs, core.ParamConstructor{
@@ -181,7 +181,7 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 		})
 	}
 
-	var headerPairs []core.ParamConstructor
+	headerPairs := []core.ParamConstructor{}
 	for _, pair := range headerProof.Pair {
 		headerPairs = append(headerPairs, core.ParamConstructor{
 			Constructor: "Pair",
