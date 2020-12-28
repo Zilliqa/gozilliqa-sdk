@@ -21,7 +21,7 @@ import (
 	"strings"
 )
 
-func Deserialize(proof string, position uint64) *ProofEntity {
+func DeserializeProof(proof string, position uint64) *ProofEntity {
 	if strings.HasPrefix(proof, "0x") {
 		proof = proof[2:]
 	}
