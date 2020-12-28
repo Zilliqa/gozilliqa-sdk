@@ -111,7 +111,7 @@ func (p *Proxy) InitGenesisBlock(rawHeader string, pubKeys []string) (*transacti
 		keys = append(keys, core.ParamConstructor{
 			Constructor: "Polynetwork.Pubkey",
 			ArgTypes:    make([]interface{}, 0),
-			Arguments:   []string{key},
+			Arguments:   []interface{}{key},
 		})
 	}
 
@@ -137,7 +137,7 @@ func (p *Proxy) ChangeBookKeeper(rawHeader string, pubKeys []string, sigList []s
 		keys = append(keys, core.ParamConstructor{
 			Constructor: "Polynetwork.Pubkey",
 			ArgTypes:    make([]interface{}, 0),
-			Arguments:   []string{key},
+			Arguments:   []interface{}{key},
 		})
 	}
 
@@ -146,7 +146,7 @@ func (p *Proxy) ChangeBookKeeper(rawHeader string, pubKeys []string, sigList []s
 		sigs = append(sigs, core.ParamConstructor{
 			Constructor: "Polynetwork.Signature",
 			ArgTypes:    make([]interface{}, 0),
-			Arguments:   []string{sig},
+			Arguments:   []interface{}{sig},
 		})
 	}
 	args := []core.ContractValue{
@@ -177,8 +177,16 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 		pairs = append(pairs, core.ParamConstructor{
 			Constructor: "Pair",
 			ArgTypes:    []interface{}{"ByStr1", "ByStr32"},
-			Arguments:   []string{"0x" + pair.Key, "0x" + pair.Hash},
+			Arguments:   []interface{}{"0x" + pair.Key, "0x" + pair.Hash},
 		})
+	}
+	proofArguments := make([]interface{}, 0)
+	proofArguments = append(proofArguments, proof.Proof)
+	proofArguments = append(proofArguments, pairs)
+	proofConstructor := core.ParamConstructor{
+		Constructor: "Polynetwork.Proof",
+		ArgTypes:    make([]interface{}, 0),
+		Arguments:   proofArguments,
 	}
 
 	headerPairs := []core.ParamConstructor{}
@@ -186,8 +194,17 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 		headerPairs = append(headerPairs, core.ParamConstructor{
 			Constructor: "Pair",
 			ArgTypes:    []interface{}{"ByStr1", "ByStr32"},
-			Arguments:   []string{"0x" + pair.Key, "0x" + pair.Hash},
+			Arguments:   []interface{}{"0x" + pair.Key, "0x" + pair.Hash},
 		})
+	}
+
+	headProofArguments := make([]interface{}, 0)
+	headProofArguments = append(headProofArguments, headerProof.Proof)
+	headProofArguments = append(headProofArguments, pairs)
+	headProofConstructor := core.ParamConstructor{
+		Constructor: "Polynetwork.Proof",
+		ArgTypes:    make([]interface{}, 0),
+		Arguments:   headProofArguments,
 	}
 
 	var sigs []core.ParamConstructor
@@ -195,7 +212,7 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 		sigs = append(sigs, core.ParamConstructor{
 			Constructor: "Polynetwork.Signature",
 			ArgTypes:    make([]interface{}, 0),
-			Arguments:   []string{sig},
+			Arguments:   []interface{}{sig},
 		})
 	}
 
@@ -203,7 +220,7 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 		{
 			"proof",
 			"Polynetwork.Proof",
-			pairs,
+			proofConstructor,
 		},
 		{
 			"rawHeader",
@@ -213,7 +230,7 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 		{
 			"headerProof",
 			"Polynetwork.Proof",
-			headerPairs,
+			headProofConstructor,
 		},
 		{
 			"curRawHeader",

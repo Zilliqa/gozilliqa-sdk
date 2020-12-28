@@ -159,7 +159,7 @@ type ContractValue struct {
 type ParamConstructor struct {
 	Constructor string        `json:"constructor"`
 	ArgTypes    []interface{} `json:"argtypes"`
-	Arguments   []string      `json:"arguments"`
+	Arguments   []interface{} `json:"arguments"`
 }
 
 type BalanceAndNonce struct {
