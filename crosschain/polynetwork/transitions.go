@@ -177,7 +177,7 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 		pairs = append(pairs, core.ParamConstructor{
 			Constructor: "Pair",
 			ArgTypes:    []interface{}{"ByStr1", "ByStr32"},
-			Arguments:   []string{pair.Key, pair.Hash},
+			Arguments:   []string{"0x" + pair.Key, "0x" + pair.Hash},
 		})
 	}
 
@@ -186,7 +186,7 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 		headerPairs = append(headerPairs, core.ParamConstructor{
 			Constructor: "Pair",
 			ArgTypes:    []interface{}{"ByStr1", "ByStr32"},
-			Arguments:   []string{pair.Key, pair.Hash},
+			Arguments:   []string{"0x" + pair.Key, "0x" + pair.Hash},
 		})
 	}
 
