@@ -200,7 +200,7 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 
 	headProofArguments := make([]interface{}, 0)
 	headProofArguments = append(headProofArguments, "0x"+headerProof.Proof)
-	headProofArguments = append(headProofArguments, pairs)
+	headProofArguments = append(headProofArguments, headerPairs)
 	headProofConstructor := core.ParamConstructor{
 		Constructor: "Polynetwork.Proof",
 		ArgTypes:    make([]interface{}, 0),
