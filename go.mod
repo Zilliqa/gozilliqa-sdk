@@ -12,6 +12,7 @@ require (
 	github.com/ybbus/jsonrpc v2.1.2+incompatible
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58
+	google.golang.org/protobuf v1.23.0
 )
 
 go 1.13

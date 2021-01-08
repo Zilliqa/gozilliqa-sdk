@@ -1,6 +1,6 @@
-syntax = "proto2";
+syntax = "proto3";
 
-option go_package = "LaksaGo";
+option go_package = "protobuf";
 
 package ZilliqaMessage;
 
@@ -10,7 +10,7 @@ package ZilliqaMessage;
 
 message ByteArray
 {
-    required bytes data = 1;
+    optional bytes data = 1;
 }
 
 message ProtoTransactionCoreInfo
@@ -43,4 +43,13 @@ message ProtoTransactionWithReceipt
 {
     optional ProtoTransaction transaction    = 1;
     optional ProtoTransactionReceipt receipt = 2;
+}
+
+message ProtoAccountBase
+{
+     optional uint32 version    = 1;
+     optional ByteArray balance = 2;
+     oneof oneof3 { uint64 nonce = 3; }
+     optional bytes codehash    = 4;
+     optional bytes storageroot = 5;
 }
