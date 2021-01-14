@@ -9,6 +9,14 @@ const (
 	Rejected
 )
 
+type AccountBase struct {
+	Version     uint32
+	Balance     uint64
+	Nonce       uint64
+	StorageRoot []byte
+	CodeHash    []byte
+}
+
 type BlockchainInfo struct {
 	CurrentDSEpoch    string
 	CurrentMiniEpoch  string
