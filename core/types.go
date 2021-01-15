@@ -124,6 +124,12 @@ type Transaction struct {
 	Priority        bool
 }
 
+type EventLog struct {
+	EventName string          `json:"_eventname"`
+	Address   string          `json:"address"`
+	Params    []ContractValue `json:"params"`
+}
+
 type TransactionReceipt struct {
 	Accept        bool                   `json:"accept"`
 	Errors        interface{}            `json:"errors"`
@@ -131,7 +137,7 @@ type TransactionReceipt struct {
 	Success       bool                   `json:"success"`
 	CumulativeGas string                 `json:"cumulative_gas"`
 	EpochNum      string                 `json:"epoch_num"`
-	EventLogs     []interface{}          `json:"event_logs"`
+	EventLogs     []EventLog             `json:"event_logs"`
 	Transitions   []Transition           `json:"transitions"`
 }
 
