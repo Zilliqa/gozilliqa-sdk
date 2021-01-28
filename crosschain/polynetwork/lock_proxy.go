@@ -78,6 +78,30 @@ func (l *LockProxy) BindProxyHash(toChainId, targetProxyHash string) (*transacti
 	return l.call(args, "BindProxyHash", "0")
 }
 
+func (l *LockProxy) SetManager(newManager string) (*transaction.Transaction,error) {
+	args := []core.ContractValue{
+		{
+			"new_manager",
+			"ByStr20",
+			newManager,
+		},
+	}
+
+	return l.call(args, "SetManager", "0")
+}
+
+func (l *LockProxy) SetManagerProxy(newManagerProxy string) (*transaction.Transaction,error) {
+	args := []core.ContractValue{
+		{
+			"new_manager_proxy",
+			"ByStr20",
+			newManagerProxy,
+		},
+	}
+
+	return l.call(args, "SetManagerProxy", "0")
+}
+
 func (l *LockProxy) Lock(fromAssetHash, toChainId, toAddress, amount string) (*transaction.Transaction, error) {
 
 	args := []core.ContractValue{
