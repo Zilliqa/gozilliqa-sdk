@@ -78,7 +78,7 @@ func (l *LockProxy) BindProxyHash(toChainId, targetProxyHash string) (*transacti
 	return l.call(args, "BindProxyHash", "0")
 }
 
-func (l *LockProxy) SetManager(newManager string) (*transaction.Transaction,error) {
+func (l *LockProxy) SetManager(newManager string) (*transaction.Transaction, error) {
 	args := []core.ContractValue{
 		{
 			"new_manager",
@@ -90,7 +90,7 @@ func (l *LockProxy) SetManager(newManager string) (*transaction.Transaction,erro
 	return l.call(args, "SetManager", "0")
 }
 
-func (l *LockProxy) SetManagerProxy(newManagerProxy string) (*transaction.Transaction,error) {
+func (l *LockProxy) SetManagerProxy(newManagerProxy string) (*transaction.Transaction, error) {
 	args := []core.ContractValue{
 		{
 			"new_manager_proxy",
@@ -128,6 +128,29 @@ func (l *LockProxy) Lock(fromAssetHash, toChainId, toAddress, amount string) (*t
 	}
 
 	return l.call(args, "Lock", amount)
+}
+
+func (l *LockProxy) Unlock(txData, fromContractAddr, fromChainId string) (*transaction.Transaction, error) {
+
+	args := []core.ContractValue{
+		{
+			"txData",
+			"ByStr",
+			txData,
+		},
+		{
+			"fromContractAddr",
+			"ByStr",
+			fromContractAddr,
+		},
+		{
+			"fromChainId",
+			"Uint64",
+			fromChainId,
+		},
+	}
+
+	return l.call(args, "Unlock", "0")
 }
 
 func (l *LockProxy) call(args []core.ContractValue, transition string, amount string) (*transaction.Transaction, error) {
