@@ -6,19 +6,20 @@ import (
 
 type BIGNumSerialize struct{}
 
-func (bn *BIGNumSerialize) SetNumber(dst []byte, offset uint, size uint, value *big.Int) {
+func (bn *BIGNumSerialize) SetNumber(dst []byte, offset uint, size uint, value *big.Int) []byte {
 	// check for offset overflow
 	if offset+size < size {
 		// overflow detected
-		return
+		return nil
 	}
 
-	// todo any different from openssl function
 	bytes := value.Bytes()
 	actualByteNumber := len(bytes)
 	if actualByteNumber <= int(size) {
 		if offset+size > uint(len(dst)) {
-			dst = make([]byte, int(offset+size))
+			newDst := make([]byte, int(offset+size))
+			copy(newDst, dst)
+			dst = newDst
 		}
 		// pad with zeroes as needed
 		sizeDiff := size - uint(actualByteNumber)
@@ -32,5 +33,5 @@ func (bn *BIGNumSerialize) SetNumber(dst []byte, offset uint, size uint, value *
 	} else {
 		// big num size > declared size
 	}
-
+	return dst
 }

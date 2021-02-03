@@ -54,7 +54,7 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 		protoDSBlockHeader.Difficulty = d.Difficulty
 		data := make([]byte, 16)
 		gasPriceInt, _ := new(big.Int).SetString(d.GasPrice, 16)
-		Uint128ToProtobufByteArray(data, 0, gasPriceInt, 16)
+		data = Uint128ToProtobufByteArray(data, 0, gasPriceInt, 16)
 		protoDSBlockHeader.Gasprice = &protobuf.ByteArray{
 			Data: data,
 		}
