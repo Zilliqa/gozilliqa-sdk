@@ -18,6 +18,6 @@ func Test_DeserializeFromJsonToDsBlockT(t *testing.T) {
 	if err2 != nil {
 		t.Fatal(err2.Error())
 	}
-
-	fmt.Println(dsBlockT)
+	dsBlockHeader := NewFromDsBlockT(&dsBlockT)
+	fmt.Println(dsBlockHeader.ToProtobuf(true))
 }
