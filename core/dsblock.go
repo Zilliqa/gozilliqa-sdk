@@ -1,13 +1,16 @@
 package core
 
+import "github.com/Zilliqa/gozilliqa-sdk/protobuf"
+
 type DsBlock struct {
 	BlockHeader DsBlockHeader
 }
 
 // https://github.com/Zilliqa/Zilliqa/blob/04162ef0c3c1787ebbd940b7abd6b7ff1d4714ed/src/libData/BlockData/BlockHeader/DSBlockHeader.h
 type DsBlockHeader struct {
-	DsDifficulty uint8
-	Difficulty   uint8
+	blockHeaderBase BlockHeaderBase
+	DsDifficulty uint32
+	Difficulty   uint32
 	// The one who proposed this DS block
 	// base16 string
 	LeaderPubKey string
@@ -37,6 +40,20 @@ type SWInfo struct {
 	ScillaUpgradeDS     uint32
 	ScillaCommit        uint32
 }
+
+// the default value of concreteVarsOnly should be false
+func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock_DSBlockHeader {
+	protoDSBlockHeader := &protobuf.ProtoDSBlock_DSBlockHeader{}
+	protoBlockHeaderBase := d.blockHeaderBase.ToProtobuf()
+	protoDSBlockHeader.Blockheaderbase = protoBlockHeaderBase
+	if !concreteVarsOnly {
+		protoDSBlockHeader.Dsdifficulty = d.DsDifficulty
+		protoDSBlockHeader.Difficulty = d.Difficulty
+	}
+
+	return protoDSBlockHeader
+}
+
 
 // ds block transfer struct (via rpc)
 type DsBlockT struct {
