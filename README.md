@@ -24,6 +24,20 @@ the section `quick start` first to get a basic understanding before you start to
 
 #### Supports
 
+##### Multisig support
+
+- [x] aggregatedPubKey
+- [x] multiVerify
+- [ ] tx block serialization
+- [ ] ds block serialization  
+- [ ] verify tx block
+- [ ] verify ds block
+
+#### ChainWalker
+
+- [x] traversalBlock
+- [x] websocket
+
 ##### Account API
 
 - [x] fromFile

@@ -6,7 +6,7 @@ type BlockHeaderBase struct {
 	Version uint32
 	// Hash for the committee that generated the block
 	CommitteeHash [32]byte
-	PrevHash [32]byte
+	PrevHash      [32]byte
 }
 
 func (b *BlockHeaderBase) ToProtobuf() *protobuf.ProtoBlockHeaderBase {

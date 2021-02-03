@@ -1,6 +1,9 @@
 package core
 
-import "github.com/Zilliqa/gozilliqa-sdk/protobuf"
+import (
+	"github.com/Zilliqa/gozilliqa-sdk/protobuf"
+	"math/big"
+)
 
 type DsBlock struct {
 	BlockHeader DsBlockHeader
@@ -9,8 +12,8 @@ type DsBlock struct {
 // https://github.com/Zilliqa/Zilliqa/blob/04162ef0c3c1787ebbd940b7abd6b7ff1d4714ed/src/libData/BlockData/BlockHeader/DSBlockHeader.h
 type DsBlockHeader struct {
 	blockHeaderBase BlockHeaderBase
-	DsDifficulty uint32
-	Difficulty   uint32
+	DsDifficulty    uint32
+	Difficulty      uint32
 	// The one who proposed this DS block
 	// base16 string
 	LeaderPubKey string
@@ -49,20 +52,29 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 	if !concreteVarsOnly {
 		protoDSBlockHeader.Dsdifficulty = d.DsDifficulty
 		protoDSBlockHeader.Difficulty = d.Difficulty
+		data := make([]byte, 16)
+		gasPriceInt, _ := new(big.Int).SetString(d.GasPrice, 16)
+		Uint128ToProtobufByteArray(data, 0, gasPriceInt, 16)
+		protoDSBlockHeader.Gasprice = &protobuf.ByteArray{
+			Data: data,
+		}
+		//for _,winner := d.PoWDSWinners {
+		//
+		//}
+
 	}
 
 	return protoDSBlockHeader
 }
 
-
 // ds block transfer struct (via rpc)
 type DsBlockT struct {
-	B1         []bool        `json:"B1"`
-	B2         []bool        `json:"B2"`
-	CS1        string        `json:"CS1"`
+	B1         []bool         `json:"B1"`
+	B2         []bool         `json:"B2"`
+	CS1        string         `json:"CS1"`
 	Header     DsBlockHeaderT `json:"header"`
-	Serialized SerializedT   `json:"serialized"`
-	Signatures string        `json:"signatures"`
+	Serialized SerializedT    `json:"serialized"`
+	Signatures string         `json:"signatures"`
 }
 
 type DsBlockHeaderT struct {
