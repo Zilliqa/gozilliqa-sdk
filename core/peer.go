@@ -12,10 +12,9 @@ type Peer struct {
 }
 
 func (p *Peer) Serialize() []byte {
-	bns := BIGNumSerialize{}
 	data := make([]byte, 0)
 	port := new(big.Int).SetUint64(uint64(p.ListenPortHost))
-	data = bns.SetNumber(data, 0, 16, p.IpAddress)
-	data = bns.SetNumber(data, 16, 4, port)
+	data = UintToByteArray(data,0,p.IpAddress,16)
+	data = UintToByteArray(data,16,port,4)
 	return data
 }

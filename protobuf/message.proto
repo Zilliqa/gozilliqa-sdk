@@ -95,8 +95,8 @@ message ProtoDSBlock
         uint32 difficulty                    = 3;  // Added in: v1.0, Deprecated in: N/A, Only LSB used
         bytes prevhash                       = 4;  // Added in: v1.0, Deprecated in: N/A, 32 bytes
         ByteArray leaderpubkey               = 5;  // Added in: v1.0, Deprecated in: N/A
-        oneof oneof6 { uint64 blocknum       = 6; } // Added in: v1.0, Deprecated in: N/A
-        oneof oneof7 { uint64 epochnum       = 7; } // Added in: v1.0, Deprecated in: N/A
+        uint64 blocknum       = 6;  // Added in: v1.0, Deprecated in: N/A
+        uint64 epochnum       = 7;  // Added in: v1.0, Deprecated in: N/A
         ByteArray gasprice                   = 8;  // Added in: v1.0, Deprecated in: N/A
         ByteArray swinfo                     = 9;  // Added in: v1.0, Deprecated in: N/A
         message PowDSWinners

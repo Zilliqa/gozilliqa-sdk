@@ -5,8 +5,8 @@ const (
 )
 
 type Pair struct {
-	first  map[uint32]uint32
-	second map[uint32]uint32
+	First  map[uint32]uint32
+	Second map[uint32]uint32
 }
 
 type DsBlockHeaderT struct {
@@ -24,6 +24,7 @@ type DsBlockHeaderT struct {
 	ReservedField  string
 	SWInfo         SWInfoT
 	ShardingHash   string
+	Governance     []GovernanceElementT
 	Timestamp      string
 	Version        uint32
 }
@@ -45,5 +46,16 @@ type DsBlockT struct {
 	CS1        string         `json:"CS1"`
 	Header     DsBlockHeaderT `json:"header"`
 	Serialized SerializedT    `json:"serialized"`
-	Signatures string         `json:"signatures"`
+	Signatures string         `json:"signature"`
+}
+
+type VoteT struct {
+	VoteCount uint32
+	VoteValue uint32
+}
+
+type GovernanceElementT struct {
+	DSVotes    []VoteT
+	ShardVotes []VoteT
+	ProposalId uint32
 }

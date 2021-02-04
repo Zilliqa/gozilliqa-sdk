@@ -1,7 +1,10 @@
 package core
 
 import (
+	"bytes"
+	"encoding/binary"
 	"math/big"
+	"net"
 )
 
 // place a number into the destination byte stream at the specified offset
@@ -27,4 +30,10 @@ func UintToByteArray(dst []byte, offset uint, num *big.Int, numericTypeLen uint)
 	}
 
 	return dst
+}
+
+func IP2Long(ip string) uint32 {
+	var long uint32
+	binary.Read(bytes.NewBuffer(net.ParseIP(ip).To4()), binary.LittleEndian, &long)
+	return long
 }

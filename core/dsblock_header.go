@@ -3,8 +3,8 @@ package core
 import (
 	"github.com/Zilliqa/gozilliqa-sdk/protobuf"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/golang/protobuf/proto"
 	"math/big"
-	"net"
 	"strconv"
 )
 
@@ -21,9 +21,9 @@ type DsBlockHeader struct {
 	// Tx Epoch Num then the DS block was generated
 	EpochNum uint64
 	GasPrice string
+	SwInfo       SWInfo
 	// key is (base16) public key
 	PoWDSWinners map[string]Peer
-	SwInfo       SWInfo
 	// (base16) public key
 	RemoveDSNodePubKeys []string
 	// todo concrete data type
@@ -31,10 +31,10 @@ type DsBlockHeader struct {
 	GovDSShardVotesMap map[uint32]Pair
 }
 
-func NewFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
+func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	dsBlockHeader := &DsBlockHeader{}
 	dsBlockHeader.DsDifficulty = dst.Header.DifficultyDS
-	dsBlockHeader.DsDifficulty = dst.Header.Difficulty
+	dsBlockHeader.Difficulty = dst.Header.Difficulty
 	dsBlockHeader.LeaderPubKey = dst.Header.LeaderPubKey
 
 	blockNum, _ := strconv.ParseUint(dst.Header.BlockNum, 10, 64)
@@ -46,7 +46,7 @@ func NewFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	dsBlockHeader.GasPrice = dst.Header.GasPrice
 
 	zilliqaUpgradeDS, _ := strconv.ParseUint(dst.Header.SWInfo.Zilliqa[3].(string), 10, 64)
-	scillaUpgradeDS, _ := strconv.ParseUint(dst.Header.SWInfo.Zilliqa[8].(string), 10, 64)
+	scillaUpgradeDS, _ := strconv.ParseUint(dst.Header.SWInfo.Scilla[3].(string), 10, 64)
 
 	dsBlockHeader.SwInfo = SWInfo{
 		ZilliqaMajorVersion: uint32(dst.Header.SWInfo.Zilliqa[0].(float64)),
@@ -54,11 +54,11 @@ func NewFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 		ZilliqaFixVersion:   uint32(dst.Header.SWInfo.Zilliqa[2].(float64)),
 		ZilliqaUpgradeDS:    zilliqaUpgradeDS,
 		ZilliqaCommit:       uint32(dst.Header.SWInfo.Zilliqa[4].(float64)),
-		ScillaMajorVersion:  uint32(dst.Header.SWInfo.Zilliqa[5].(float64)),
-		ScillaMinorVersion:  uint32(dst.Header.SWInfo.Zilliqa[6].(float64)),
-		ScillaFixVersion:    uint32(dst.Header.SWInfo.Zilliqa[7].(float64)),
+		ScillaMajorVersion:  uint32(dst.Header.SWInfo.Scilla[0].(float64)),
+		ScillaMinorVersion:  uint32(dst.Header.SWInfo.Scilla[1].(float64)),
+		ScillaFixVersion:    uint32(dst.Header.SWInfo.Scilla[2].(float64)),
 		ScillaUpgradeDS:     scillaUpgradeDS,
-		ScillaCommit:        uint32(dst.Header.SWInfo.Zilliqa[9].(float64)),
+		ScillaCommit:        uint32(dst.Header.SWInfo.Scilla[4].(float64)),
 	}
 
 	winnermap := make(map[string]Peer, len(dst.Header.PoWWinners))
@@ -66,10 +66,10 @@ func NewFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 		ip := dst.Header.PoWWinnersIP[i].IP
 		port := dst.Header.PoWWinnersIP[i].Port
 
-		IPAddress := net.ParseIP(ip)
+		IPAddress := IP2Long(ip)
 
 		peer := Peer{
-			IpAddress:      new(big.Int).SetBytes(IPAddress),
+			IpAddress:      new(big.Int).SetUint64(uint64(IPAddress)),
 			ListenPortHost: port,
 		}
 		winnermap[dst.Header.PoWWinners[i]] = peer
@@ -83,8 +83,35 @@ func NewFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	}
 	dsBlockHeader.RemoveDSNodePubKeys = removeDSNodePubKeys
 
-	// skip hashset
-	// todo skip Governance
+	var dsHashSet DSBlockHashSet
+	dsHashSet.shadingHash = util.DecodeHex(dst.Header.ShardingHash)
+	dsBlockHeader.dSBlockHashSet = dsHashSet
+
+	governance := make(map[uint32]Pair,0)
+	govs := dst.Header.Governance
+	for _, gov := range govs {
+		proposalId := gov.ProposalId
+		dsmap := make(map[uint32]uint32,0)
+		dsvotes := gov.DSVotes
+		for _,dsvote := range dsvotes {
+			dsmap[dsvote.VoteValue] = dsvote.VoteCount
+		}
+
+		shardmap := make(map[uint32]uint32,0)
+		shardvotes := gov.ShardVotes
+		for _,shardvote := range shardvotes {
+			shardmap[shardvote.VoteValue] = shardvote.VoteCount
+		}
+
+		pair := Pair{
+			First:  dsmap,
+			Second: shardmap,
+		}
+		governance[proposalId] = pair
+	}
+
+	dsBlockHeader.GovDSShardVotesMap = governance
+
 
 	dsBlockHeader.blockHeaderBase.Version = dst.Header.Version
 	ch := util.DecodeHex(dst.Header.CommitteeHash)
@@ -100,6 +127,12 @@ func NewFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	return dsBlockHeader
 }
 
+func (d *DsBlockHeader) Serialize() []byte {
+	h := d.ToProtobuf(false)
+	bytes, _ := proto.Marshal(h)
+	return bytes
+}
+
 // the default value of concreteVarsOnly should be false
 func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock_DSBlockHeader {
 	protoDSBlockHeader := &protobuf.ProtoDSBlock_DSBlockHeader{}
@@ -109,8 +142,8 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 	if !concreteVarsOnly {
 		protoDSBlockHeader.Dsdifficulty = d.DsDifficulty
 		protoDSBlockHeader.Difficulty = d.Difficulty
-		data := make([]byte, 16)
-		gasPriceInt, _ := new(big.Int).SetString(d.GasPrice, 16)
+		data := make([]byte, 0)
+		gasPriceInt, _ := new(big.Int).SetString(d.GasPrice, 10)
 		data = UintToByteArray(data, 0, gasPriceInt, 16)
 		protoDSBlockHeader.Gasprice = &protobuf.ByteArray{
 			Data: data,
@@ -132,7 +165,7 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 			protoproposal.Proposalid = proposal
 
 			var dsvotes []*protobuf.ProtoDSBlock_DSBlockHeader_Vote
-			for value, count := range pair.first {
+			for value, count := range pair.First {
 				dsvote := &protobuf.ProtoDSBlock_DSBlockHeader_Vote{
 					Value: value,
 					Count: count,
@@ -141,7 +174,7 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 			}
 
 			var minerVotes []*protobuf.ProtoDSBlock_DSBlockHeader_Vote
-			for value, count := range pair.second {
+			for value, count := range pair.Second {
 				minerVote := &protobuf.ProtoDSBlock_DSBlockHeader_Vote{
 					Value: value,
 					Count: count,
@@ -149,8 +182,12 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 				minerVotes = append(minerVotes, minerVote)
 			}
 
+			protoproposal.Dsvotes = dsvotes
+			protoproposal.Minervotes = minerVotes
 			proposals = append(proposals, protoproposal)
 		}
+
+
 		protoDSBlockHeader.Proposals = proposals
 
 		var dsremoved []*protobuf.ByteArray
@@ -164,18 +201,14 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 	}
 
 	protoDSBlockHeader.Leaderpubkey = &protobuf.ByteArray{Data: util.DecodeHex(d.LeaderPubKey)}
-	protoDSBlockHeader.Oneof6 = &protobuf.ProtoDSBlock_DSBlockHeader_Blocknum{
-		Blocknum: d.BlockNum,
-	}
-	protoDSBlockHeader.Oneof7 = &protobuf.ProtoDSBlock_DSBlockHeader_Epochnum{
-		Epochnum: d.EpochNum,
-	}
+	protoDSBlockHeader.Blocknum = d.BlockNum
+	protoDSBlockHeader.Epochnum = d.EpochNum
 
 	protoDSBlockHeader.Swinfo = &protobuf.ByteArray{Data: d.SwInfo.Serialize()}
 
 	hashset := &protobuf.ProtoDSBlock_DSBlockHashSet{
-		Shardinghash:  d.dSBlockHashSet.shadingHash[:],
-		Reservedfield: d.dSBlockHashSet.reservedField,
+		Shardinghash:  d.dSBlockHashSet.shadingHash,
+		Reservedfield: d.dSBlockHashSet.reservedField[:],
 	}
 	protoDSBlockHeader.Hash = hashset
 

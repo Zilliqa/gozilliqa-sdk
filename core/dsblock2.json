@@ -25,11 +25,11 @@
   ],
   "CS1": "F24436B58A0AFDA6BDFD5308A753F0F970DB74BD7BD3B62850F3DD4D36C9D538618F1FF3CD5283F81A25B18EC0FD155067CD05866E818C67A1E56B1B6B9F7F81",
   "header": {
-    "BlockNum": "4",
+    "BlockNum": "3",
     "CommitteeHash": "aa5764cc1646085c6dd2042bb784ed6a4e154d22f0d1d1dacdd9e86662601e07",
     "Difficulty": 3,
     "DifficultyDS": 5,
-    "EpochNum": "15",
+    "EpochNum": "14",
     "GasPrice": "2000000000",
     "Governance": [
       {

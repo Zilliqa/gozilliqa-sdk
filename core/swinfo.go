@@ -16,19 +16,18 @@ type SWInfo struct {
 }
 
 func (sw *SWInfo) Serialize() []byte {
-	bns := BIGNumSerialize{}
 	// length should be 48
-	data := make([]byte, 0)
-	data = bns.SetNumber(data, 0, 4, new(big.Int).SetUint64(uint64(sw.ZilliqaMajorVersion)))
-	data = bns.SetNumber(data, 4, 4, new(big.Int).SetUint64(uint64(sw.ZilliqaMinorVersion)))
-	data = bns.SetNumber(data, 8, 4, new(big.Int).SetUint64(uint64(sw.ZilliqaFixVersion)))
-	data = bns.SetNumber(data, 12, 8, new(big.Int).SetUint64(sw.ZilliqaUpgradeDS))
-	data = bns.SetNumber(data, 20, 4, new(big.Int).SetUint64(uint64(sw.ZilliqaCommit)))
-	data = bns.SetNumber(data, 24, 4, new(big.Int).SetUint64(uint64(sw.ScillaMajorVersion)))
-	data = bns.SetNumber(data, 28, 4, new(big.Int).SetUint64(uint64(sw.ScillaMinorVersion)))
-	data = bns.SetNumber(data, 32, 4, new(big.Int).SetUint64(uint64(sw.ScillaFixVersion)))
-	data = bns.SetNumber(data, 36, 8, new(big.Int).SetUint64(sw.ScillaUpgradeDS))
-	data = bns.SetNumber(data, 44, 4, new(big.Int).SetUint64(uint64(sw.ScillaCommit)))
+	data := make([]byte, 48)
+	UintToByteArray(data,0,new(big.Int).SetUint64(uint64(sw.ZilliqaMajorVersion)),4)
+	UintToByteArray(data,4,new(big.Int).SetUint64(uint64(sw.ZilliqaMinorVersion)),4)
+	UintToByteArray(data,8,new(big.Int).SetUint64(uint64(sw.ZilliqaFixVersion)),4)
+	UintToByteArray(data,12,new(big.Int).SetUint64(uint64(sw.ZilliqaUpgradeDS)),8)
+	UintToByteArray(data,20,new(big.Int).SetUint64(uint64(sw.ZilliqaCommit)),4)
+	UintToByteArray(data,24,new(big.Int).SetUint64(uint64(sw.ScillaMajorVersion)),4)
+	UintToByteArray(data,28,new(big.Int).SetUint64(uint64(sw.ScillaMinorVersion)),4)
+	UintToByteArray(data,32,new(big.Int).SetUint64(uint64(sw.ScillaFixVersion)),4)
+	UintToByteArray(data,36,new(big.Int).SetUint64(uint64(sw.ScillaUpgradeDS)),8)
+	UintToByteArray(data,44,new(big.Int).SetUint64(uint64(sw.ScillaCommit)),4)
 	return data
 }
 
