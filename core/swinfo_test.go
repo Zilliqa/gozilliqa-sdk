@@ -21,6 +21,6 @@ func TestSWInfo_Serialize(t *testing.T) {
 
 	data := swinfo.Serialize()
 	t.Log(util.EncodeHex(data))
-
+	// 000000070000000100000001000000000000000000000000000000030000000200000000000000000000000000000001
 	// todo assertion
 }

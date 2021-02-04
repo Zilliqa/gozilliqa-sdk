@@ -17,7 +17,8 @@ type SWInfo struct {
 
 func (sw *SWInfo) Serialize() []byte {
 	bns := BIGNumSerialize{}
-	data := make([]byte, 48)
+	// length should be 48
+	data := make([]byte, 0)
 	data = bns.SetNumber(data, 0, 4, new(big.Int).SetUint64(uint64(sw.ZilliqaMajorVersion)))
 	data = bns.SetNumber(data, 4, 4, new(big.Int).SetUint64(uint64(sw.ZilliqaMinorVersion)))
 	data = bns.SetNumber(data, 8, 4, new(big.Int).SetUint64(uint64(sw.ZilliqaFixVersion)))
@@ -27,7 +28,7 @@ func (sw *SWInfo) Serialize() []byte {
 	data = bns.SetNumber(data, 28, 4, new(big.Int).SetUint64(uint64(sw.ScillaMinorVersion)))
 	data = bns.SetNumber(data, 32, 4, new(big.Int).SetUint64(uint64(sw.ScillaFixVersion)))
 	data = bns.SetNumber(data, 36, 8, new(big.Int).SetUint64(sw.ScillaUpgradeDS))
-	data = bns.SetNumber(data, 36, 4, new(big.Int).SetUint64(uint64(sw.ScillaCommit)))
+	data = bns.SetNumber(data, 44, 4, new(big.Int).SetUint64(uint64(sw.ScillaCommit)))
 	return data
 }
 
