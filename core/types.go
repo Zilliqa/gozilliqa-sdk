@@ -62,34 +62,6 @@ type BlockList struct {
 	MaxPages int          `json:"maxPages"`
 }
 
-type TxBlock struct {
-	Header TxBlockHeader `json:"header"`
-	Body   TxBlockBody   `json:"body"`
-}
-
-type TxBlockHeader struct {
-	BlockNum       string
-	DSBlockNum     string
-	GasLimit       string
-	GasUsed        string
-	MbInfoHash     string
-	MinerPubKey    string
-	NumMicroBlocks int
-	NumTxns        int
-	PrevBlockHash  string
-	Rewards        string
-	StateDeltaHash string
-	StateRootHash  string
-	Timestamp      string
-	Version        int
-}
-
-type TxBlockBody struct {
-	BlockHash       string
-	HeaderSign      string
-	MicroBlockInfos []MicroBlockInfo
-}
-
 type MicroBlockInfo struct {
 	MicroBlockHash        string
 	MicroBlockShardId     int

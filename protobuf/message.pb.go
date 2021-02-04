@@ -633,6 +633,153 @@ func (x *ProtoDSBlock) GetBlockbase() *ProtoBlockBase {
 	return nil
 }
 
+// Used in database "txBlocks"
+type ProtoMbInfo struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Mbhash []byte `protobuf:"bytes,1,opt,name=mbhash,proto3" json:"mbhash,omitempty"` // Added in: v1.0, Deprecated in: N/A
+	Txroot []byte `protobuf:"bytes,2,opt,name=txroot,proto3" json:"txroot,omitempty"` // Added in: v1.0, Deprecated in: N/A
+	// Types that are assignable to Oneof3:
+	//	*ProtoMbInfo_Shardid
+	Oneof3 isProtoMbInfo_Oneof3 `protobuf_oneof:"oneof3"`
+}
+
+func (x *ProtoMbInfo) Reset() {
+	*x = ProtoMbInfo{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_message_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProtoMbInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProtoMbInfo) ProtoMessage() {}
+
+func (x *ProtoMbInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProtoMbInfo.ProtoReflect.Descriptor instead.
+func (*ProtoMbInfo) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ProtoMbInfo) GetMbhash() []byte {
+	if x != nil {
+		return x.Mbhash
+	}
+	return nil
+}
+
+func (x *ProtoMbInfo) GetTxroot() []byte {
+	if x != nil {
+		return x.Txroot
+	}
+	return nil
+}
+
+func (m *ProtoMbInfo) GetOneof3() isProtoMbInfo_Oneof3 {
+	if m != nil {
+		return m.Oneof3
+	}
+	return nil
+}
+
+func (x *ProtoMbInfo) GetShardid() uint32 {
+	if x, ok := x.GetOneof3().(*ProtoMbInfo_Shardid); ok {
+		return x.Shardid
+	}
+	return 0
+}
+
+type isProtoMbInfo_Oneof3 interface {
+	isProtoMbInfo_Oneof3()
+}
+
+type ProtoMbInfo_Shardid struct {
+	Shardid uint32 `protobuf:"varint,3,opt,name=shardid,proto3,oneof"`
+}
+
+func (*ProtoMbInfo_Shardid) isProtoMbInfo_Oneof3() {}
+
+// Used in database "txBlocks"
+type ProtoTxBlock struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Header    *ProtoTxBlock_TxBlockHeader `protobuf:"bytes,1,opt,name=header,proto3" json:"header,omitempty"`       // Added in: v1.0, Deprecated in: N/A
+	Mbinfos   []*ProtoMbInfo              `protobuf:"bytes,2,rep,name=mbinfos,proto3" json:"mbinfos,omitempty"`     // Added in: v1.0, Deprecated in: N/A
+	Blockbase *ProtoBlockBase             `protobuf:"bytes,3,opt,name=blockbase,proto3" json:"blockbase,omitempty"` // Added in: v1.0, Deprecated in: N/A
+}
+
+func (x *ProtoTxBlock) Reset() {
+	*x = ProtoTxBlock{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_message_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProtoTxBlock) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProtoTxBlock) ProtoMessage() {}
+
+func (x *ProtoTxBlock) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProtoTxBlock.ProtoReflect.Descriptor instead.
+func (*ProtoTxBlock) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *ProtoTxBlock) GetHeader() *ProtoTxBlock_TxBlockHeader {
+	if x != nil {
+		return x.Header
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock) GetMbinfos() []*ProtoMbInfo {
+	if x != nil {
+		return x.Mbinfos
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock) GetBlockbase() *ProtoBlockBase {
+	if x != nil {
+		return x.Blockbase
+	}
+	return nil
+}
+
 type ProtoBlockBase_CoSignatures struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -647,7 +794,7 @@ type ProtoBlockBase_CoSignatures struct {
 func (x *ProtoBlockBase_CoSignatures) Reset() {
 	*x = ProtoBlockBase_CoSignatures{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_message_proto_msgTypes[9]
+		mi := &file_message_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -660,7 +807,7 @@ func (x *ProtoBlockBase_CoSignatures) String() string {
 func (*ProtoBlockBase_CoSignatures) ProtoMessage() {}
 
 func (x *ProtoBlockBase_CoSignatures) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[9]
+	mi := &file_message_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -716,7 +863,7 @@ type ProtoDSBlock_DSBlockHashSet struct {
 func (x *ProtoDSBlock_DSBlockHashSet) Reset() {
 	*x = ProtoDSBlock_DSBlockHashSet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_message_proto_msgTypes[10]
+		mi := &file_message_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -729,7 +876,7 @@ func (x *ProtoDSBlock_DSBlockHashSet) String() string {
 func (*ProtoDSBlock_DSBlockHashSet) ProtoMessage() {}
 
 func (x *ProtoDSBlock_DSBlockHashSet) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[10]
+	mi := &file_message_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -782,7 +929,7 @@ type ProtoDSBlock_DSBlockHeader struct {
 func (x *ProtoDSBlock_DSBlockHeader) Reset() {
 	*x = ProtoDSBlock_DSBlockHeader{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_message_proto_msgTypes[11]
+		mi := &file_message_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -795,7 +942,7 @@ func (x *ProtoDSBlock_DSBlockHeader) String() string {
 func (*ProtoDSBlock_DSBlockHeader) ProtoMessage() {}
 
 func (x *ProtoDSBlock_DSBlockHeader) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[11]
+	mi := &file_message_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -914,7 +1061,7 @@ type ProtoDSBlock_DSBlockHeader_PowDSWinners struct {
 func (x *ProtoDSBlock_DSBlockHeader_PowDSWinners) Reset() {
 	*x = ProtoDSBlock_DSBlockHeader_PowDSWinners{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_message_proto_msgTypes[12]
+		mi := &file_message_proto_msgTypes[14]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -927,7 +1074,7 @@ func (x *ProtoDSBlock_DSBlockHeader_PowDSWinners) String() string {
 func (*ProtoDSBlock_DSBlockHeader_PowDSWinners) ProtoMessage() {}
 
 func (x *ProtoDSBlock_DSBlockHeader_PowDSWinners) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[12]
+	mi := &file_message_proto_msgTypes[14]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -970,7 +1117,7 @@ type ProtoDSBlock_DSBlockHeader_Vote struct {
 func (x *ProtoDSBlock_DSBlockHeader_Vote) Reset() {
 	*x = ProtoDSBlock_DSBlockHeader_Vote{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_message_proto_msgTypes[13]
+		mi := &file_message_proto_msgTypes[15]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -983,7 +1130,7 @@ func (x *ProtoDSBlock_DSBlockHeader_Vote) String() string {
 func (*ProtoDSBlock_DSBlockHeader_Vote) ProtoMessage() {}
 
 func (x *ProtoDSBlock_DSBlockHeader_Vote) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[13]
+	mi := &file_message_proto_msgTypes[15]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1026,7 +1173,7 @@ type ProtoDSBlock_DSBlockHeader_Proposal struct {
 func (x *ProtoDSBlock_DSBlockHeader_Proposal) Reset() {
 	*x = ProtoDSBlock_DSBlockHeader_Proposal{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_message_proto_msgTypes[14]
+		mi := &file_message_proto_msgTypes[16]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1039,7 +1186,7 @@ func (x *ProtoDSBlock_DSBlockHeader_Proposal) String() string {
 func (*ProtoDSBlock_DSBlockHeader_Proposal) ProtoMessage() {}
 
 func (x *ProtoDSBlock_DSBlockHeader_Proposal) ProtoReflect() protoreflect.Message {
-	mi := &file_message_proto_msgTypes[14]
+	mi := &file_message_proto_msgTypes[16]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1075,6 +1222,264 @@ func (x *ProtoDSBlock_DSBlockHeader_Proposal) GetMinervotes() []*ProtoDSBlock_DS
 	}
 	return nil
 }
+
+type ProtoTxBlock_TxBlockHashSet struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Stateroothash  []byte `protobuf:"bytes,1,opt,name=stateroothash,proto3" json:"stateroothash,omitempty"`   // Added in: v1.0, Deprecated in: N/A
+	Statedeltahash []byte `protobuf:"bytes,2,opt,name=statedeltahash,proto3" json:"statedeltahash,omitempty"` // Added in: v1.0, Deprecated in: N/A
+	Mbinfohash     []byte `protobuf:"bytes,3,opt,name=mbinfohash,proto3" json:"mbinfohash,omitempty"`         // Added in: v1.0, Deprecated in: N/A
+}
+
+func (x *ProtoTxBlock_TxBlockHashSet) Reset() {
+	*x = ProtoTxBlock_TxBlockHashSet{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_message_proto_msgTypes[17]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProtoTxBlock_TxBlockHashSet) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProtoTxBlock_TxBlockHashSet) ProtoMessage() {}
+
+func (x *ProtoTxBlock_TxBlockHashSet) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[17]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProtoTxBlock_TxBlockHashSet.ProtoReflect.Descriptor instead.
+func (*ProtoTxBlock_TxBlockHashSet) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{10, 0}
+}
+
+func (x *ProtoTxBlock_TxBlockHashSet) GetStateroothash() []byte {
+	if x != nil {
+		return x.Stateroothash
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock_TxBlockHashSet) GetStatedeltahash() []byte {
+	if x != nil {
+		return x.Statedeltahash
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock_TxBlockHashSet) GetMbinfohash() []byte {
+	if x != nil {
+		return x.Mbinfohash
+	}
+	return nil
+}
+
+type ProtoTxBlock_TxBlockHeader struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Blockheaderbase *ProtoBlockHeaderBase `protobuf:"bytes,1,opt,name=blockheaderbase,proto3" json:"blockheaderbase,omitempty"` // Added in: v1.0, Deprecated in: N/A
+	Gaslimit        uint64                `protobuf:"varint,2,opt,name=gaslimit,proto3" json:"gaslimit,omitempty"`              // Added in: v1.0, Deprecated in: N/A
+	// Types that are assignable to Oneof3:
+	//	*ProtoTxBlock_TxBlockHeader_Gasused
+	Oneof3   isProtoTxBlock_TxBlockHeader_Oneof3 `protobuf_oneof:"oneof3"`
+	Rewards  *ByteArray                          `protobuf:"bytes,4,opt,name=rewards,proto3" json:"rewards,omitempty"`   // Added in: v1.0, Deprecated in: N/A
+	Prevhash []byte                              `protobuf:"bytes,5,opt,name=prevhash,proto3" json:"prevhash,omitempty"` // Added in: v1.0, Deprecated in: N/A
+	// Types that are assignable to Oneof6:
+	//	*ProtoTxBlock_TxBlockHeader_Blocknum
+	Oneof6 isProtoTxBlock_TxBlockHeader_Oneof6 `protobuf_oneof:"oneof6"`
+	Hash   *ProtoTxBlock_TxBlockHashSet        `protobuf:"bytes,7,opt,name=hash,proto3" json:"hash,omitempty"` // Added in: v1.0, Deprecated in: N/A
+	// Types that are assignable to Oneof8:
+	//	*ProtoTxBlock_TxBlockHeader_Numtxs
+	Oneof8      isProtoTxBlock_TxBlockHeader_Oneof8 `protobuf_oneof:"oneof8"`
+	Minerpubkey *ByteArray                          `protobuf:"bytes,9,opt,name=minerpubkey,proto3" json:"minerpubkey,omitempty"` // Added in: v1.0, Deprecated in: N/A
+	// Types that are assignable to Oneof10:
+	//	*ProtoTxBlock_TxBlockHeader_Dsblocknum
+	Oneof10 isProtoTxBlock_TxBlockHeader_Oneof10 `protobuf_oneof:"oneof10"`
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) Reset() {
+	*x = ProtoTxBlock_TxBlockHeader{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_message_proto_msgTypes[18]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ProtoTxBlock_TxBlockHeader) ProtoMessage() {}
+
+func (x *ProtoTxBlock_TxBlockHeader) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[18]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ProtoTxBlock_TxBlockHeader.ProtoReflect.Descriptor instead.
+func (*ProtoTxBlock_TxBlockHeader) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{10, 1}
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetBlockheaderbase() *ProtoBlockHeaderBase {
+	if x != nil {
+		return x.Blockheaderbase
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetGaslimit() uint64 {
+	if x != nil {
+		return x.Gaslimit
+	}
+	return 0
+}
+
+func (m *ProtoTxBlock_TxBlockHeader) GetOneof3() isProtoTxBlock_TxBlockHeader_Oneof3 {
+	if m != nil {
+		return m.Oneof3
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetGasused() uint64 {
+	if x, ok := x.GetOneof3().(*ProtoTxBlock_TxBlockHeader_Gasused); ok {
+		return x.Gasused
+	}
+	return 0
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetRewards() *ByteArray {
+	if x != nil {
+		return x.Rewards
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetPrevhash() []byte {
+	if x != nil {
+		return x.Prevhash
+	}
+	return nil
+}
+
+func (m *ProtoTxBlock_TxBlockHeader) GetOneof6() isProtoTxBlock_TxBlockHeader_Oneof6 {
+	if m != nil {
+		return m.Oneof6
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetBlocknum() uint64 {
+	if x, ok := x.GetOneof6().(*ProtoTxBlock_TxBlockHeader_Blocknum); ok {
+		return x.Blocknum
+	}
+	return 0
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetHash() *ProtoTxBlock_TxBlockHashSet {
+	if x != nil {
+		return x.Hash
+	}
+	return nil
+}
+
+func (m *ProtoTxBlock_TxBlockHeader) GetOneof8() isProtoTxBlock_TxBlockHeader_Oneof8 {
+	if m != nil {
+		return m.Oneof8
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetNumtxs() uint32 {
+	if x, ok := x.GetOneof8().(*ProtoTxBlock_TxBlockHeader_Numtxs); ok {
+		return x.Numtxs
+	}
+	return 0
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetMinerpubkey() *ByteArray {
+	if x != nil {
+		return x.Minerpubkey
+	}
+	return nil
+}
+
+func (m *ProtoTxBlock_TxBlockHeader) GetOneof10() isProtoTxBlock_TxBlockHeader_Oneof10 {
+	if m != nil {
+		return m.Oneof10
+	}
+	return nil
+}
+
+func (x *ProtoTxBlock_TxBlockHeader) GetDsblocknum() uint64 {
+	if x, ok := x.GetOneof10().(*ProtoTxBlock_TxBlockHeader_Dsblocknum); ok {
+		return x.Dsblocknum
+	}
+	return 0
+}
+
+type isProtoTxBlock_TxBlockHeader_Oneof3 interface {
+	isProtoTxBlock_TxBlockHeader_Oneof3()
+}
+
+type ProtoTxBlock_TxBlockHeader_Gasused struct {
+	Gasused uint64 `protobuf:"varint,3,opt,name=gasused,proto3,oneof"`
+}
+
+func (*ProtoTxBlock_TxBlockHeader_Gasused) isProtoTxBlock_TxBlockHeader_Oneof3() {}
+
+type isProtoTxBlock_TxBlockHeader_Oneof6 interface {
+	isProtoTxBlock_TxBlockHeader_Oneof6()
+}
+
+type ProtoTxBlock_TxBlockHeader_Blocknum struct {
+	Blocknum uint64 `protobuf:"varint,6,opt,name=blocknum,proto3,oneof"`
+}
+
+func (*ProtoTxBlock_TxBlockHeader_Blocknum) isProtoTxBlock_TxBlockHeader_Oneof6() {}
+
+type isProtoTxBlock_TxBlockHeader_Oneof8 interface {
+	isProtoTxBlock_TxBlockHeader_Oneof8()
+}
+
+type ProtoTxBlock_TxBlockHeader_Numtxs struct {
+	Numtxs uint32 `protobuf:"varint,8,opt,name=numtxs,proto3,oneof"`
+}
+
+func (*ProtoTxBlock_TxBlockHeader_Numtxs) isProtoTxBlock_TxBlockHeader_Oneof8() {}
+
+type isProtoTxBlock_TxBlockHeader_Oneof10 interface {
+	isProtoTxBlock_TxBlockHeader_Oneof10()
+}
+
+type ProtoTxBlock_TxBlockHeader_Dsblocknum struct {
+	Dsblocknum uint64 `protobuf:"varint,10,opt,name=dsblocknum,proto3,oneof"`
+}
+
+func (*ProtoTxBlock_TxBlockHeader_Dsblocknum) isProtoTxBlock_TxBlockHeader_Oneof10() {}
 
 var File_message_proto protoreflect.FileDescriptor
 
@@ -1271,8 +1676,66 @@ var file_message_proto_rawDesc = []byte{
 	0x2e, 0x5a, 0x69, 0x6c, 0x6c, 0x69, 0x71, 0x61, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e,
 	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x44, 0x53, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x2e, 0x44, 0x53, 0x42,
 	0x6c, 0x6f, 0x63, 0x6b, 0x48, 0x65, 0x61, 0x64, 0x65, 0x72, 0x2e, 0x56, 0x6f, 0x74, 0x65, 0x52,
-	0x0a, 0x6d, 0x69, 0x6e, 0x65, 0x72, 0x76, 0x6f, 0x74, 0x65, 0x73, 0x42, 0x0a, 0x5a, 0x08, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x0a, 0x6d, 0x69, 0x6e, 0x65, 0x72, 0x76, 0x6f, 0x74, 0x65, 0x73, 0x22, 0x63, 0x0a, 0x0b, 0x50,
+	0x72, 0x6f, 0x74, 0x6f, 0x4d, 0x62, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x16, 0x0a, 0x06, 0x6d, 0x62,
+	0x68, 0x61, 0x73, 0x68, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x06, 0x6d, 0x62, 0x68, 0x61,
+	0x73, 0x68, 0x12, 0x16, 0x0a, 0x06, 0x74, 0x78, 0x72, 0x6f, 0x6f, 0x74, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0c, 0x52, 0x06, 0x74, 0x78, 0x72, 0x6f, 0x6f, 0x74, 0x12, 0x1a, 0x0a, 0x07, 0x73, 0x68,
+	0x61, 0x72, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0d, 0x48, 0x00, 0x52, 0x07, 0x73,
+	0x68, 0x61, 0x72, 0x64, 0x69, 0x64, 0x42, 0x08, 0x0a, 0x06, 0x6f, 0x6e, 0x65, 0x6f, 0x66, 0x33,
+	0x22, 0xb3, 0x06, 0x0a, 0x0c, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x54, 0x78, 0x42, 0x6c, 0x6f, 0x63,
+	0x6b, 0x12, 0x42, 0x0a, 0x06, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x2a, 0x2e, 0x5a, 0x69, 0x6c, 0x6c, 0x69, 0x71, 0x61, 0x4d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x54, 0x78, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x2e,
+	0x54, 0x78, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x48, 0x65, 0x61, 0x64, 0x65, 0x72, 0x52, 0x06, 0x68,
+	0x65, 0x61, 0x64, 0x65, 0x72, 0x12, 0x35, 0x0a, 0x07, 0x6d, 0x62, 0x69, 0x6e, 0x66, 0x6f, 0x73,
+	0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1b, 0x2e, 0x5a, 0x69, 0x6c, 0x6c, 0x69, 0x71, 0x61,
+	0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x4d, 0x62, 0x49,
+	0x6e, 0x66, 0x6f, 0x52, 0x07, 0x6d, 0x62, 0x69, 0x6e, 0x66, 0x6f, 0x73, 0x12, 0x3c, 0x0a, 0x09,
+	0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x62, 0x61, 0x73, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x1e, 0x2e, 0x5a, 0x69, 0x6c, 0x6c, 0x69, 0x71, 0x61, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x42, 0x61, 0x73, 0x65, 0x52,
+	0x09, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x62, 0x61, 0x73, 0x65, 0x1a, 0x7e, 0x0a, 0x0e, 0x54, 0x78,
+	0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x48, 0x61, 0x73, 0x68, 0x53, 0x65, 0x74, 0x12, 0x24, 0x0a, 0x0d,
+	0x73, 0x74, 0x61, 0x74, 0x65, 0x72, 0x6f, 0x6f, 0x74, 0x68, 0x61, 0x73, 0x68, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x0c, 0x52, 0x0d, 0x73, 0x74, 0x61, 0x74, 0x65, 0x72, 0x6f, 0x6f, 0x74, 0x68, 0x61,
+	0x73, 0x68, 0x12, 0x26, 0x0a, 0x0e, 0x73, 0x74, 0x61, 0x74, 0x65, 0x64, 0x65, 0x6c, 0x74, 0x61,
+	0x68, 0x61, 0x73, 0x68, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0e, 0x73, 0x74, 0x61, 0x74,
+	0x65, 0x64, 0x65, 0x6c, 0x74, 0x61, 0x68, 0x61, 0x73, 0x68, 0x12, 0x1e, 0x0a, 0x0a, 0x6d, 0x62,
+	0x69, 0x6e, 0x66, 0x6f, 0x68, 0x61, 0x73, 0x68, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0a,
+	0x6d, 0x62, 0x69, 0x6e, 0x66, 0x6f, 0x68, 0x61, 0x73, 0x68, 0x1a, 0xe9, 0x03, 0x0a, 0x0d, 0x54,
+	0x78, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x48, 0x65, 0x61, 0x64, 0x65, 0x72, 0x12, 0x4e, 0x0a, 0x0f,
+	0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x62, 0x61, 0x73, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x24, 0x2e, 0x5a, 0x69, 0x6c, 0x6c, 0x69, 0x71, 0x61, 0x4d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x42, 0x6c, 0x6f, 0x63,
+	0x6b, 0x48, 0x65, 0x61, 0x64, 0x65, 0x72, 0x42, 0x61, 0x73, 0x65, 0x52, 0x0f, 0x62, 0x6c, 0x6f,
+	0x63, 0x6b, 0x68, 0x65, 0x61, 0x64, 0x65, 0x72, 0x62, 0x61, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08,
+	0x67, 0x61, 0x73, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x08,
+	0x67, 0x61, 0x73, 0x6c, 0x69, 0x6d, 0x69, 0x74, 0x12, 0x1a, 0x0a, 0x07, 0x67, 0x61, 0x73, 0x75,
+	0x73, 0x65, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x04, 0x48, 0x00, 0x52, 0x07, 0x67, 0x61, 0x73,
+	0x75, 0x73, 0x65, 0x64, 0x12, 0x33, 0x0a, 0x07, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x5a, 0x69, 0x6c, 0x6c, 0x69, 0x71, 0x61, 0x4d,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x42, 0x79, 0x74, 0x65, 0x41, 0x72, 0x72, 0x61, 0x79,
+	0x52, 0x07, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x73, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x65,
+	0x76, 0x68, 0x61, 0x73, 0x68, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x08, 0x70, 0x72, 0x65,
+	0x76, 0x68, 0x61, 0x73, 0x68, 0x12, 0x1c, 0x0a, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x6e, 0x75,
+	0x6d, 0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x48, 0x01, 0x52, 0x08, 0x62, 0x6c, 0x6f, 0x63, 0x6b,
+	0x6e, 0x75, 0x6d, 0x12, 0x3f, 0x0a, 0x04, 0x68, 0x61, 0x73, 0x68, 0x18, 0x07, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x2b, 0x2e, 0x5a, 0x69, 0x6c, 0x6c, 0x69, 0x71, 0x61, 0x4d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x2e, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x54, 0x78, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x2e,
+	0x54, 0x78, 0x42, 0x6c, 0x6f, 0x63, 0x6b, 0x48, 0x61, 0x73, 0x68, 0x53, 0x65, 0x74, 0x52, 0x04,
+	0x68, 0x61, 0x73, 0x68, 0x12, 0x18, 0x0a, 0x06, 0x6e, 0x75, 0x6d, 0x74, 0x78, 0x73, 0x18, 0x08,
+	0x20, 0x01, 0x28, 0x0d, 0x48, 0x02, 0x52, 0x06, 0x6e, 0x75, 0x6d, 0x74, 0x78, 0x73, 0x12, 0x3b,
+	0x0a, 0x0b, 0x6d, 0x69, 0x6e, 0x65, 0x72, 0x70, 0x75, 0x62, 0x6b, 0x65, 0x79, 0x18, 0x09, 0x20,
+	0x01, 0x28, 0x0b, 0x32, 0x19, 0x2e, 0x5a, 0x69, 0x6c, 0x6c, 0x69, 0x71, 0x61, 0x4d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x2e, 0x42, 0x79, 0x74, 0x65, 0x41, 0x72, 0x72, 0x61, 0x79, 0x52, 0x0b,
+	0x6d, 0x69, 0x6e, 0x65, 0x72, 0x70, 0x75, 0x62, 0x6b, 0x65, 0x79, 0x12, 0x20, 0x0a, 0x0a, 0x64,
+	0x73, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x6e, 0x75, 0x6d, 0x18, 0x0a, 0x20, 0x01, 0x28, 0x04, 0x48,
+	0x03, 0x52, 0x0a, 0x64, 0x73, 0x62, 0x6c, 0x6f, 0x63, 0x6b, 0x6e, 0x75, 0x6d, 0x42, 0x08, 0x0a,
+	0x06, 0x6f, 0x6e, 0x65, 0x6f, 0x66, 0x33, 0x42, 0x08, 0x0a, 0x06, 0x6f, 0x6e, 0x65, 0x6f, 0x66,
+	0x36, 0x42, 0x08, 0x0a, 0x06, 0x6f, 0x6e, 0x65, 0x6f, 0x66, 0x38, 0x42, 0x09, 0x0a, 0x07, 0x6f,
+	0x6e, 0x65, 0x6f, 0x66, 0x31, 0x30, 0x42, 0x0a, 0x5a, 0x08, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
+	0x75, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1287,7 +1750,7 @@ func file_message_proto_rawDescGZIP() []byte {
 	return file_message_proto_rawDescData
 }
 
-var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
 var file_message_proto_goTypes = []interface{}{
 	(*ByteArray)(nil),                               // 0: ZilliqaMessage.ByteArray
 	(*ProtoTransactionCoreInfo)(nil),                // 1: ZilliqaMessage.ProtoTransactionCoreInfo
@@ -1298,12 +1761,16 @@ var file_message_proto_goTypes = []interface{}{
 	(*ProtoBlockBase)(nil),                          // 6: ZilliqaMessage.ProtoBlockBase
 	(*ProtoBlockHeaderBase)(nil),                    // 7: ZilliqaMessage.ProtoBlockHeaderBase
 	(*ProtoDSBlock)(nil),                            // 8: ZilliqaMessage.ProtoDSBlock
-	(*ProtoBlockBase_CoSignatures)(nil),             // 9: ZilliqaMessage.ProtoBlockBase.CoSignatures
-	(*ProtoDSBlock_DSBlockHashSet)(nil),             // 10: ZilliqaMessage.ProtoDSBlock.DSBlockHashSet
-	(*ProtoDSBlock_DSBlockHeader)(nil),              // 11: ZilliqaMessage.ProtoDSBlock.DSBlockHeader
-	(*ProtoDSBlock_DSBlockHeader_PowDSWinners)(nil), // 12: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.PowDSWinners
-	(*ProtoDSBlock_DSBlockHeader_Vote)(nil),         // 13: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Vote
-	(*ProtoDSBlock_DSBlockHeader_Proposal)(nil),     // 14: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Proposal
+	(*ProtoMbInfo)(nil),                             // 9: ZilliqaMessage.ProtoMbInfo
+	(*ProtoTxBlock)(nil),                            // 10: ZilliqaMessage.ProtoTxBlock
+	(*ProtoBlockBase_CoSignatures)(nil),             // 11: ZilliqaMessage.ProtoBlockBase.CoSignatures
+	(*ProtoDSBlock_DSBlockHashSet)(nil),             // 12: ZilliqaMessage.ProtoDSBlock.DSBlockHashSet
+	(*ProtoDSBlock_DSBlockHeader)(nil),              // 13: ZilliqaMessage.ProtoDSBlock.DSBlockHeader
+	(*ProtoDSBlock_DSBlockHeader_PowDSWinners)(nil), // 14: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.PowDSWinners
+	(*ProtoDSBlock_DSBlockHeader_Vote)(nil),         // 15: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Vote
+	(*ProtoDSBlock_DSBlockHeader_Proposal)(nil),     // 16: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Proposal
+	(*ProtoTxBlock_TxBlockHashSet)(nil),             // 17: ZilliqaMessage.ProtoTxBlock.TxBlockHashSet
+	(*ProtoTxBlock_TxBlockHeader)(nil),              // 18: ZilliqaMessage.ProtoTxBlock.TxBlockHeader
 }
 var file_message_proto_depIdxs = []int32{
 	0,  // 0: ZilliqaMessage.ProtoTransactionCoreInfo.senderpubkey:type_name -> ZilliqaMessage.ByteArray
@@ -1314,28 +1781,35 @@ var file_message_proto_depIdxs = []int32{
 	2,  // 5: ZilliqaMessage.ProtoTransactionWithReceipt.transaction:type_name -> ZilliqaMessage.ProtoTransaction
 	3,  // 6: ZilliqaMessage.ProtoTransactionWithReceipt.receipt:type_name -> ZilliqaMessage.ProtoTransactionReceipt
 	0,  // 7: ZilliqaMessage.ProtoAccountBase.balance:type_name -> ZilliqaMessage.ByteArray
-	9,  // 8: ZilliqaMessage.ProtoBlockBase.cosigs:type_name -> ZilliqaMessage.ProtoBlockBase.CoSignatures
-	11, // 9: ZilliqaMessage.ProtoDSBlock.header:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader
+	11, // 8: ZilliqaMessage.ProtoBlockBase.cosigs:type_name -> ZilliqaMessage.ProtoBlockBase.CoSignatures
+	13, // 9: ZilliqaMessage.ProtoDSBlock.header:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader
 	6,  // 10: ZilliqaMessage.ProtoDSBlock.blockbase:type_name -> ZilliqaMessage.ProtoBlockBase
-	0,  // 11: ZilliqaMessage.ProtoBlockBase.CoSignatures.cs1:type_name -> ZilliqaMessage.ByteArray
-	0,  // 12: ZilliqaMessage.ProtoBlockBase.CoSignatures.cs2:type_name -> ZilliqaMessage.ByteArray
-	7,  // 13: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.blockheaderbase:type_name -> ZilliqaMessage.ProtoBlockHeaderBase
-	0,  // 14: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.leaderpubkey:type_name -> ZilliqaMessage.ByteArray
-	0,  // 15: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.gasprice:type_name -> ZilliqaMessage.ByteArray
-	0,  // 16: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.swinfo:type_name -> ZilliqaMessage.ByteArray
-	12, // 17: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.dswinners:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader.PowDSWinners
-	10, // 18: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.hash:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHashSet
-	0,  // 19: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.dsremoved:type_name -> ZilliqaMessage.ByteArray
-	14, // 20: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.proposals:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Proposal
-	0,  // 21: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.PowDSWinners.key:type_name -> ZilliqaMessage.ByteArray
-	0,  // 22: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.PowDSWinners.val:type_name -> ZilliqaMessage.ByteArray
-	13, // 23: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Proposal.dsvotes:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Vote
-	13, // 24: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Proposal.minervotes:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Vote
-	25, // [25:25] is the sub-list for method output_type
-	25, // [25:25] is the sub-list for method input_type
-	25, // [25:25] is the sub-list for extension type_name
-	25, // [25:25] is the sub-list for extension extendee
-	0,  // [0:25] is the sub-list for field type_name
+	18, // 11: ZilliqaMessage.ProtoTxBlock.header:type_name -> ZilliqaMessage.ProtoTxBlock.TxBlockHeader
+	9,  // 12: ZilliqaMessage.ProtoTxBlock.mbinfos:type_name -> ZilliqaMessage.ProtoMbInfo
+	6,  // 13: ZilliqaMessage.ProtoTxBlock.blockbase:type_name -> ZilliqaMessage.ProtoBlockBase
+	0,  // 14: ZilliqaMessage.ProtoBlockBase.CoSignatures.cs1:type_name -> ZilliqaMessage.ByteArray
+	0,  // 15: ZilliqaMessage.ProtoBlockBase.CoSignatures.cs2:type_name -> ZilliqaMessage.ByteArray
+	7,  // 16: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.blockheaderbase:type_name -> ZilliqaMessage.ProtoBlockHeaderBase
+	0,  // 17: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.leaderpubkey:type_name -> ZilliqaMessage.ByteArray
+	0,  // 18: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.gasprice:type_name -> ZilliqaMessage.ByteArray
+	0,  // 19: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.swinfo:type_name -> ZilliqaMessage.ByteArray
+	14, // 20: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.dswinners:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader.PowDSWinners
+	12, // 21: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.hash:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHashSet
+	0,  // 22: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.dsremoved:type_name -> ZilliqaMessage.ByteArray
+	16, // 23: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.proposals:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Proposal
+	0,  // 24: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.PowDSWinners.key:type_name -> ZilliqaMessage.ByteArray
+	0,  // 25: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.PowDSWinners.val:type_name -> ZilliqaMessage.ByteArray
+	15, // 26: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Proposal.dsvotes:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Vote
+	15, // 27: ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Proposal.minervotes:type_name -> ZilliqaMessage.ProtoDSBlock.DSBlockHeader.Vote
+	7,  // 28: ZilliqaMessage.ProtoTxBlock.TxBlockHeader.blockheaderbase:type_name -> ZilliqaMessage.ProtoBlockHeaderBase
+	0,  // 29: ZilliqaMessage.ProtoTxBlock.TxBlockHeader.rewards:type_name -> ZilliqaMessage.ByteArray
+	17, // 30: ZilliqaMessage.ProtoTxBlock.TxBlockHeader.hash:type_name -> ZilliqaMessage.ProtoTxBlock.TxBlockHashSet
+	0,  // 31: ZilliqaMessage.ProtoTxBlock.TxBlockHeader.minerpubkey:type_name -> ZilliqaMessage.ByteArray
+	32, // [32:32] is the sub-list for method output_type
+	32, // [32:32] is the sub-list for method input_type
+	32, // [32:32] is the sub-list for extension type_name
+	32, // [32:32] is the sub-list for extension extendee
+	0,  // [0:32] is the sub-list for field type_name
 }
 
 func init() { file_message_proto_init() }
@@ -1453,7 +1927,7 @@ func file_message_proto_init() {
 			}
 		}
 		file_message_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProtoBlockBase_CoSignatures); i {
+			switch v := v.(*ProtoMbInfo); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1465,7 +1939,7 @@ func file_message_proto_init() {
 			}
 		}
 		file_message_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProtoDSBlock_DSBlockHashSet); i {
+			switch v := v.(*ProtoTxBlock); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1477,7 +1951,7 @@ func file_message_proto_init() {
 			}
 		}
 		file_message_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProtoDSBlock_DSBlockHeader); i {
+			switch v := v.(*ProtoBlockBase_CoSignatures); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1489,7 +1963,7 @@ func file_message_proto_init() {
 			}
 		}
 		file_message_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProtoDSBlock_DSBlockHeader_PowDSWinners); i {
+			switch v := v.(*ProtoDSBlock_DSBlockHashSet); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1501,7 +1975,7 @@ func file_message_proto_init() {
 			}
 		}
 		file_message_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ProtoDSBlock_DSBlockHeader_Vote); i {
+			switch v := v.(*ProtoDSBlock_DSBlockHeader); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1513,7 +1987,55 @@ func file_message_proto_init() {
 			}
 		}
 		file_message_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProtoDSBlock_DSBlockHeader_PowDSWinners); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_message_proto_msgTypes[15].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProtoDSBlock_DSBlockHeader_Vote); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_message_proto_msgTypes[16].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ProtoDSBlock_DSBlockHeader_Proposal); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_message_proto_msgTypes[17].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProtoTxBlock_TxBlockHashSet); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_message_proto_msgTypes[18].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ProtoTxBlock_TxBlockHeader); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1533,13 +2055,22 @@ func file_message_proto_init() {
 	file_message_proto_msgTypes[5].OneofWrappers = []interface{}{
 		(*ProtoAccountBase_Nonce)(nil),
 	}
+	file_message_proto_msgTypes[9].OneofWrappers = []interface{}{
+		(*ProtoMbInfo_Shardid)(nil),
+	}
+	file_message_proto_msgTypes[18].OneofWrappers = []interface{}{
+		(*ProtoTxBlock_TxBlockHeader_Gasused)(nil),
+		(*ProtoTxBlock_TxBlockHeader_Blocknum)(nil),
+		(*ProtoTxBlock_TxBlockHeader_Numtxs)(nil),
+		(*ProtoTxBlock_TxBlockHeader_Dsblocknum)(nil),
+	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_message_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   19,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

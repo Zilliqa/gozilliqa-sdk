@@ -210,7 +210,7 @@ func (provider *Provider) DSBlockListing(ds_block_listing int) (*core.BlockList,
 }
 
 // Returns the details of a specified Transaction block.
-func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlock, error) {
+func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlockT, error) {
 	result, err := provider.call("GetTxBlock", tx_block)
 	if err != nil {
 		return nil, err
@@ -220,7 +220,7 @@ func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlock, error) {
 		return nil, result.Error
 	}
 
-	var txBlock core.TxBlock
+	var txBlock core.TxBlockT
 
 	jsonString, err2 := json.Marshal(result.Result)
 	if err2 != nil {
@@ -236,7 +236,7 @@ func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlock, error) {
 }
 
 // Returns the details of the most recent Transaction block.
-func (provider *Provider) GetLatestTxBlock() (*core.TxBlock, error) {
+func (provider *Provider) GetLatestTxBlock() (*core.TxBlockT, error) {
 	result, err := provider.call("GetLatestTxBlock")
 	if err != nil {
 		return nil, err
@@ -246,7 +246,7 @@ func (provider *Provider) GetLatestTxBlock() (*core.TxBlock, error) {
 		return nil, result.Error
 	}
 
-	var txBlock core.TxBlock
+	var txBlock core.TxBlockT
 
 	jsonString, err2 := json.Marshal(result.Result)
 	if err2 != nil {
