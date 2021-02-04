@@ -5,8 +5,11 @@ import (
 )
 
 // place a number into the destination byte stream at the specified offset
-// caller should make sure that the length is 16 bytes (uint128)
-func Uint128ToProtobufByteArray(dst []byte, offset uint, num *big.Int, numericTypeLen uint) []byte {
+// caller should make sure that the value of numericTypeLen following rules
+// Uint128 -> 16 (bytes)
+// Uint64 -> 8 (bytes)
+// Uint32 -> 4 (bytes)
+func UintToByteArray(dst []byte, offset uint, num *big.Int, numericTypeLen uint) []byte {
 	lengthAvailable := uint(len(dst)) - offset
 	if lengthAvailable < numericTypeLen {
 		newDst := make([]byte, uint(len(dst))+numericTypeLen-lengthAvailable)

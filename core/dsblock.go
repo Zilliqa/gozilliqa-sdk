@@ -45,19 +45,6 @@ type Pair struct {
 	second map[uint32]uint32
 }
 
-type SWInfo struct {
-	ZilliqaMajorVersion uint32
-	ZilliqaMinorVersion uint32
-	ZilliqaFixVersion   uint32
-	ZilliqaUpgradeDS    uint64
-	ZilliqaCommit       uint32
-	ScillaMajorVersion  uint32
-	ScillaMinorVersion  uint32
-	ScillaFixVersion    uint32
-	ScillaUpgradeDS     uint64
-	ScillaCommit        uint32
-}
-
 func NewFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	dsBlockHeader := &DsBlockHeader{}
 	dsBlockHeader.DsDifficulty = dst.Header.DifficultyDS
@@ -124,7 +111,7 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 		protoDSBlockHeader.Difficulty = d.Difficulty
 		data := make([]byte, 16)
 		gasPriceInt, _ := new(big.Int).SetString(d.GasPrice, 16)
-		data = Uint128ToProtobufByteArray(data, 0, gasPriceInt, 16)
+		data = UintToByteArray(data, 0, gasPriceInt, 16)
 		protoDSBlockHeader.Gasprice = &protobuf.ByteArray{
 			Data: data,
 		}
@@ -180,7 +167,7 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 	protoDSBlockHeader.Oneof6 = &protobuf.ProtoDSBlock_DSBlockHeader_Blocknum{
 		Blocknum: d.BlockNum,
 	}
-	protoDSBlockHeader.Oneof7 = &protobuf.ProtoDSBlock_DSBlockHeader_Epochnum {
+	protoDSBlockHeader.Oneof7 = &protobuf.ProtoDSBlock_DSBlockHeader_Epochnum{
 		Epochnum: d.EpochNum,
 	}
 
@@ -219,11 +206,6 @@ type DsBlockHeaderT struct {
 type IPAndPort struct {
 	IP   string `json:"IP"`
 	Port uint32 `json:"port"`
-}
-
-type SWInfoT struct {
-	Scilla  []interface{}
-	Zilliqa []interface{}
 }
 
 type SerializedT struct {
