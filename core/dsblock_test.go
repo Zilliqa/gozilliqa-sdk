@@ -8,7 +8,7 @@ import (
 )
 
 func Test_DeserializeFromJsonToDsBlockT(t *testing.T) {
-	dsJson, err := ioutil.ReadFile("dsblock.json")
+	dsJson, err := ioutil.ReadFile("dsblock2.json")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -18,6 +18,8 @@ func Test_DeserializeFromJsonToDsBlockT(t *testing.T) {
 	if err2 != nil {
 		t.Fatal(err2.Error())
 	}
+	fmt.Println(dsBlockT)
+
 	dsBlockHeader := NewFromDsBlockT(&dsBlockT)
 	fmt.Println(dsBlockHeader.ToProtobuf(true))
 }
