@@ -22,7 +22,10 @@ type TxBlockT struct {
 }
 
 type TxBlockBodyT struct {
+	B1              []bool
+	B2              []bool
 	BlockHash       string
+	CS1             string
 	HeaderSign      string
 	MicroBlockInfos []MicroBlockInfo
 }
