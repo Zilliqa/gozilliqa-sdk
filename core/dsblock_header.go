@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2021 Zilliqa
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package core
 
 import (
@@ -21,7 +37,7 @@ type DsBlockHeader struct {
 	// Tx Epoch Num then the DS block was generated
 	EpochNum uint64
 	GasPrice string
-	SwInfo       SWInfo
+	SwInfo   SWInfo
 	// key is (base16) public key
 	PoWDSWinners map[string]Peer
 	// (base16) public key
@@ -87,19 +103,19 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	dsHashSet.shadingHash = util.DecodeHex(dst.Header.ShardingHash)
 	dsBlockHeader.dSBlockHashSet = dsHashSet
 
-	governance := make(map[uint32]Pair,0)
+	governance := make(map[uint32]Pair, 0)
 	govs := dst.Header.Governance
 	for _, gov := range govs {
 		proposalId := gov.ProposalId
-		dsmap := make(map[uint32]uint32,0)
+		dsmap := make(map[uint32]uint32, 0)
 		dsvotes := gov.DSVotes
-		for _,dsvote := range dsvotes {
+		for _, dsvote := range dsvotes {
 			dsmap[dsvote.VoteValue] = dsvote.VoteCount
 		}
 
-		shardmap := make(map[uint32]uint32,0)
+		shardmap := make(map[uint32]uint32, 0)
 		shardvotes := gov.ShardVotes
-		for _,shardvote := range shardvotes {
+		for _, shardvote := range shardvotes {
 			shardmap[shardvote.VoteValue] = shardvote.VoteCount
 		}
 
@@ -111,7 +127,6 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	}
 
 	dsBlockHeader.GovDSShardVotesMap = governance
-
 
 	dsBlockHeader.blockHeaderBase.Version = dst.Header.Version
 	ch := util.DecodeHex(dst.Header.CommitteeHash)
@@ -186,7 +201,6 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 			protoproposal.Minervotes = minerVotes
 			proposals = append(proposals, protoproposal)
 		}
-
 
 		protoDSBlockHeader.Proposals = proposals
 
