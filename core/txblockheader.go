@@ -97,7 +97,6 @@ func (t *TxBlockHeader) ToProtoBuf() *protobuf.ProtoTxBlock_TxBlockHeader {
 	data = UintToByteArray(data, 0, t.Rewards, 16)
 	protoTxBlockHeader.Rewards = &protobuf.ByteArray{Data: data}
 
-
 	protoTxBlockHeader.Blocknum = t.BlockNum
 
 	hashset := &protobuf.ProtoTxBlock_TxBlockHashSet{
