@@ -31,7 +31,7 @@ func (b *BitVector) GetBitVectorSerializedSize(lengthInBits uint) uint {
 	return 2 + b.GetBitVectorLengthInBytes(lengthInBits)
 }
 
-func (b *BitVector) SetBitVector(dst []byte, offset uint, value []bool) uint {
+func (b *BitVector) SetBitVector(dst []byte, offset uint, value []bool) []byte {
 	lengthNeeded := b.GetBitVectorSerializedSize(uint(len(value)))
 	if (offset + lengthNeeded) > uint(len(dst)) {
 		newDst := make([]byte, offset+lengthNeeded)
@@ -54,5 +54,5 @@ func (b *BitVector) SetBitVector(dst []byte, offset uint, value []bool) uint {
 		index++
 	}
 
-	return lengthNeeded
+	return dst
 }

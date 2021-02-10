@@ -25,11 +25,10 @@ type Signature struct {
 	S *big.Int
 }
 
-func (s *Signature) Serialize() []byte {
+func (s *Signature) Serialize(data []byte, offset uint) []byte {
 	bns := BIGNumSerialize{}
-	data := make([]byte, 0)
-	data = bns.SetNumber(data, 0, signatureChallengeSize, s.R)
-	data = bns.SetNumber(data, signatureChallengeSize, signatureChallengeSize, s.S)
+	data = bns.SetNumber(data, offset, signatureChallengeSize, s.R)
+	data = bns.SetNumber(data, offset+signatureChallengeSize, signatureChallengeSize, s.S)
 	return data
 }
 
