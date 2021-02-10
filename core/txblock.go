@@ -16,6 +16,39 @@
  */
 package core
 
+import (
+	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"strconv"
+)
+
+type TxBlock struct {
+	BlockBase
+	BlockHeader *TxBlockHeader
+}
+
+func NewTxBlockFromTxBlockT(txt *TxBlockT) *TxBlock {
+	txBlock := &TxBlock{}
+	txBlockHeader := NewTxBlockHeaderFromTxBlockT(txt)
+	txBlock.BlockHeader = txBlockHeader
+
+	cs1Ser := util.DecodeHex(txt.Body.CS1)
+	cs2Ser := util.DecodeHex(txt.Body.HeaderSign)
+
+	cs1 := NewFromByteArray(cs1Ser)
+	cs2 := NewFromByteArray(cs2Ser)
+
+	cosig := CoSignatures{
+		CS1: cs1,
+		B1:  txt.Body.B1,
+		CS2: cs2,
+		B2:  txt.Body.B2,
+	}
+	txBlock.Cosigs = cosig
+	timestamp, _ := strconv.ParseUint(txt.Header.Timestamp, 10, 64)
+	txBlock.Timestamp = timestamp
+	return txBlock
+}
+
 type TxBlockT struct {
 	Header TxBlockHeaderT `json:"header"`
 	Body   TxBlockBodyT   `json:"body"`
