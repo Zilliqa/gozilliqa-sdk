@@ -100,7 +100,7 @@ func (provider *Provider) GetShardingStructure() (*core.ShardingStructure, error
 }
 
 // Returns the details of a specified Directory Service block.
-func (provider *Provider) GetDsBlock(block_number string) (*core.DSBlock, error) {
+func (provider *Provider) GetDsBlock(block_number string) (*core.DsBlockT, error) {
 	result, err := provider.call("GetDsBlock", block_number)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,32 @@ func (provider *Provider) GetDsBlock(block_number string) (*core.DSBlock, error)
 		return nil, result.Error
 	}
 
-	var dsBlock core.DSBlock
+	var dsBlock core.DsBlockT
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &dsBlock)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &dsBlock, nil
+}
+
+func (provider *Provider) GetDsBlockVerbose(block_number string) (*core.DsBlockT, error) {
+	result, err := provider.call("GetDsBlockVerbose", block_number)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var dsBlock core.DsBlockT
 
 	jsonString, err2 := json.Marshal(result.Result)
 	if err2 != nil {

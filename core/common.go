@@ -38,7 +38,7 @@ type DsBlockHeaderT struct {
 	PoWWinnersIP   []IPAndPort
 	PrevHash       string
 	ReservedField  string
-	SWInfo         SWInfoT
+	SWInfo         *SWInfoT
 	ShardingHash   string
 	Governance     []GovernanceElementT
 	Timestamp      string
@@ -74,4 +74,9 @@ type GovernanceElementT struct {
 	DSVotes    []VoteT
 	ShardVotes []VoteT
 	ProposalId uint32
+}
+
+type PairOfNode struct {
+	PubKey string
+	Peer
 }
