@@ -28,6 +28,26 @@ type DsBlock struct {
 	BlockHeader *DsBlockHeader
 }
 
+func (dst *DsBlock) Serialize() []byte {
+	headerBytes := dst.BlockHeader.Serialize()
+	bs := &BitVector{}
+	headerBytes = dst.Cosigs.CS1.Serialize(headerBytes, uint(len(headerBytes)))
+	headerBytes = bs.SetBitVector(headerBytes, uint(len(headerBytes)), dst.Cosigs.B1)
+	return headerBytes
+}
+
+func (dst *DsBlock) GetRandS() ([]byte, []byte) {
+	data := make([]byte, 0)
+	bns := BIGNumSerialize{}
+	data = bns.SetNumber(data, 0, signatureChallengeSize, dst.Cosigs.CS2.R)
+	data = bns.SetNumber(data, 0+signatureChallengeSize, signatureChallengeSize, dst.Cosigs.CS2.S)
+
+	signature := util.EncodeHex(data)
+	r := util.DecodeHex(signature[0:64])
+	s := util.DecodeHex(signature[64:128])
+	return r, s
+}
+
 func NewDsBlockFromDsBlockT(dst *DsBlockT) *DsBlock {
 	dsBlock := &DsBlock{}
 	dsBlockHeader := NewDsBlockHeaderFromDsBlockT(dst)
@@ -51,9 +71,9 @@ func NewDsBlockFromDsBlockT(dst *DsBlockT) *DsBlock {
 	return dsBlock
 }
 
-func (ds *DsBlock) ToProtobuf() []byte {
-	protoBlockBase := ds.BlockBase.ToProtobuf()
-	protoDSBlockHeader := ds.BlockHeader.ToProtobuf(false)
+func (dst *DsBlock) ToProtobuf() []byte {
+	protoBlockBase := dst.BlockBase.ToProtobuf()
+	protoDSBlockHeader := dst.BlockHeader.ToProtobuf(false)
 
 	protoDSBlock := &protobuf.ProtoDSBlock{
 		Blockbase: protoBlockBase,
