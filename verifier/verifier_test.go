@@ -50,32 +50,49 @@ func TestVerify(t *testing.T) {
 		PubKey: "0334AA0F7CA2EAA56B6B752533F9C60777E96C6D1ABE84B463F60ADD89843794AE",
 	})
 
-	dsComm1, err := verifier.Verify("1", dsComm)
+	dsComm1, err := verifier.VerifyDsBlock("1", dsComm)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
 	}
 	printDsComm(t, dsComm1)
 
-	t.Log("verify block 1 successful")
+	t.Log("verify ds block 1 successful")
 
-	dsComm2, err2 := verifier.Verify("2", dsComm1)
+	txblock1, _ := verifier.RpcClient.GetTxBlockVerbose("1")
+	err2 := verifier.VerifyTxBlock(core.NewTxBlockFromTxBlockT(txblock1), dsComm1)
 	if err2 != nil {
 		t.Error(err2)
 		t.FailNow()
 	}
 
-	printDsComm(t, dsComm2)
-	t.Log("verify block 2 successful")
+	t.Log("verify tx block 1 successful")
 
-	dsComm3, err3 := verifier.Verify("3", dsComm1)
+	dsComm2, err3 := verifier.VerifyDsBlock("2", dsComm1)
 	if err3 != nil {
 		t.Error(err3)
 		t.FailNow()
 	}
 
+	printDsComm(t, dsComm2)
+	t.Log("verify ds block 2 successful")
+
+	dsComm3, err4 := verifier.VerifyDsBlock("3", dsComm1)
+	if err4 != nil {
+		t.Error(err4)
+		t.FailNow()
+	}
+
 	printDsComm(t, dsComm3)
-	t.Log("verify block 3 successful")
+	t.Log("verify ds block 3 successful")
+
+	txblock3, _ := verifier.RpcClient.GetTxBlockVerbose("3")
+	err5 := verifier.VerifyTxBlock(core.NewTxBlockFromTxBlockT(txblock3), dsComm3)
+	if err5 != nil {
+		t.Error(err5)
+		t.FailNow()
+	}
+	t.Log("verify tx block 3 successful")
 }
 
 func printDsComm(t *testing.T, dsComm *list.List) {

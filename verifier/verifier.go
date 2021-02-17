@@ -24,6 +24,16 @@ func (v *Verifier) AggregatedPubKeyFromDsComm(dsComm *list.List, dsBlock *core.D
 	return aggregatedPubKey, nil
 }
 
+func (v *Verifier) AggregatedPubKeyFromTxComm(dsComm *list.List, txBlock *core.TxBlock) ([]byte, error) {
+	pubKeys := v.generateDsCommArray2(dsComm, txBlock)
+	aggregatedPubKey, err := multisig.AggregatedPubKey(pubKeys)
+	if err != nil {
+		return nil, err
+	}
+	return aggregatedPubKey, nil
+}
+
+// abstract this two methods
 func (v *Verifier) generateDsCommArray(dsComm *list.List, dsBlock *core.DsBlock) [][]byte {
 	var commKeys []string
 	cursor := dsComm.Front()
@@ -42,9 +52,28 @@ func (v *Verifier) generateDsCommArray(dsComm *list.List, dsBlock *core.DsBlock)
 	return pubKeys
 }
 
+func (v *Verifier) generateDsCommArray2(dsComm *list.List, txBlock *core.TxBlock) [][]byte {
+	var commKeys []string
+	cursor := dsComm.Front()
+	for cursor != nil {
+		pair := cursor.Value.(core.PairOfNode)
+		cursor = cursor.Next()
+		commKeys = append(commKeys, pair.PubKey)
+	}
+
+	var pubKeys [][]byte
+	for index, key := range commKeys {
+		if txBlock.Cosigs.B2[index] {
+			pubKeys = append(pubKeys, util.DecodeHex(key))
+		}
+	}
+	return pubKeys
+}
+
 // 0. verify current ds block
 // 2. generate next ds committee
-func (v *Verifier) Verify(dsBlockNum string, dsComm *list.List) (*list.List, error) {
+// return new ds comm
+func (v *Verifier) VerifyDsBlock(dsBlockNum string, dsComm *list.List) (*list.List, error) {
 	dst, err := v.RpcClient.GetDsBlockVerbose(dsBlockNum)
 	if err != nil {
 		return nil, err
@@ -56,6 +85,19 @@ func (v *Verifier) Verify(dsBlockNum string, dsComm *list.List) (*list.List, err
 		return nil, err2
 	}
 	return newDsComm, nil
+}
+
+func (v *Verifier) VerifyTxBlock(txBlock *core.TxBlock, dsComm *list.List) error {
+	aggregatedPubKey, err := v.AggregatedPubKeyFromTxComm(dsComm, txBlock)
+	if err != nil {
+		return err
+	}
+	r, s := txBlock.GetRandS()
+	if !multisig.MultiVerify(aggregatedPubKey, txBlock.Serialize(), r, s) {
+		msg := fmt.Sprintf("verify tx block %d error", txBlock.BlockHeader.BlockNum)
+		return errors.New(msg)
+	}
+	return nil
 }
 
 func (v *Verifier) UpdateDSCommitteeComposition(selfKeyPub string, dsComm *list.List, dsBlock *core.DsBlock) (*list.List, error) {
@@ -81,11 +123,9 @@ func (v *Verifier) updateDSCommitteeComposition(selfKeyPub string, dsComm *list.
 	// 1. get the map of all pow winners from the DS block
 	winners := dsBlock.BlockHeader.PoWDSWinners
 	numOfWinners := len(winners)
-	fmt.Println("winners: ", winners)
 
 	// 2. get the array of all non-performant nodes to be removed
 	removeDSNodePubkeys := dsBlock.BlockHeader.RemoveDSNodePubKeys
-	fmt.Println("removed keys: ", removeDSNodePubkeys)
 
 	// 3. shuffle the non-performant nodes to the back
 	for _, removed := range removeDSNodePubkeys {
@@ -113,7 +153,7 @@ func (v *Verifier) updateDSCommitteeComposition(selfKeyPub string, dsComm *list.
 			count--
 			cursor = cursor.Next()
 		}
-		dsComm.InsertBefore(w,cursor)
+		dsComm.InsertBefore(w, cursor)
 	}
 
 	// 5. remove one node for every winner, maintaining the size of the DS Committee

@@ -68,11 +68,7 @@ func TestVerifyTxBlock(t *testing.T) {
 	}
 
 	txBlock := NewTxBlockFromTxBlockT(&txBlockT)
-	headerBytes := txBlock.BlockHeader.Serialize()
-
-	bs := &BitVector{}
-	headerBytes = txBlock.Cosigs.CS1.Serialize(headerBytes, uint(len(headerBytes)))
-	headerBytes = bs.SetBitVector(headerBytes, uint(len(headerBytes)), txBlock.Cosigs.B1)
+	headerBytes := txBlock.Serialize()
 
 	if "0A4608011220AA5764CC1646085C6DD2042BB784ED6A4E154D22F0D1D1DACDD9E86662601E071A201947718B431D25DD65C226F79F3E0A9CC96A948899DAB3422993DEF1494A9C951090BF05180022120A100000000000000000000000000000000030013A660A204853067D757551C7F0119786CC830770A5F6C4DEB0D90A0B6DA49CAD49966613122000000000000000000000000000000000000000000000000000000000000000001A20C35A02EC1E5A981A41E13EBF439F020BD4D6534CB3A2FF1AA0930B66BF0290A840004A230A210213D5A7F74B28F3F588FF6520748DBB541986E98F75FA78D6334B2D0AAB4C1E575001A522E0591FE3BE75A99F83192E028DF995CEDBEF356343A2D8E054D300E03AADE6D7FACB679569C7EF0E81EF202D889ABB3E58544962CF16B1648737513D0F9C000AFE00" != strings.ToUpper(util.EncodeHex(headerBytes)) {
 		t.Log(strings.ToUpper(util.EncodeHex(headerBytes)))
@@ -103,15 +99,7 @@ func TestVerifyTxBlock(t *testing.T) {
 	}
 	t.Log("aggregated public key = ", util.EncodeHex(aggregatedPubKey))
 
-	data := make([]byte, 0)
-	bns := BIGNumSerialize{}
-	data = bns.SetNumber(data, 0, signatureChallengeSize, txBlock.Cosigs.CS2.R)
-	data = bns.SetNumber(data, 0+signatureChallengeSize, signatureChallengeSize, txBlock.Cosigs.CS2.S)
-
-	signature := util.EncodeHex(data)
-	t.Log("signature = ", signature)
-	r := util.DecodeHex(signature[0:64])
-	s := util.DecodeHex(signature[64:128])
+	r, s := txBlock.GetRandS()
 	if !multisig.MultiVerify(aggregatedPubKey, headerBytes, r, s) {
 		t.Fail()
 	}

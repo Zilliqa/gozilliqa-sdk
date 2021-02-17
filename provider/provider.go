@@ -260,6 +260,31 @@ func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlockT, error) {
 	return &txBlock, nil
 }
 
+func (provider *Provider) GetTxBlockVerbose(tx_block string) (*core.TxBlockT, error) {
+	result, err := provider.call("GetTxBlockVerbose", tx_block)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var txBlock core.TxBlockT
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &txBlock)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &txBlock, nil
+}
+
 // Returns the details of the most recent Transaction block.
 func (provider *Provider) GetLatestTxBlock() (*core.TxBlockT, error) {
 	result, err := provider.call("GetLatestTxBlock")

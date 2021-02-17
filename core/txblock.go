@@ -26,6 +26,27 @@ type TxBlock struct {
 	BlockHeader *TxBlockHeader
 }
 
+func (t *TxBlock) Serialize() []byte {
+	bytes := t.BlockHeader.Serialize()
+
+	bs := &BitVector{}
+	bytes = t.Cosigs.CS1.Serialize(bytes, uint(len(bytes)))
+	bytes = bs.SetBitVector(bytes, uint(len(bytes)), t.Cosigs.B1)
+	return bytes
+}
+
+func (t *TxBlock) GetRandS() ([]byte, []byte) {
+	data := make([]byte, 0)
+	bns := BIGNumSerialize{}
+	data = bns.SetNumber(data, 0, signatureChallengeSize, t.Cosigs.CS2.R)
+	data = bns.SetNumber(data, 0+signatureChallengeSize, signatureChallengeSize, t.Cosigs.CS2.S)
+
+	signature := util.EncodeHex(data)
+	r := util.DecodeHex(signature[0:64])
+	s := util.DecodeHex(signature[64:128])
+	return r, s
+}
+
 func NewTxBlockFromTxBlockT(txt *TxBlockT) *TxBlock {
 	txBlock := &TxBlock{}
 	txBlockHeader := NewTxBlockHeaderFromTxBlockT(txt)
