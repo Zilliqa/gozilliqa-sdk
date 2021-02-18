@@ -62,5 +62,4 @@ func TestVerify(t *testing.T) {
 		t.Fatal(err1.Error())
 	}
 	t.Log(util.EncodeHex(value))
-
 }

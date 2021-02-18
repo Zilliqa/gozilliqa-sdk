@@ -48,6 +48,24 @@ func UintToByteArray(dst []byte, offset uint, num *big.Int, numericTypeLen uint)
 	return dst
 }
 
+// extract a number from the source byte stream at the specific offset.
+// Uint128 -> 16 (bytes)
+// Uint64 -> 8 (bytes)
+// Uint32 -> 4 (bytes)
+func ByteArrayToUint(src []byte, offset uint, numericTypeLen uint) *big.Int {
+	resultNum := new(big.Int)
+	if offset+numericTypeLen <= uint(len(src)) {
+		leftShift := (numericTypeLen - 1) * 8
+		for i := uint(0); i < numericTypeLen; i++ {
+			tmp := new(big.Int).SetBytes(src[offset+i : offset+i+1])
+			tmp = new(big.Int).Lsh(tmp, leftShift)
+			resultNum = new(big.Int).And(resultNum, tmp)
+			leftShift -= 8
+		}
+	}
+	return resultNum
+}
+
 func IP2Long(ip string) uint32 {
 	var long uint32
 	binary.Read(bytes.NewBuffer(net.ParseIP(ip).To4()), binary.LittleEndian, &long)

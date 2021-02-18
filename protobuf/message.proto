@@ -49,7 +49,7 @@ message ProtoAccountBase
 {
      optional uint32 version    = 1;
      optional ByteArray balance = 2;
-     oneof oneof3 { uint64 nonce = 3; }
+     optional uint64 nonce      = 3;
      optional bytes codehash    = 4;
      optional bytes storageroot = 5;
 }
