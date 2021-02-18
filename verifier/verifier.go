@@ -137,7 +137,9 @@ func (v *Verifier) updateDSCommitteeComposition(selfKeyPub string, dsComm *list.
 			}
 			current = current.Next()
 		}
-		dsComm.MoveToBack(current)
+		if current != nil {
+			dsComm.MoveToBack(current)
+		}
 	}
 
 	// 4. add new winners
