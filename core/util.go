@@ -71,3 +71,22 @@ func IP2Long(ip string) uint32 {
 	binary.Read(bytes.NewBuffer(net.ParseIP(ip).To4()), binary.LittleEndian, &long)
 	return long
 }
+
+const ScillaIndexSeparator = 0x16
+
+func GenerateStorageKey(indices []string) []byte {
+	var result []byte
+	for _, indice := range indices {
+		bs := mergeTwoBytes([]byte(indice), []byte{ScillaIndexSeparator})
+		result = mergeTwoBytes(result, bs)
+	}
+
+	return result
+}
+
+func mergeTwoBytes(byte1, byte2 []byte) []byte {
+	ret := make([]byte, len(byte1)+len(byte2))
+	copy(ret[0:len(byte1)], byte1)
+	copy(ret[len(byte1):], byte2)
+	return ret
+}
