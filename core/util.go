@@ -74,13 +74,14 @@ func IP2Long(ip string) uint32 {
 
 const ScillaIndexSeparator = 0x16
 
-func GenerateStorageKey(indices []string) []byte {
+func GenerateStorageKey(vname string, indices []string) []byte {
 	var result []byte
+	result = mergeTwoBytes(result, []byte(vname))
+	result = mergeTwoBytes(result, []byte{ScillaIndexSeparator})
 	for _, indice := range indices {
-		bs := mergeTwoBytes([]byte(indice), []byte{ScillaIndexSeparator})
+		bs := mergeTwoBytes([]byte("\""+indice+"\""), []byte{ScillaIndexSeparator})
 		result = mergeTwoBytes(result, bs)
 	}
-
 	return result
 }
 

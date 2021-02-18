@@ -80,7 +80,7 @@ func TestVerify(t *testing.T) {
 	}
 	t.Log(util.EncodeHex(value))
 
-	storageKey := core.GenerateStorageKey([]string{"zilToPolyTxHashMap", "\"0\""})
+	storageKey := core.GenerateStorageKey("zilToPolyTxHashMap", []string{"0"})
 	t.Log(string(storageKey))
 
 	// state proof
@@ -138,7 +138,7 @@ func TestVerify2(t *testing.T) {
 	}
 	t.Log(util.EncodeHex(value))
 
-	storageKey := core.GenerateStorageKey([]string{"zilToPolyTxHashIndex"})
+	storageKey := core.GenerateStorageKey("zilToPolyTxHashIndex", []string{})
 	t.Log(storageKey)
 	key3 := []byte(storageKey)
 
