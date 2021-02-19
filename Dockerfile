@@ -1,4 +1,4 @@
-FROM golang:1.15.7-alpine
+FROM golang:1.15.8-alpine
 LABEL maintainer="Ren xiaohuo <lulu@zilliqa.com>"
 WORKDIR /app
 COPY ./ .
