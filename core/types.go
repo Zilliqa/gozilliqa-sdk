@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2021 Zilliqa
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package core
 
 type State int
@@ -54,34 +70,6 @@ type BlockList struct {
 	MaxPages int          `json:"maxPages"`
 }
 
-type TxBlock struct {
-	Header TxBlockHeader `json:"header"`
-	Body   TxBlockBody   `json:"body"`
-}
-
-type TxBlockHeader struct {
-	BlockNum       string
-	DSBlockNum     string
-	GasLimit       string
-	GasUsed        string
-	MbInfoHash     string
-	MinerPubKey    string
-	NumMicroBlocks int
-	NumTxns        int
-	PrevBlockHash  string
-	Rewards        string
-	StateDeltaHash string
-	StateRootHash  string
-	Timestamp      string
-	Version        int
-}
-
-type TxBlockBody struct {
-	BlockHash       string
-	HeaderSign      string
-	MicroBlockInfos []MicroBlockInfo
-}
-
 type MicroBlockInfo struct {
 	MicroBlockHash        string
 	MicroBlockShardId     int
@@ -116,6 +104,12 @@ type Transaction struct {
 	Priority        bool
 }
 
+type EventLog struct {
+	EventName string          `json:"_eventname"`
+	Address   string          `json:"address"`
+	Params    []ContractValue `json:"params"`
+}
+
 type TransactionReceipt struct {
 	Accept        bool                   `json:"accept"`
 	Errors        interface{}            `json:"errors"`
@@ -123,7 +117,7 @@ type TransactionReceipt struct {
 	Success       bool                   `json:"success"`
 	CumulativeGas string                 `json:"cumulative_gas"`
 	EpochNum      string                 `json:"epoch_num"`
-	EventLogs     []interface{}          `json:"event_logs"`
+	EventLogs     []EventLog             `json:"event_logs"`
 	Transitions   []Transition           `json:"transitions"`
 }
 
@@ -159,7 +153,7 @@ type ContractValue struct {
 type ParamConstructor struct {
 	Constructor string        `json:"constructor"`
 	ArgTypes    []interface{} `json:"argtypes"`
-	Arguments   []string      `json:"arguments"`
+	Arguments   []interface{} `json:"arguments"`
 }
 
 type BalanceAndNonce struct {
@@ -206,4 +200,9 @@ type TransactionStatus struct {
 
 type PendingTxns struct {
 	Txns []*TransactionStatus
+}
+
+type StateProof struct {
+	AccountProof []string `json:"accountProof"`
+	StateProof   []string `json:"stateProof"`
 }

@@ -14,35 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package mpt
+package core
 
-import (
-	"fmt"
-)
+import "math/big"
 
-func Verify(key []byte, proof *Database, rootHash []byte) (value []byte, err error) {
-	key = keybytesToHex(key)
-	wantHash := rootHash
+type Peer struct {
+	// Peer IP address (net-encoded)
+	// size is 128bits (16 bytes)
+	IpAddress *big.Int
+	// Peer listen port (host-encoded)
+	ListenPortHost uint32
+	HostName       string
+}
 
-	for i := 0; ; i++ {
-		buf, _ := proof.Get(wantHash[:])
-		if buf == nil {
-			return nil, fmt.Errorf("proof node %d (hash %064x) missing", i, wantHash)
-		}
-		n, err := decodeNode(wantHash[:], buf)
-		if err != nil {
-			return nil, fmt.Errorf("bad proof node %d: %v", i, err)
-		}
-		keyrest, cld := get(n, key, true)
-		switch cld := cld.(type) {
-		case nil:
-			// The trie doesn't contain the key.
-			return nil, nil
-		case hashNode:
-			key = keyrest
-			copy(wantHash[:], cld)
-		case valueNode:
-			return cld, nil
-		}
-	}
+func (p *Peer) Serialize() []byte {
+	data := make([]byte, 0)
+	port := new(big.Int).SetUint64(uint64(p.ListenPortHost))
+	data = UintToByteArray(data, 0, p.IpAddress, 16)
+	data = UintToByteArray(data, 16, port, 4)
+	return data
 }

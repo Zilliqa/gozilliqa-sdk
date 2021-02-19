@@ -14,35 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package mpt
+package core
 
 import (
-	"fmt"
+	"math/big"
+	"testing"
 )
 
-func Verify(key []byte, proof *Database, rootHash []byte) (value []byte, err error) {
-	key = keybytesToHex(key)
-	wantHash := rootHash
+func TestUint128ToProtobufByteArray(t *testing.T) {
+	// prepare a uint128 number
+	a, _ := new(big.Int).SetString("7aec9010a5ca23caaeb63e38b4dc92b2", 16)
+	dst := make([]byte, 16)
+	dst = UintToByteArray(dst, 0, a, 16)
+	t.Log(a)
+	t.Log(dst)
 
-	for i := 0; ; i++ {
-		buf, _ := proof.Get(wantHash[:])
-		if buf == nil {
-			return nil, fmt.Errorf("proof node %d (hash %064x) missing", i, wantHash)
-		}
-		n, err := decodeNode(wantHash[:], buf)
-		if err != nil {
-			return nil, fmt.Errorf("bad proof node %d: %v", i, err)
-		}
-		keyrest, cld := get(n, key, true)
-		switch cld := cld.(type) {
-		case nil:
-			// The trie doesn't contain the key.
-			return nil, nil
-		case hashNode:
-			key = keyrest
-			copy(wantHash[:], cld)
-		case valueNode:
-			return cld, nil
-		}
-	}
+	b := new(big.Int).SetInt64(1)
+	dst2 := make([]byte, 16)
+	dst2 = UintToByteArray(dst2, 0, b, 16)
+	t.Log(b)
+	t.Log(dst2)
 }

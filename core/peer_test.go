@@ -14,35 +14,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package mpt
+package core
 
 import (
-	"fmt"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"math/big"
+	"testing"
 )
 
-func Verify(key []byte, proof *Database, rootHash []byte) (value []byte, err error) {
-	key = keybytesToHex(key)
-	wantHash := rootHash
+func TestPeer_Serialize(t *testing.T) {
+	ip := new(big.Int).SetUint64(16777343)
+	peer := Peer{
+		IpAddress:      ip,
+		ListenPortHost: 0,
+	}
 
-	for i := 0; ; i++ {
-		buf, _ := proof.Get(wantHash[:])
-		if buf == nil {
-			return nil, fmt.Errorf("proof node %d (hash %064x) missing", i, wantHash)
-		}
-		n, err := decodeNode(wantHash[:], buf)
-		if err != nil {
-			return nil, fmt.Errorf("bad proof node %d: %v", i, err)
-		}
-		keyrest, cld := get(n, key, true)
-		switch cld := cld.(type) {
-		case nil:
-			// The trie doesn't contain the key.
-			return nil, nil
-		case hashNode:
-			key = keyrest
-			copy(wantHash[:], cld)
-		case valueNode:
-			return cld, nil
-		}
+	data := peer.Serialize()
+	if util.EncodeHex(data) != "0000000000000000000000000100007F00000000" {
+		t.Failed()
+	}
+
+	ip = new(big.Int).SetUint64(0)
+	peer = Peer{
+		IpAddress:      ip,
+		ListenPortHost: 0,
+	}
+	data = peer.Serialize()
+	if util.EncodeHex(data) != "0000000000000000000000000000000000000000" {
+		t.Failed()
 	}
 }

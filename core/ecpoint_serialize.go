@@ -14,35 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package mpt
+package core
 
 import (
-	"fmt"
+	"crypto/elliptic"
+	"github.com/Zilliqa/gozilliqa-sdk/keytools"
+	"math/big"
 )
 
-func Verify(key []byte, proof *Database, rootHash []byte) (value []byte, err error) {
-	key = keybytesToHex(key)
-	wantHash := rootHash
+type ECPointSerialize struct {
+	BIGNumSerialize
+}
 
-	for i := 0; ; i++ {
-		buf, _ := proof.Get(wantHash[:])
-		if buf == nil {
-			return nil, fmt.Errorf("proof node %d (hash %064x) missing", i, wantHash)
-		}
-		n, err := decodeNode(wantHash[:], buf)
-		if err != nil {
-			return nil, fmt.Errorf("bad proof node %d: %v", i, err)
-		}
-		keyrest, cld := get(n, key, true)
-		switch cld := cld.(type) {
-		case nil:
-			// The trie doesn't contain the key.
-			return nil, nil
-		case hashNode:
-			key = keyrest
-			copy(wantHash[:], cld)
-		case valueNode:
-			return cld, nil
-		}
-	}
+// x and y represent the point on the curve
+func (ec *ECPointSerialize) SetNumber(dst []byte, offset uint, size uint, x, y *big.Int) {
+	bytes := elliptic.MarshalCompressed(keytools.Secp256k1, x, y)
+	bnValue := new(big.Int).SetBytes(bytes)
+	ec.BIGNumSerialize.SetNumber(dst, offset, size, bnValue)
 }

@@ -14,35 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package mpt
+package core
 
-import (
-	"fmt"
-)
+import "github.com/Zilliqa/gozilliqa-sdk/protobuf"
 
-func Verify(key []byte, proof *Database, rootHash []byte) (value []byte, err error) {
-	key = keybytesToHex(key)
-	wantHash := rootHash
+type BlockHeaderBase struct {
+	Version uint32
+	// Hash for the committee that generated the block
+	CommitteeHash [32]byte
+	PrevHash      [32]byte
+}
 
-	for i := 0; ; i++ {
-		buf, _ := proof.Get(wantHash[:])
-		if buf == nil {
-			return nil, fmt.Errorf("proof node %d (hash %064x) missing", i, wantHash)
-		}
-		n, err := decodeNode(wantHash[:], buf)
-		if err != nil {
-			return nil, fmt.Errorf("bad proof node %d: %v", i, err)
-		}
-		keyrest, cld := get(n, key, true)
-		switch cld := cld.(type) {
-		case nil:
-			// The trie doesn't contain the key.
-			return nil, nil
-		case hashNode:
-			key = keyrest
-			copy(wantHash[:], cld)
-		case valueNode:
-			return cld, nil
-		}
-	}
+func (b *BlockHeaderBase) ToProtobuf() *protobuf.ProtoBlockHeaderBase {
+	protoBlockHeaderBase := &protobuf.ProtoBlockHeaderBase{}
+	protoBlockHeaderBase.Version = b.Version
+	protoBlockHeaderBase.Committeehash = b.CommitteeHash[:]
+	protoBlockHeaderBase.Prevhash = b.PrevHash[:]
+	return protoBlockHeaderBase
 }

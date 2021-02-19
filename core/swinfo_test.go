@@ -14,35 +14,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package mpt
+package core
 
 import (
-	"fmt"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"testing"
 )
 
-func Verify(key []byte, proof *Database, rootHash []byte) (value []byte, err error) {
-	key = keybytesToHex(key)
-	wantHash := rootHash
-
-	for i := 0; ; i++ {
-		buf, _ := proof.Get(wantHash[:])
-		if buf == nil {
-			return nil, fmt.Errorf("proof node %d (hash %064x) missing", i, wantHash)
-		}
-		n, err := decodeNode(wantHash[:], buf)
-		if err != nil {
-			return nil, fmt.Errorf("bad proof node %d: %v", i, err)
-		}
-		keyrest, cld := get(n, key, true)
-		switch cld := cld.(type) {
-		case nil:
-			// The trie doesn't contain the key.
-			return nil, nil
-		case hashNode:
-			key = keyrest
-			copy(wantHash[:], cld)
-		case valueNode:
-			return cld, nil
-		}
+func TestSWInfo_Serialize(t *testing.T) {
+	swinfo := &SWInfo{
+		ZilliqaMajorVersion: 7,
+		ZilliqaMinorVersion: 1,
+		ZilliqaFixVersion:   1,
+		ZilliqaUpgradeDS:    0,
+		ZilliqaCommit:       0,
+		ScillaMajorVersion:  3,
+		ScillaMinorVersion:  2,
+		ScillaFixVersion:    0,
+		ScillaUpgradeDS:     0,
+		ScillaCommit:        1,
 	}
+
+	data := swinfo.Serialize()
+	t.Log(util.EncodeHex(data))
+	// 000000070000000100000001000000000000000000000000000000030000000200000000000000000000000000000001
+	// todo assertion
 }

@@ -14,35 +14,35 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package mpt
+package core
 
-import (
-	"fmt"
-)
+import "github.com/Zilliqa/gozilliqa-sdk/protobuf"
 
-func Verify(key []byte, proof *Database, rootHash []byte) (value []byte, err error) {
-	key = keybytesToHex(key)
-	wantHash := rootHash
+type BlockBase struct {
+	BlockHash [32]byte
+	Cosigs    CoSignatures
+	Timestamp uint64
+}
 
-	for i := 0; ; i++ {
-		buf, _ := proof.Get(wantHash[:])
-		if buf == nil {
-			return nil, fmt.Errorf("proof node %d (hash %064x) missing", i, wantHash)
-		}
-		n, err := decodeNode(wantHash[:], buf)
-		if err != nil {
-			return nil, fmt.Errorf("bad proof node %d: %v", i, err)
-		}
-		keyrest, cld := get(n, key, true)
-		switch cld := cld.(type) {
-		case nil:
-			// The trie doesn't contain the key.
-			return nil, nil
-		case hashNode:
-			key = keyrest
-			copy(wantHash[:], cld)
-		case valueNode:
-			return cld, nil
-		}
+func (b *BlockBase) ToProtobuf() *protobuf.ProtoBlockBase {
+	blockBase := &protobuf.ProtoBlockBase{}
+	blockBase.Blockhash = b.BlockHash[:]
+	blockBase.Timestamp = b.Timestamp
+
+	cs1 := make([]byte, 0)
+	cs2 := make([]byte, 0)
+
+	cosig := &protobuf.ProtoBlockBase_CoSignatures{
+		Cs1: &protobuf.ByteArray{
+			Data: b.Cosigs.CS1.Serialize(cs1, 0),
+		},
+		B1: b.Cosigs.B1,
+		Cs2: &protobuf.ByteArray{
+			Data: b.Cosigs.CS2.Serialize(cs2, 0),
+		},
+		B2: b.Cosigs.B2,
 	}
+	blockBase.Cosigs = cosig
+
+	return blockBase
 }

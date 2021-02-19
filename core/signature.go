@@ -14,35 +14,42 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package mpt
+package core
 
 import (
-	"fmt"
+	"math/big"
 )
 
-func Verify(key []byte, proof *Database, rootHash []byte) (value []byte, err error) {
-	key = keybytesToHex(key)
-	wantHash := rootHash
+type Signature struct {
+	R *big.Int
+	S *big.Int
+}
 
-	for i := 0; ; i++ {
-		buf, _ := proof.Get(wantHash[:])
-		if buf == nil {
-			return nil, fmt.Errorf("proof node %d (hash %064x) missing", i, wantHash)
-		}
-		n, err := decodeNode(wantHash[:], buf)
-		if err != nil {
-			return nil, fmt.Errorf("bad proof node %d: %v", i, err)
-		}
-		keyrest, cld := get(n, key, true)
-		switch cld := cld.(type) {
-		case nil:
-			// The trie doesn't contain the key.
-			return nil, nil
-		case hashNode:
-			key = keyrest
-			copy(wantHash[:], cld)
-		case valueNode:
-			return cld, nil
-		}
+func (s *Signature) Serialize(data []byte, offset uint) []byte {
+	bns := BIGNumSerialize{}
+	data = bns.SetNumber(data, offset, signatureChallengeSize, s.R)
+	data = bns.SetNumber(data, offset+signatureChallengeSize, signatureChallengeSize, s.S)
+	return data
+}
+
+func NewFromByteArray(bytes []byte) *Signature {
+	rb := make([]byte, 32)
+	sb := make([]byte, 32)
+	copy(rb, bytes[0:32])
+	copy(sb, bytes[32:])
+
+	r := new(big.Int).SetBytes(rb)
+	s := new(big.Int).SetBytes(sb)
+
+	return &Signature{
+		R: r,
+		S: s,
 	}
+}
+
+type CoSignatures struct {
+	CS1 *Signature
+	B1  []bool
+	CS2 *Signature
+	B2  []bool
 }
