@@ -21,6 +21,8 @@ import (
 	"encoding/binary"
 	"math/big"
 	"net"
+	"os"
+	"testing"
 )
 
 // place a number into the destination byte stream at the specified offset
@@ -90,4 +92,10 @@ func mergeTwoBytes(byte1, byte2 []byte) []byte {
 	copy(ret[0:len(byte1)], byte1)
 	copy(ret[len(byte1):], byte2)
 	return ret
+}
+
+func SkipIfCI(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
 }
