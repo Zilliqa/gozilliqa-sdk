@@ -73,11 +73,7 @@ func (v *Verifier) generateDsCommArray2(dsComm *list.List, txBlock *core.TxBlock
 // 0. verify current ds block
 // 2. generate next ds committee
 // return new ds comm
-func (v *Verifier) VerifyDsBlock(dsBlockNum string, dsComm *list.List) (*list.List, error) {
-	dst, err := v.RpcClient.GetDsBlockVerbose(dsBlockNum)
-	if err != nil {
-		return nil, err
-	}
+func (v *Verifier) VerifyDsBlock(dst *core.DsBlockT, dsComm *list.List) (*list.List, error) {
 	dsBlock := core.NewDsBlockFromDsBlockT(dst)
 
 	newDsComm, err2 := v.UpdateDSCommitteeComposition("", dsComm, dsBlock)

@@ -50,7 +50,9 @@ func TestVerify(t *testing.T) {
 		PubKey: "0334AA0F7CA2EAA56B6B752533F9C60777E96C6D1ABE84B463F60ADD89843794AE",
 	})
 
-	dsComm1, err := verifier.VerifyDsBlock("1", dsComm)
+	dst, _ := p.GetDsBlockVerbose("1")
+
+	dsComm1, err := verifier.VerifyDsBlock(dst, dsComm)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -68,7 +70,8 @@ func TestVerify(t *testing.T) {
 
 	t.Log("verify tx block 1 successful")
 
-	dsComm2, err3 := verifier.VerifyDsBlock("2", dsComm1)
+	dst, _ = p.GetDsBlockVerbose("2")
+	dsComm2, err3 := verifier.VerifyDsBlock(dst, dsComm1)
 	if err3 != nil {
 		t.Error(err3)
 		t.FailNow()
@@ -77,7 +80,8 @@ func TestVerify(t *testing.T) {
 	printDsComm(t, dsComm2)
 	t.Log("verify ds block 2 successful")
 
-	dsComm3, err4 := verifier.VerifyDsBlock("3", dsComm1)
+	dst, _ = p.GetDsBlockVerbose("3")
+	dsComm3, err4 := verifier.VerifyDsBlock(dst, dsComm1)
 	if err4 != nil {
 		t.Error(err4)
 		t.FailNow()
