@@ -28,10 +28,15 @@ the section `quick start` first to get a basic understanding before you start to
 
 - [x] aggregatedPubKey
 - [x] multiVerify
-- [ ] tx block serialization
-- [ ] ds block serialization  
-- [ ] verify tx block
-- [ ] verify ds block
+- [x] tx block serialization
+- [x] ds block serialization  
+- [x] verify tx block
+- [x] verify ds block
+
+#### State proof
+
+- [x] getStateProof
+- [x] verifyStateProof
 
 #### ChainWalker
 
