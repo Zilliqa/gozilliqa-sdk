@@ -306,6 +306,13 @@ func TestGetBalance(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestProvider_GetStateProof(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://mpt42-api.dev.z7a.xyz")
+	result, _ := provider.GetStateProof("5050065f52bd935f9fe58937986f74373657a7fd", "zilToPolyTxHashMap", []string{"0"}, nil)
+	fmt.Println(result)
+}
+
 func TestProvider_CreateTransactionRaw(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://api.zilliqa.com/")

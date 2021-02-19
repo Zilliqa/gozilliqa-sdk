@@ -201,3 +201,8 @@ type TransactionStatus struct {
 type PendingTxns struct {
 	Txns []*TransactionStatus
 }
+
+type StateProof struct {
+	AccountProof []string `json:"accountProof"`
+	StateProof   []string `json:"stateProof"`
+}

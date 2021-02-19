@@ -922,6 +922,69 @@ func (provider *Provider) GetBalance(user_address string) (*core.BalanceAndNonce
 	return &balanceAndNonce, nil
 }
 
+func (provider *Provider) GetStateProof(contractAddress string, vname string, indices []string, blockNum *string) (*core.StateProof, error) {
+	type req struct {
+		Id      string      `json:"id"`
+		Jsonrpc string      `json:"jsonrpc"`
+		Method  string      `json:"method"`
+		Params  interface{} `json:"params"`
+	}
+
+	var blocknum string
+
+	if blockNum == nil {
+		blocknum = "latest"
+	} else {
+		blocknum = *blockNum
+	}
+
+	p := []interface{}{
+		contractAddress,
+		vname,
+		indices,
+		blocknum,
+	}
+
+	r := &req{
+		Id:      "1",
+		Jsonrpc: "2.0",
+		Method:  "GetStateProof",
+		Params:  p,
+	}
+
+	b, _ := json.Marshal(r)
+	reader := bytes.NewReader(b)
+	request, err := http.NewRequest("POST", provider.host, reader)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	client := http.Client{}
+	resp, err2 := client.Do(request)
+	if err2 != nil {
+		return nil, err2
+	}
+	defer resp.Body.Close()
+
+	result, err3 := ioutil.ReadAll(resp.Body)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	type rsp struct {
+		Id      string           `json:"id"`
+		Jsonrpc string           `json:"jsonrpc"`
+		Result  *core.StateProof `json:"result"`
+	}
+	var stateProof rsp
+	err4 := json.Unmarshal(result, &stateProof)
+	if err4 != nil {
+		return nil, err4
+	}
+
+	return stateProof.Result, nil
+}
+
 func (provider *Provider) call(method_name string, params ...interface{}) (*jsonrpc.RPCResponse, error) {
 	response, err := provider.rpcClient.Call(method_name, params)
 
