@@ -55,9 +55,9 @@ func NewTxBlockHeaderFromTxBlockT(txt *TxBlockT) *TxBlockHeader {
 	header.BlockNum = blockNum
 
 	var txHashSet TxBlockHashSet
-	copy(txHashSet.stateRootHash[:], util.DecodeHex(txt.Header.StateRootHash))
-	copy(txHashSet.deltaHash[:], util.DecodeHex(txt.Header.StateDeltaHash))
-	copy(txHashSet.mbInfoHash[:], util.DecodeHex(txt.Header.MbInfoHash))
+	copy(txHashSet.StateRootHash[:], util.DecodeHex(txt.Header.StateRootHash))
+	copy(txHashSet.DeltaHash[:], util.DecodeHex(txt.Header.StateDeltaHash))
+	copy(txHashSet.MbInfoHash[:], util.DecodeHex(txt.Header.MbInfoHash))
 	header.HashSet = txHashSet
 
 	header.NumTxs = txt.Header.NumTxns
@@ -100,9 +100,9 @@ func (t *TxBlockHeader) ToProtoBuf() *protobuf.ProtoTxBlock_TxBlockHeader {
 	protoTxBlockHeader.Blocknum = t.BlockNum
 
 	hashset := &protobuf.ProtoTxBlock_TxBlockHashSet{
-		Stateroothash:  t.HashSet.stateRootHash[:],
-		Statedeltahash: t.HashSet.deltaHash[:],
-		Mbinfohash:     t.HashSet.mbInfoHash[:],
+		Stateroothash:  t.HashSet.StateRootHash[:],
+		Statedeltahash: t.HashSet.DeltaHash[:],
+		Mbinfohash:     t.HashSet.MbInfoHash[:],
 	}
 	protoTxBlockHeader.Hash = hashset
 
