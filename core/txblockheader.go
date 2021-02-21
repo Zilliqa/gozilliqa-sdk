@@ -25,7 +25,7 @@ import (
 )
 
 type TxBlockHeader struct {
-	blockHeaderBase BlockHeaderBase
+	BlockHeaderBase BlockHeaderBase
 	GasLimit        uint64
 	GasUsed         uint64
 	// uint128
@@ -65,17 +65,17 @@ func NewTxBlockHeaderFromTxBlockT(txt *TxBlockT) *TxBlockHeader {
 	dsBlockNum, _ := strconv.ParseUint(txt.Header.DSBlockNum, 10, 64)
 	header.DSBlockNum = dsBlockNum
 
-	header.blockHeaderBase.Version = uint32(txt.Header.Version)
+	header.BlockHeaderBase.Version = uint32(txt.Header.Version)
 
 	ch := util.DecodeHex(txt.Header.CommitteeHash)
 	var commitHash [32]byte
 	copy(commitHash[:], ch)
-	header.blockHeaderBase.CommitteeHash = commitHash
+	header.BlockHeaderBase.CommitteeHash = commitHash
 
 	ph := util.DecodeHex(txt.Header.PrevBlockHash)
 	var prevHash [32]byte
 	copy(prevHash[:], ph)
-	header.blockHeaderBase.PrevHash = prevHash
+	header.BlockHeaderBase.PrevHash = prevHash
 	return header
 }
 
@@ -87,7 +87,7 @@ func (t *TxBlockHeader) Serialize() []byte {
 
 func (t *TxBlockHeader) ToProtoBuf() *protobuf.ProtoTxBlock_TxBlockHeader {
 	protoTxBlockHeader := &protobuf.ProtoTxBlock_TxBlockHeader{}
-	protoBlockHeaderBase := t.blockHeaderBase.ToProtobuf()
+	protoBlockHeaderBase := t.BlockHeaderBase.ToProtobuf()
 	protoTxBlockHeader.Blockheaderbase = protoBlockHeaderBase
 
 	protoTxBlockHeader.Gaslimit = t.GasLimit
