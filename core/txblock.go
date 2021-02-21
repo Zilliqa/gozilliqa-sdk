@@ -27,6 +27,10 @@ type TxBlock struct {
 	BlockHeader *TxBlockHeader
 }
 
+func (t *TxBlock) Hash() []byte{
+	return util.Sha256(t.Serialize())
+}
+
 func (t *TxBlock) Serialize() []byte {
 	bytes := t.BlockHeader.Serialize()
 
