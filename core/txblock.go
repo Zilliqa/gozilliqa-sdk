@@ -17,6 +17,7 @@
 package core
 
 import (
+	"container/list"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"strconv"
 )
@@ -68,6 +69,11 @@ func NewTxBlockFromTxBlockT(txt *TxBlockT) *TxBlock {
 	timestamp, _ := strconv.ParseUint(txt.Header.Timestamp, 10, 64)
 	txBlock.Timestamp = timestamp
 	return txBlock
+}
+
+type TxBlockAndDsComm struct {
+	DsComm *list.List
+	Block  *TxBlock
 }
 
 type TxBlockT struct {
