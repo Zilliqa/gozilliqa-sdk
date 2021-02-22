@@ -26,7 +26,7 @@ type TxBlock struct {
 	BlockHeader *TxBlockHeader
 }
 
-func (t *TxBlock) Hash() []byte{
+func (t *TxBlock) Hash() []byte {
 	return util.Sha256(t.Serialize())
 }
 
@@ -56,7 +56,7 @@ func NewTxBlockFromTxBlockT(txt *TxBlockT) *TxBlock {
 	txBlockHeader := NewTxBlockHeaderFromTxBlockT(txt)
 	txBlock.BlockHeader = txBlockHeader
 
-	copy(txBlock.BlockHash[:],util.DecodeHex(txt.Body.BlockHash))
+	copy(txBlock.BlockHash[:], util.DecodeHex(txt.Body.BlockHash))
 	cs1Ser := util.DecodeHex(txt.Body.CS1)
 	cs2Ser := util.DecodeHex(txt.Body.HeaderSign)
 
@@ -77,7 +77,7 @@ func NewTxBlockFromTxBlockT(txt *TxBlockT) *TxBlock {
 
 type TxBlockOrDsBlock struct {
 	DsBlock *DsBlock
-	TxBlock  *TxBlock
+	TxBlock *TxBlock
 }
 
 type TxBlockT struct {

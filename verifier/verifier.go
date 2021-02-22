@@ -73,9 +73,7 @@ func (v *Verifier) generateDsCommArray2(dsComm *list.List, txBlock *core.TxBlock
 // 0. verify current ds block
 // 2. generate next ds committee
 // return new ds comm
-func (v *Verifier) VerifyDsBlock(dst *core.DsBlockT, dsComm *list.List) (*list.List, error) {
-	dsBlock := core.NewDsBlockFromDsBlockT(dst)
-
+func (v *Verifier) VerifyDsBlock(dsBlock *core.DsBlock, dsComm *list.List) (*list.List, error) {
 	newDsComm, err2 := v.UpdateDSCommitteeComposition("", dsComm, dsBlock)
 	if err2 != nil {
 		return nil, err2

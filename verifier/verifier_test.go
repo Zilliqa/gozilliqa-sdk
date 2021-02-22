@@ -52,7 +52,7 @@ func TestVerify(t *testing.T) {
 
 	dst, _ := p.GetDsBlockVerbose("1")
 
-	dsComm1, err := verifier.VerifyDsBlock(dst, dsComm)
+	dsComm1, err := verifier.VerifyDsBlock(core.NewDsBlockFromDsBlockT(dst), dsComm)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -71,7 +71,7 @@ func TestVerify(t *testing.T) {
 	t.Log("verify tx block 1 successful")
 
 	dst, _ = p.GetDsBlockVerbose("2")
-	dsComm2, err3 := verifier.VerifyDsBlock(dst, dsComm1)
+	dsComm2, err3 := verifier.VerifyDsBlock(core.NewDsBlockFromDsBlockT(dst), dsComm1)
 	if err3 != nil {
 		t.Error(err3)
 		t.FailNow()
@@ -81,7 +81,7 @@ func TestVerify(t *testing.T) {
 	t.Log("verify ds block 2 successful")
 
 	dst, _ = p.GetDsBlockVerbose("3")
-	dsComm3, err4 := verifier.VerifyDsBlock(dst, dsComm1)
+	dsComm3, err4 := verifier.VerifyDsBlock(core.NewDsBlockFromDsBlockT(dst), dsComm1)
 	if err4 != nil {
 		t.Error(err4)
 		t.FailNow()
