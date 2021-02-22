@@ -57,6 +57,7 @@ func NewTxBlockFromTxBlockT(txt *TxBlockT) *TxBlock {
 	txBlockHeader := NewTxBlockHeaderFromTxBlockT(txt)
 	txBlock.BlockHeader = txBlockHeader
 
+	copy(txBlock.BlockHash[:],util.DecodeHex(txt.Body.BlockHash))
 	cs1Ser := util.DecodeHex(txt.Body.CS1)
 	cs2Ser := util.DecodeHex(txt.Body.HeaderSign)
 
