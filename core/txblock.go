@@ -17,7 +17,6 @@
 package core
 
 import (
-	"container/list"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"strconv"
 )
@@ -76,9 +75,9 @@ func NewTxBlockFromTxBlockT(txt *TxBlockT) *TxBlock {
 	return txBlock
 }
 
-type TxBlockAndDsComm struct {
-	DsComm *list.List
-	Block  *TxBlock
+type TxBlockOrDsBlock struct {
+	DsBlock *DsBlock
+	TxBlock  *TxBlock
 }
 
 type TxBlockT struct {
