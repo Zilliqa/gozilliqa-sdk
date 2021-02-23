@@ -43,7 +43,7 @@ type DsBlockHeader struct {
 	// (base16) public key
 	RemoveDSNodePubKeys []string
 	// todo concrete data type
-	dSBlockHashSet     DSBlockHashSet
+	DSBlockHashSet     DSBlockHashSet
 	GovDSShardVotesMap map[uint32]Pair
 }
 
@@ -101,7 +101,7 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 
 	var dsHashSet DSBlockHashSet
 	dsHashSet.ShadingHash = util.DecodeHex(dst.Header.ShardingHash)
-	dsBlockHeader.dSBlockHashSet = dsHashSet
+	dsBlockHeader.DSBlockHashSet = dsHashSet
 
 	governance := make(map[uint32]Pair, 0)
 	govs := dst.Header.Governance
@@ -221,8 +221,8 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 	protoDSBlockHeader.Swinfo = &protobuf.ByteArray{Data: d.SwInfo.Serialize()}
 
 	hashset := &protobuf.ProtoDSBlock_DSBlockHashSet{
-		Shardinghash:  d.dSBlockHashSet.ShadingHash,
-		Reservedfield: d.dSBlockHashSet.ReservedField[:],
+		Shardinghash:  d.DSBlockHashSet.ShadingHash,
+		Reservedfield: d.DSBlockHashSet.ReservedField[:],
 	}
 	protoDSBlockHeader.Hash = hashset
 
