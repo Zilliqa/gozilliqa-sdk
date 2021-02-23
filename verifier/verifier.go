@@ -6,12 +6,10 @@ import (
 	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/multisig"
-	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 )
 
 type Verifier struct {
-	RpcClient    *provider.Provider
 	NumOfDsGuard int
 }
 

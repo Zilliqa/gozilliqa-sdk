@@ -14,7 +14,7 @@ func TestVerify(t *testing.T) {
 		t.Skip("Skipping testing in CI environment")
 	}
 	p := provider.NewProvider("https://kaus-exposed-apis6-api.dev.z7a.xyz/")
-	verifier := &Verifier{RpcClient: p, NumOfDsGuard: 9}
+	verifier := &Verifier{NumOfDsGuard: 9}
 	dsComm := list.New()
 
 	// 9 guard nodes
@@ -61,7 +61,7 @@ func TestVerify(t *testing.T) {
 
 	t.Log("verify ds block 1 successful")
 
-	txblock1, _ := verifier.RpcClient.GetTxBlockVerbose("1")
+	txblock1, _ := p.GetTxBlockVerbose("1")
 	err2 := verifier.VerifyTxBlock(core.NewTxBlockFromTxBlockT(txblock1), dsComm1)
 	if err2 != nil {
 		t.Error(err2)
@@ -90,7 +90,7 @@ func TestVerify(t *testing.T) {
 	printDsComm(t, dsComm3)
 	t.Log("verify ds block 3 successful")
 
-	txblock3, _ := verifier.RpcClient.GetTxBlockVerbose("3")
+	txblock3, _ := p.GetTxBlockVerbose("3")
 	err5 := verifier.VerifyTxBlock(core.NewTxBlockFromTxBlockT(txblock3), dsComm3)
 	if err5 != nil {
 		t.Error(err5)

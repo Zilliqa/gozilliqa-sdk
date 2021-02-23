@@ -68,7 +68,7 @@ func NewDsBlockFromDsBlockT(dst *DsBlockT) *DsBlock {
 	timestamp, _ := strconv.ParseUint(dst.Header.Timestamp, 10, 64)
 	dsBlock.Timestamp = timestamp
 
-	copy(dsBlock.BlockHash[:],util.Sha256(dsBlock.BlockHeader.Serialize()))
+	copy(dsBlock.BlockHash[:], util.Sha256(dsBlock.BlockHeader.Serialize()))
 	return dsBlock
 }
 
