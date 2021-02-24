@@ -39,8 +39,8 @@ func (v *Verifier) generateDsCommArray(dsComm *list.List, dsBlock *core.DsBlock)
 	bitmap := dsBlock.Cosigs.B2
 	quorum := len(bitmap) / 3 * 2
 	trueCount := 0
-	for _, singed := range bitmap {
-		if singed {
+	for _, signed := range bitmap {
+		if signed {
 			trueCount++
 		}
 	}
