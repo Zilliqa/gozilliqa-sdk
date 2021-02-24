@@ -26,7 +26,10 @@ func (v *Verifier) AggregatedPubKeyFromDsComm(dsComm *list.List, dsBlock *core.D
 }
 
 func (v *Verifier) AggregatedPubKeyFromTxComm(dsComm *list.List, txBlock *core.TxBlock) ([]byte, error) {
-	pubKeys := v.generateDsCommArray2(dsComm, txBlock)
+	pubKeys, err := v.generateDsCommArray2(dsComm, txBlock)
+	if err != nil {
+		return nil, err
+	}
 	aggregatedPubKey, err := multisig.AggregatedPubKey(pubKeys)
 	if err != nil {
 		return nil, err
@@ -36,6 +39,9 @@ func (v *Verifier) AggregatedPubKeyFromTxComm(dsComm *list.List, txBlock *core.T
 
 // abstract this two methods
 func (v *Verifier) generateDsCommArray(dsComm *list.List, dsBlock *core.DsBlock) ([][]byte, error) {
+	if dsComm.Len() != len(dsBlock.Cosigs.B2) {
+		return nil, errors.New("ds list mismatch")
+	}
 	bitmap := dsBlock.Cosigs.B2
 	quorum := len(bitmap) / 3 * 2
 	trueCount := 0
@@ -64,7 +70,21 @@ func (v *Verifier) generateDsCommArray(dsComm *list.List, dsBlock *core.DsBlock)
 	return pubKeys, nil
 }
 
-func (v *Verifier) generateDsCommArray2(dsComm *list.List, txBlock *core.TxBlock) [][]byte {
+func (v *Verifier) generateDsCommArray2(dsComm *list.List, txBlock *core.TxBlock) ([][]byte, error) {
+	if dsComm.Len() != len(txBlock.Cosigs.B2) {
+		return nil, errors.New("ds list mismatch")
+	}
+	bitmap := txBlock.Cosigs.B2
+	quorum := len(bitmap) / 3 * 2
+	trueCount := 0
+	for _, signed := range bitmap {
+		if signed {
+			trueCount++
+		}
+	}
+	if !(trueCount > quorum) {
+		return nil, errors.New("quorum error")
+	}
 	var commKeys []string
 	cursor := dsComm.Front()
 	for cursor != nil {
@@ -79,7 +99,7 @@ func (v *Verifier) generateDsCommArray2(dsComm *list.List, txBlock *core.TxBlock
 			pubKeys = append(pubKeys, util.DecodeHex(key))
 		}
 	}
-	return pubKeys
+	return pubKeys, nil
 }
 
 // 0. verify current ds block
