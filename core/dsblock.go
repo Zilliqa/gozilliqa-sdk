@@ -26,6 +26,7 @@ import (
 type DsBlock struct {
 	BlockBase
 	BlockHeader *DsBlockHeader
+	PrevDSHash string
 }
 
 func (dst *DsBlock) Serialize() []byte {
@@ -69,6 +70,7 @@ func NewDsBlockFromDsBlockT(dst *DsBlockT) *DsBlock {
 	dsBlock.Timestamp = timestamp
 
 	copy(dsBlock.BlockHash[:], util.Sha256(dsBlock.BlockHeader.Serialize()))
+	dsBlock.PrevDSHash = dst.PrevDSHash
 	return dsBlock
 }
 

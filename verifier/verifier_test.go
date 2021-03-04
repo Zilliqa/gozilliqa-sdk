@@ -2,10 +2,15 @@ package verifier
 
 import (
 	"container/list"
+	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"os"
+	"strconv"
+	"strings"
 	"testing"
+	"time"
 )
 
 // todo change this test for community testnet or mainnet in the future
@@ -13,7 +18,7 @@ func TestVerify(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")
 	}
-	p := provider.NewProvider("https://kaus-poly-merged-api.dev.z7a.xyz")
+	p := provider.NewProvider("https://kaus-poly-merged2-api.dev.z7a.xyz")
 	verifier := &Verifier{NumOfDsGuard: 9}
 	dsComm := list.New()
 
@@ -50,9 +55,11 @@ func TestVerify(t *testing.T) {
 		PubKey: "02D3CB3FFC8DDE2A55AC29D013CEB5636806C6FC61C5AF077B6313DC636027A602",
 	})
 
-	dst, _ := p.GetDsBlockVerbose("1")
 
-	dsComm1, err := verifier.VerifyDsBlock(core.NewDsBlockFromDsBlockT(dst), dsComm)
+	dst, _ := p.GetDsBlockVerbose("1")
+	dsBlock := core.NewDsBlockFromDsBlockT(dst)
+
+	dsComm1, err := verifier.VerifyDsBlock(dsBlock, dsComm)
 	if err != nil {
 		t.Error(err)
 		t.FailNow()
@@ -70,51 +77,51 @@ func TestVerify(t *testing.T) {
 
 	t.Log("verify tx block 1 successful")
 
-	dst, _ = p.GetDsBlockVerbose("2")
-	dsComm2, err3 := verifier.VerifyDsBlock(core.NewDsBlockFromDsBlockT(dst), dsComm1)
-	if err3 != nil {
-		t.Error(err3)
-		t.FailNow()
+
+	currentDsBlockNum := uint64(1)
+	currentTxBlockNum := uint64(1)
+	preDsBlockHash := util.EncodeHex(dsBlock.BlockHash[:])
+
+	for {
+		latestTxBlock,_ := p.GetLatestTxBlock()
+		latest,_ := strconv.ParseUint(latestTxBlock.Header.BlockNum,10,64)
+		if latest > currentTxBlockNum {
+			currentTxBlockNum++
+			// before handle tx block, check ds block first
+			txblockT,_ := p.GetTxBlockVerbose(strconv.FormatUint(currentTxBlockNum,10))
+			dsBlockNum,_ := strconv.ParseUint(txblockT.Header.DSBlockNum,10,64)
+			if dsBlockNum > currentDsBlockNum {
+				currentDsBlockNum++
+				dsBlockT,_ := p.GetDsBlockVerbose(strconv.FormatUint(dsBlockNum,10))
+				dsBlock := core.NewDsBlockFromDsBlockT(dsBlockT)
+				if strings.ToUpper(dsBlock.PrevDSHash) != strings.ToUpper(preDsBlockHash) {
+					fmt.Println(dsBlock.PrevDSHash)
+					fmt.Println(preDsBlockHash)
+					t.Logf("verify ds block %d failed, pre hash wrong\n", dsBlockNum)
+					t.FailNow()
+				}
+				preDsBlockHash = util.EncodeHex(dsBlock.BlockHash[:])
+				newDsComm, err := verifier.VerifyDsBlock(dsBlock, dsComm)
+				if err == nil {
+					t.Logf("verify ds block %d succeed\n", dsBlockNum)
+				} else {
+					t.Logf("verify ds block %d failed\n", dsBlockNum)
+					t.FailNow()
+				}
+				dsComm = newDsComm
+			}
+
+			err := verifier.VerifyTxBlock(core.NewTxBlockFromTxBlockT(txblockT), dsComm)
+			if err == nil {
+				t.Logf("verify tx block %d succeed\n", currentTxBlockNum)
+			} else {
+				t.Logf("verify tx block %d failed\n", currentTxBlockNum)
+				t.FailNow()
+			}
+		} else {
+			time.Sleep(time.Second)
+		}
 	}
-
-	printDsComm(t, dsComm2)
-	t.Log("verify ds block 2 successful")
-
-	dst, _ = p.GetDsBlockVerbose("3")
-	dsComm3, err4 := verifier.VerifyDsBlock(core.NewDsBlockFromDsBlockT(dst), dsComm2)
-	if err4 != nil {
-		t.Error(err4)
-		t.FailNow()
-	}
-
-	printDsComm(t, dsComm3)
-	t.Log("verify ds block 3 successful")
-
-	txblock3, _ := p.GetTxBlockVerbose("3")
-	err5 := verifier.VerifyTxBlock(core.NewTxBlockFromTxBlockT(txblock3), dsComm3)
-	if err5 != nil {
-		t.Error(err5)
-		t.FailNow()
-	}
-	t.Log("verify tx block 3 successful")
-
-	dst, _ = p.GetDsBlockVerbose("4")
-	dsComm4, err6 := verifier.VerifyDsBlock(core.NewDsBlockFromDsBlockT(dst), dsComm3)
-	if err6 != nil {
-		t.Error(err6)
-		t.FailNow()
-	}
-
-	printDsComm(t, dsComm4)
-	t.Log("verify ds block 4 successful")
-
-	txblock18, _ := p.GetTxBlockVerbose("18")
-	err7 := verifier.VerifyTxBlock(core.NewTxBlockFromTxBlockT(txblock18), dsComm4)
-	if err7 != nil {
-		t.Error(err7)
-		t.FailNow()
-	}
-	t.Log("verify tx block 18 successful")
 
 }
 
