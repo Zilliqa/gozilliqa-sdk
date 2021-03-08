@@ -26,6 +26,7 @@ import (
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/Zilliqa/gozilliqa-sdk/validator"
 	"strconv"
 )
 
@@ -50,10 +51,17 @@ type ProofEntity struct {
 }
 
 func (p *Proxy) call(args []core.ContractValue, transition string) (*transaction.Transaction, error) {
-	bech32Addr, err := bech32.ToBech32Address(p.ProxyAddr)
-	if err != nil {
-		return nil, err
+	var bech32Addr string
+	if validator.IsBech32(p.ProxyAddr) {
+		bech32Addr = p.ProxyAddr
+	} else {
+		addr, err := bech32.ToBech32Address(p.ProxyAddr)
+		if err != nil {
+			return nil, err
+		}
+		bech32Addr = addr
 	}
+
 
 	gasPrice, err1 := p.Client.GetMinimumGasPrice()
 	if err1 != nil {
