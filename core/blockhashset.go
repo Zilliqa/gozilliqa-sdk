@@ -18,7 +18,7 @@ package core
 
 type DSBlockHashSet struct {
 	// should be 32 bytes
-	ShadingHash   []byte
+	ShardingHash  []byte
 	ReservedField [128]byte
 }
 

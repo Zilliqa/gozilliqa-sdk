@@ -100,7 +100,7 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	dsBlockHeader.RemoveDSNodePubKeys = removeDSNodePubKeys
 
 	var dsHashSet DSBlockHashSet
-	dsHashSet.ShadingHash = util.DecodeHex(dst.Header.ShardingHash)
+	dsHashSet.ShardingHash = util.DecodeHex(dst.Header.ShardingHash)
 	dsBlockHeader.DSBlockHashSet = dsHashSet
 
 	governance := make(map[uint32]Pair, 0)
@@ -221,7 +221,7 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 	protoDSBlockHeader.Swinfo = &protobuf.ByteArray{Data: d.SwInfo.Serialize()}
 
 	hashset := &protobuf.ProtoDSBlock_DSBlockHashSet{
-		Shardinghash:  d.DSBlockHashSet.ShadingHash,
+		Shardinghash:  d.DSBlockHashSet.ShardingHash,
 		Reservedfield: d.DSBlockHashSet.ReservedField[:],
 	}
 	protoDSBlockHeader.Hash = hashset
