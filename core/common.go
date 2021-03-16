@@ -60,6 +60,7 @@ type DsBlockT struct {
 	B1         []bool         `json:"B1"`
 	B2         []bool         `json:"B2"`
 	CS1        string         `json:"CS1"`
+	PrevDSHash string         `json:"PrevDSHash"`
 	Header     DsBlockHeaderT `json:"header"`
 	Serialized SerializedT    `json:"serialized"`
 	Signatures string         `json:"signature"`

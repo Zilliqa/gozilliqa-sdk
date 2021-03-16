@@ -18,18 +18,18 @@ package core
 
 type DSBlockHashSet struct {
 	// should be 32 bytes
-	shadingHash   []byte
-	reservedField [128]byte
+	ShardingHash  []byte
+	ReservedField [128]byte
 }
 
 type TxBlockHashSet struct {
 	// State merkle tree root hash only valid in vacuous epoch
 	// should be 32 bytes as well
-	stateRootHash [32]byte
+	StateRootHash [32]byte
 	// State Delta Hash on DS
 	// 32 bytes
-	deltaHash [32]byte
+	DeltaHash [32]byte
 	// Hash concatenated from all microblock infos
 	// 32 bytes
-	mbInfoHash [32]byte
+	MbInfoHash [32]byte
 }

@@ -25,7 +25,7 @@ import (
 )
 
 type TxBlockHeader struct {
-	blockHeaderBase BlockHeaderBase
+	BlockHeaderBase BlockHeaderBase
 	GasLimit        uint64
 	GasUsed         uint64
 	// uint128
@@ -50,14 +50,17 @@ func NewTxBlockHeaderFromTxBlockT(txt *TxBlockT) *TxBlockHeader {
 
 	rewards, _ := new(big.Int).SetString(txt.Header.Rewards, 10)
 	header.Rewards = rewards
+	
+	txfee,_ := new(big.Int).SetString(txt.Header.TxnFees,10)
+	header.Rewards = new(big.Int).Add(txfee,header.Rewards)
 
 	blockNum, _ := strconv.ParseUint(txt.Header.BlockNum, 10, 64)
 	header.BlockNum = blockNum
 
 	var txHashSet TxBlockHashSet
-	copy(txHashSet.stateRootHash[:], util.DecodeHex(txt.Header.StateRootHash))
-	copy(txHashSet.deltaHash[:], util.DecodeHex(txt.Header.StateDeltaHash))
-	copy(txHashSet.mbInfoHash[:], util.DecodeHex(txt.Header.MbInfoHash))
+	copy(txHashSet.StateRootHash[:], util.DecodeHex(txt.Header.StateRootHash))
+	copy(txHashSet.DeltaHash[:], util.DecodeHex(txt.Header.StateDeltaHash))
+	copy(txHashSet.MbInfoHash[:], util.DecodeHex(txt.Header.MbInfoHash))
 	header.HashSet = txHashSet
 
 	header.NumTxs = txt.Header.NumTxns
@@ -65,17 +68,17 @@ func NewTxBlockHeaderFromTxBlockT(txt *TxBlockT) *TxBlockHeader {
 	dsBlockNum, _ := strconv.ParseUint(txt.Header.DSBlockNum, 10, 64)
 	header.DSBlockNum = dsBlockNum
 
-	header.blockHeaderBase.Version = uint32(txt.Header.Version)
+	header.BlockHeaderBase.Version = uint32(txt.Header.Version)
 
 	ch := util.DecodeHex(txt.Header.CommitteeHash)
 	var commitHash [32]byte
 	copy(commitHash[:], ch)
-	header.blockHeaderBase.CommitteeHash = commitHash
+	header.BlockHeaderBase.CommitteeHash = commitHash
 
 	ph := util.DecodeHex(txt.Header.PrevBlockHash)
 	var prevHash [32]byte
 	copy(prevHash[:], ph)
-	header.blockHeaderBase.PrevHash = prevHash
+	header.BlockHeaderBase.PrevHash = prevHash
 	return header
 }
 
@@ -87,7 +90,7 @@ func (t *TxBlockHeader) Serialize() []byte {
 
 func (t *TxBlockHeader) ToProtoBuf() *protobuf.ProtoTxBlock_TxBlockHeader {
 	protoTxBlockHeader := &protobuf.ProtoTxBlock_TxBlockHeader{}
-	protoBlockHeaderBase := t.blockHeaderBase.ToProtobuf()
+	protoBlockHeaderBase := t.BlockHeaderBase.ToProtobuf()
 	protoTxBlockHeader.Blockheaderbase = protoBlockHeaderBase
 
 	protoTxBlockHeader.Gaslimit = t.GasLimit
@@ -100,9 +103,9 @@ func (t *TxBlockHeader) ToProtoBuf() *protobuf.ProtoTxBlock_TxBlockHeader {
 	protoTxBlockHeader.Blocknum = t.BlockNum
 
 	hashset := &protobuf.ProtoTxBlock_TxBlockHashSet{
-		Stateroothash:  t.HashSet.stateRootHash[:],
-		Statedeltahash: t.HashSet.deltaHash[:],
-		Mbinfohash:     t.HashSet.mbInfoHash[:],
+		Stateroothash:  t.HashSet.StateRootHash[:],
+		Statedeltahash: t.HashSet.DeltaHash[:],
+		Mbinfohash:     t.HashSet.MbInfoHash[:],
 	}
 	protoTxBlockHeader.Hash = hashset
 

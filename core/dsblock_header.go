@@ -26,7 +26,7 @@ import (
 
 // https://github.com/Zilliqa/Zilliqa/blob/04162ef0c3c1787ebbd940b7abd6b7ff1d4714ed/src/libData/BlockData/BlockHeader/DSBlockHeader.h
 type DsBlockHeader struct {
-	blockHeaderBase BlockHeaderBase
+	BlockHeaderBase BlockHeaderBase
 	DsDifficulty    uint32
 	Difficulty      uint32
 	// The one who proposed this DS block
@@ -43,7 +43,7 @@ type DsBlockHeader struct {
 	// (base16) public key
 	RemoveDSNodePubKeys []string
 	// todo concrete data type
-	dSBlockHashSet     DSBlockHashSet
+	DSBlockHashSet     DSBlockHashSet
 	GovDSShardVotesMap map[uint32]Pair
 }
 
@@ -100,8 +100,8 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	dsBlockHeader.RemoveDSNodePubKeys = removeDSNodePubKeys
 
 	var dsHashSet DSBlockHashSet
-	dsHashSet.shadingHash = util.DecodeHex(dst.Header.ShardingHash)
-	dsBlockHeader.dSBlockHashSet = dsHashSet
+	dsHashSet.ShardingHash = util.DecodeHex(dst.Header.ShardingHash)
+	dsBlockHeader.DSBlockHashSet = dsHashSet
 
 	governance := make(map[uint32]Pair, 0)
 	govs := dst.Header.Governance
@@ -128,16 +128,16 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 
 	dsBlockHeader.GovDSShardVotesMap = governance
 
-	dsBlockHeader.blockHeaderBase.Version = dst.Header.Version
+	dsBlockHeader.BlockHeaderBase.Version = dst.Header.Version
 	ch := util.DecodeHex(dst.Header.CommitteeHash)
 	var commitHash [32]byte
 	copy(commitHash[:], ch)
-	dsBlockHeader.blockHeaderBase.CommitteeHash = commitHash
+	dsBlockHeader.BlockHeaderBase.CommitteeHash = commitHash
 
 	ph := util.DecodeHex(dst.Header.PrevHash)
 	var prevHash [32]byte
 	copy(prevHash[:], ph)
-	dsBlockHeader.blockHeaderBase.PrevHash = prevHash
+	dsBlockHeader.BlockHeaderBase.PrevHash = prevHash
 
 	return dsBlockHeader
 }
@@ -151,7 +151,7 @@ func (d *DsBlockHeader) Serialize() []byte {
 // the default value of concreteVarsOnly should be false
 func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock_DSBlockHeader {
 	protoDSBlockHeader := &protobuf.ProtoDSBlock_DSBlockHeader{}
-	protoBlockHeaderBase := d.blockHeaderBase.ToProtobuf()
+	protoBlockHeaderBase := d.BlockHeaderBase.ToProtobuf()
 	protoDSBlockHeader.Blockheaderbase = protoBlockHeaderBase
 
 	if !concreteVarsOnly {
@@ -221,8 +221,8 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 	protoDSBlockHeader.Swinfo = &protobuf.ByteArray{Data: d.SwInfo.Serialize()}
 
 	hashset := &protobuf.ProtoDSBlock_DSBlockHashSet{
-		Shardinghash:  d.dSBlockHashSet.shadingHash,
-		Reservedfield: d.dSBlockHashSet.reservedField[:],
+		Shardinghash:  d.DSBlockHashSet.ShardingHash,
+		Reservedfield: d.DSBlockHashSet.ReservedField[:],
 	}
 	protoDSBlockHeader.Hash = hashset
 

@@ -6,17 +6,18 @@ import (
 	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/multisig"
-	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
 )
 
 type Verifier struct {
-	RpcClient    *provider.Provider
 	NumOfDsGuard int
 }
 
 func (v *Verifier) AggregatedPubKeyFromDsComm(dsComm *list.List, dsBlock *core.DsBlock) ([]byte, error) {
-	pubKeys := v.generateDsCommArray(dsComm, dsBlock)
+	pubKeys, err := v.generateDsCommArray(dsComm, dsBlock)
+	if err != nil {
+		return nil, err
+	}
 	aggregatedPubKey, err := multisig.AggregatedPubKey(pubKeys)
 	if err != nil {
 		return nil, err
@@ -25,7 +26,10 @@ func (v *Verifier) AggregatedPubKeyFromDsComm(dsComm *list.List, dsBlock *core.D
 }
 
 func (v *Verifier) AggregatedPubKeyFromTxComm(dsComm *list.List, txBlock *core.TxBlock) ([]byte, error) {
-	pubKeys := v.generateDsCommArray2(dsComm, txBlock)
+	pubKeys, err := v.generateDsCommArray2(dsComm, txBlock)
+	if err != nil {
+		return nil, err
+	}
 	aggregatedPubKey, err := multisig.AggregatedPubKey(pubKeys)
 	if err != nil {
 		return nil, err
@@ -34,7 +38,21 @@ func (v *Verifier) AggregatedPubKeyFromTxComm(dsComm *list.List, txBlock *core.T
 }
 
 // abstract this two methods
-func (v *Verifier) generateDsCommArray(dsComm *list.List, dsBlock *core.DsBlock) [][]byte {
+func (v *Verifier) generateDsCommArray(dsComm *list.List, dsBlock *core.DsBlock) ([][]byte, error) {
+	if dsComm.Len() != len(dsBlock.Cosigs.B2) {
+		return nil, errors.New("ds list mismatch")
+	}
+	bitmap := dsBlock.Cosigs.B2
+	quorum := len(bitmap) / 3 * 2
+	trueCount := 0
+	for _, signed := range bitmap {
+		if signed {
+			trueCount++
+		}
+	}
+	if !(trueCount > quorum) {
+		return nil, errors.New("quorum error")
+	}
 	var commKeys []string
 	cursor := dsComm.Front()
 	for cursor != nil {
@@ -45,14 +63,28 @@ func (v *Verifier) generateDsCommArray(dsComm *list.List, dsBlock *core.DsBlock)
 
 	var pubKeys [][]byte
 	for index, key := range commKeys {
-		if dsBlock.Cosigs.B2[index] {
+		if bitmap[index] {
 			pubKeys = append(pubKeys, util.DecodeHex(key))
 		}
 	}
-	return pubKeys
+	return pubKeys, nil
 }
 
-func (v *Verifier) generateDsCommArray2(dsComm *list.List, txBlock *core.TxBlock) [][]byte {
+func (v *Verifier) generateDsCommArray2(dsComm *list.List, txBlock *core.TxBlock) ([][]byte, error) {
+	if dsComm.Len() != len(txBlock.Cosigs.B2) {
+		return nil, errors.New("ds list mismatch")
+	}
+	bitmap := txBlock.Cosigs.B2
+	quorum := len(bitmap) / 3 * 2
+	trueCount := 0
+	for _, signed := range bitmap {
+		if signed {
+			trueCount++
+		}
+	}
+	if !(trueCount > quorum) {
+		return nil, errors.New("quorum error")
+	}
 	var commKeys []string
 	cursor := dsComm.Front()
 	for cursor != nil {
@@ -67,15 +99,13 @@ func (v *Verifier) generateDsCommArray2(dsComm *list.List, txBlock *core.TxBlock
 			pubKeys = append(pubKeys, util.DecodeHex(key))
 		}
 	}
-	return pubKeys
+	return pubKeys, nil
 }
 
 // 0. verify current ds block
 // 2. generate next ds committee
 // return new ds comm
-func (v *Verifier) VerifyDsBlock(dst *core.DsBlockT, dsComm *list.List) (*list.List, error) {
-	dsBlock := core.NewDsBlockFromDsBlockT(dst)
-
+func (v *Verifier) VerifyDsBlock(dsBlock *core.DsBlock, dsComm *list.List) (*list.List, error) {
 	newDsComm, err2 := v.UpdateDSCommitteeComposition("", dsComm, dsBlock)
 	if err2 != nil {
 		return nil, err2
