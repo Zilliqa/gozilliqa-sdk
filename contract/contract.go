@@ -34,7 +34,7 @@ const TestNet = "testnet"
 const Isolated = "isolated"
 const TestNetHost = "https://dev-api.zilliqa.com/"
 const MainNetHost = "https://api.zilliqa.com/"
-const IsolatedHost = "https://stg-zilliqa-isolated-server.zilliqa.com/"
+const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
 
 const (
 	Deployed ContractStatus = iota
@@ -98,7 +98,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 			return nil, err
 		}
 		parameter := DeployParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(222, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
