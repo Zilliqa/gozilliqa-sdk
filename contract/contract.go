@@ -232,7 +232,7 @@ func (c *Contract) CallFor(transition string, args []core.ContractValue, priorit
 			return nil, err
 		}
 		params := CallParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(222, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
