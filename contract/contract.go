@@ -62,7 +62,7 @@ type State struct {
 // network id, message version nonce, gasfee, gaslimit
 // take a note that for gas limit, 40k is safe and recommend setting number
 // value of network can be testnet, mainnet or isolated
-func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
+func (c *Contract) DeployTo(network,gaslimit string) (*transaction.Transaction, error) {
 	if network == TestNet {
 		c.Provider = provider.NewProvider(TestNetHost)
 		gasPrice, err := c.Provider.GetMinimumGasPrice()
@@ -73,7 +73,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
-			GasLimit:     "40000",
+			GasLimit:     gaslimit,
 			SenderPubKey: "",
 		}
 		return c.Deploy(parameter)
@@ -87,7 +87,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
-			GasLimit:     "40000",
+			GasLimit:     gaslimit,
 			SenderPubKey: "",
 		}
 		return c.Deploy(parameter)
@@ -101,7 +101,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 			Version:      strconv.FormatInt(int64(util.Pack(222, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
-			GasLimit:     "40000",
+			GasLimit:     gaslimit,
 			SenderPubKey: "",
 		}
 		return c.Deploy(parameter)
