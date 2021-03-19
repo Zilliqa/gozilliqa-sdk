@@ -55,7 +55,6 @@ func TestVerify(t *testing.T) {
 		PubKey: "02D3CB3FFC8DDE2A55AC29D013CEB5636806C6FC61C5AF077B6313DC636027A602",
 	})
 
-
 	dst, _ := p.GetDsBlockVerbose("1")
 	dsBlock := core.NewDsBlockFromDsBlockT(dst)
 
@@ -77,22 +76,21 @@ func TestVerify(t *testing.T) {
 
 	t.Log("verify tx block 1 successful")
 
-
 	currentDsBlockNum := uint64(1)
 	currentTxBlockNum := uint64(1)
 	preDsBlockHash := util.EncodeHex(dsBlock.BlockHash[:])
 
 	for {
-		latestTxBlock,_ := p.GetLatestTxBlock()
-		latest,_ := strconv.ParseUint(latestTxBlock.Header.BlockNum,10,64)
+		latestTxBlock, _ := p.GetLatestTxBlock()
+		latest, _ := strconv.ParseUint(latestTxBlock.Header.BlockNum, 10, 64)
 		if latest > currentTxBlockNum {
 			currentTxBlockNum++
 			// before handle tx block, check ds block first
-			txblockT,_ := p.GetTxBlockVerbose(strconv.FormatUint(currentTxBlockNum,10))
-			dsBlockNum,_ := strconv.ParseUint(txblockT.Header.DSBlockNum,10,64)
+			txblockT, _ := p.GetTxBlockVerbose(strconv.FormatUint(currentTxBlockNum, 10))
+			dsBlockNum, _ := strconv.ParseUint(txblockT.Header.DSBlockNum, 10, 64)
 			if dsBlockNum > currentDsBlockNum {
 				currentDsBlockNum++
-				dsBlockT,_ := p.GetDsBlockVerbose(strconv.FormatUint(dsBlockNum,10))
+				dsBlockT, _ := p.GetDsBlockVerbose(strconv.FormatUint(dsBlockNum, 10))
 				dsBlock := core.NewDsBlockFromDsBlockT(dsBlockT)
 				if strings.ToUpper(dsBlock.PrevDSHash) != strings.ToUpper(preDsBlockHash) {
 					fmt.Println(dsBlock.PrevDSHash)

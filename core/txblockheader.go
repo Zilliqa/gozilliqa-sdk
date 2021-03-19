@@ -50,9 +50,9 @@ func NewTxBlockHeaderFromTxBlockT(txt *TxBlockT) *TxBlockHeader {
 
 	rewards, _ := new(big.Int).SetString(txt.Header.Rewards, 10)
 	header.Rewards = rewards
-	
-	txfee,_ := new(big.Int).SetString(txt.Header.TxnFees,10)
-	header.Rewards = new(big.Int).Add(txfee,header.Rewards)
+
+	txfee, _ := new(big.Int).SetString(txt.Header.TxnFees, 10)
+	header.Rewards = new(big.Int).Add(txfee, header.Rewards)
 
 	blockNum, _ := strconv.ParseUint(txt.Header.BlockNum, 10, 64)
 	header.BlockNum = blockNum

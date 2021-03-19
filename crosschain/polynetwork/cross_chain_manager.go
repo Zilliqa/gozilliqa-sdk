@@ -50,7 +50,7 @@ type ProofEntity struct {
 	Pair  []ProofPair
 }
 
-func (p *Proxy) call(args []core.ContractValue, transition string) (*transaction.Transaction, error) {
+func (p *Proxy) callWithNonce(args []core.ContractValue, transition string, nonce string) (*transaction.Transaction, error) {
 	var bech32Addr string
 	if validator.IsBech32(p.ProxyAddr) {
 		bech32Addr = p.ProxyAddr
@@ -62,6 +62,45 @@ func (p *Proxy) call(args []core.ContractValue, transition string) (*transaction
 		bech32Addr = addr
 	}
 
+	gasPrice, err1 := p.Client.GetMinimumGasPrice()
+	if err1 != nil {
+		return nil, err1
+	}
+
+	c := contract.Contract{
+		Address:  bech32Addr,
+		Signer:   p.Wallet,
+		Provider: p.Client,
+	}
+
+	params := contract.CallParams{
+		Version:      strconv.FormatInt(int64(util.Pack(p.ChainId, p.MsgVersion)), 10),
+		GasPrice:     gasPrice,
+		GasLimit:     "40000",
+		Amount:       "0",
+		Nonce:        nonce,
+		SenderPubKey: util.EncodeHex(p.Wallet.DefaultAccount.PublicKey),
+	}
+
+	tx, err2 := c.Call(transition, args, params, true)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	return tx, nil
+}
+
+func (p *Proxy) call(args []core.ContractValue, transition string) (*transaction.Transaction, error) {
+	var bech32Addr string
+	if validator.IsBech32(p.ProxyAddr) {
+		bech32Addr = p.ProxyAddr
+	} else {
+		addr, err := bech32.ToBech32Address(p.ProxyAddr)
+		if err != nil {
+			return nil, err
+		}
+		bech32Addr = addr
+	}
 
 	gasPrice, err1 := p.Client.GetMinimumGasPrice()
 	if err1 != nil {
@@ -253,4 +292,81 @@ func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, h
 	}
 
 	return p.call(args, "VerifyHeaderAndExecuteTx")
+}
+
+func (p *Proxy) VerifyHeaderAndExecuteTxWithNonce(proof *ProofEntity, rawHeader string, headerProof *ProofEntity, curRawHeader string, headerSig []string, nonce string) (*transaction.Transaction, error) {
+	pairs := []core.ParamConstructor{}
+
+	for _, pair := range proof.Pair {
+		pairs = append(pairs, core.ParamConstructor{
+			Constructor: "Pair",
+			ArgTypes:    []interface{}{"ByStr1", "ByStr32"},
+			Arguments:   []interface{}{"0x" + pair.Key, "0x" + pair.Hash},
+		})
+	}
+	proofArguments := make([]interface{}, 0)
+	proofArguments = append(proofArguments, "0x"+proof.Proof)
+	proofArguments = append(proofArguments, pairs)
+	proofConstructor := core.ParamConstructor{
+		Constructor: "Polynetwork.Proof",
+		ArgTypes:    make([]interface{}, 0),
+		Arguments:   proofArguments,
+	}
+
+	headerPairs := []core.ParamConstructor{}
+	for _, pair := range headerProof.Pair {
+		headerPairs = append(headerPairs, core.ParamConstructor{
+			Constructor: "Pair",
+			ArgTypes:    []interface{}{"ByStr1", "ByStr32"},
+			Arguments:   []interface{}{"0x" + pair.Key, "0x" + pair.Hash},
+		})
+	}
+
+	headProofArguments := make([]interface{}, 0)
+	headProofArguments = append(headProofArguments, "0x"+headerProof.Proof)
+	headProofArguments = append(headProofArguments, headerPairs)
+	headProofConstructor := core.ParamConstructor{
+		Constructor: "Polynetwork.Proof",
+		ArgTypes:    make([]interface{}, 0),
+		Arguments:   headProofArguments,
+	}
+
+	var sigs []core.ParamConstructor
+	for _, sig := range headerSig {
+		sigs = append(sigs, core.ParamConstructor{
+			Constructor: "Polynetwork.Signature",
+			ArgTypes:    make([]interface{}, 0),
+			Arguments:   []interface{}{sig},
+		})
+	}
+
+	args := []core.ContractValue{
+		{
+			"proof",
+			"Polynetwork.Proof",
+			proofConstructor,
+		},
+		{
+			"rawHeader",
+			"ByStr",
+			rawHeader,
+		},
+		{
+			"headerProof",
+			"Polynetwork.Proof",
+			headProofConstructor,
+		},
+		{
+			"curRawHeader",
+			"ByStr",
+			curRawHeader,
+		},
+		{
+			"headerSig",
+			"List Polynetwork.Signature",
+			sigs,
+		},
+	}
+
+	return p.callWithNonce(args, "VerifyHeaderAndExecuteTx", nonce)
 }
