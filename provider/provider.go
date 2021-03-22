@@ -624,6 +624,30 @@ func (provider *Provider) GetTransaction(transaction_hash string) (*core.Transac
 	return &transaction, nil
 }
 
+func (provider *Provider) GetTransactionStatus(transactionHash string) (*core.TransactionStatus, error) {
+	result, err := provider.call("GetTransactionStatus", transactionHash)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var status core.TransactionStatus
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &status)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &status, nil
+}
+
 func (provider *Provider) GetTransactionBatch(transactionHashes []string) ([]*core.Transaction, error) {
 	var requests jsonrpc.RPCRequests
 	for _, hash := range transactionHashes {
