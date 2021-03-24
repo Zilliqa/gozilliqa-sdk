@@ -217,6 +217,45 @@ func (p *Proxy) ChangeBookKeeper(rawHeader string, pubKeys []string, sigList []s
 	return p.call(args, "ChangeBookKeeper")
 }
 
+func (p *Proxy) ChangeBookKeeperWithNonce(rawHeader string, pubKeys []string, sigList []string, nonce string) (*transaction.Transaction, error) {
+	var keys []core.ParamConstructor
+	for _, key := range pubKeys {
+		keys = append(keys, core.ParamConstructor{
+			Constructor: "Polynetwork.Pubkey",
+			ArgTypes:    make([]interface{}, 0),
+			Arguments:   []interface{}{key},
+		})
+	}
+
+	var sigs []core.ParamConstructor
+	for _, sig := range sigList {
+		sigs = append(sigs, core.ParamConstructor{
+			Constructor: "Polynetwork.Signature",
+			ArgTypes:    make([]interface{}, 0),
+			Arguments:   []interface{}{sig},
+		})
+	}
+	args := []core.ContractValue{
+		{
+			"rawHeader",
+			"ByStr",
+			rawHeader,
+		},
+		{
+			"pubkeys",
+			"List Polynetwork.Pubkey",
+			keys,
+		},
+		{
+			"sigList",
+			"List Polynetwork.Signature",
+			sigs,
+		},
+	}
+
+	return p.callWithNonce(args, "ChangeBookKeeper", nonce)
+}
+
 func (p *Proxy) VerifyHeaderAndExecuteTx(proof *ProofEntity, rawHeader string, headerProof *ProofEntity, curRawHeader string, headerSig []string) (*transaction.Transaction, error) {
 	pairs := []core.ParamConstructor{}
 
