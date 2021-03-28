@@ -129,6 +129,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
 		Data:         c.Init,
 		Status:       0,
+		Priority:     params.Priority,
 	}
 
 	err2 := c.Signer.Sign(tx, *c.Provider)

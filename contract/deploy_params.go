@@ -23,4 +23,5 @@ type DeployParams struct {
 	GasPrice     string
 	GasLimit     string
 	SenderPubKey string
+	Priority     bool
 }
