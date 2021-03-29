@@ -192,17 +192,41 @@ type PendingTxnResult struct {
 	Info      string
 }
 
-type TransactionStatus struct {
+type PendingStatus struct {
 	Code    int    `json:"code"`
 	TxnHash string `json:"TxnHash"`
 	Info    string
 }
 
 type PendingTxns struct {
-	Txns []*TransactionStatus
+	Txns []*PendingStatus
 }
 
 type StateProof struct {
 	AccountProof []string `json:"accountProof"`
 	StateProof   []string `json:"stateProof"`
+}
+
+type TransactionStatus struct {
+	ID                string
+	id                TransactionStatusId `json:"_id"`
+	Amount            string              `json:"amount"`
+	Data              string              `json:"data"`
+	EpochInserted     string              `json:"epochInserted"`
+	EpochUpdated      string              `json:"epochUpdated"`
+	GasLimit          string              `json:"gasLimit"`
+	GasPrice          string              `json:"gasPrice"`
+	LastModified      string              `json:"lastModified"`
+	ModificationState int                 `json:"modificationState"`
+	Nonce             string              `json:"nonce"`
+	SenderAddr        string              `json:"senderAddr"`
+	Signature         string              `json:"signature"`
+	Status            int                 `json:"status"`
+	Success           bool                `json:"success"`
+	ToAddr            string              `json:"toAddr"`
+	Version           string              `json:"version"`
+}
+
+type TransactionStatusId struct {
+	oid string `json:"$oid"`
 }

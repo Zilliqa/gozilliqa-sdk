@@ -211,6 +211,13 @@ func TestGetTransaction(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestProvider_GetTransactionStatus(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	result, _ := provider.GetTransaction("07c993b6ab2b560d2756b8a2187b7e19f7e7948f1172b8217a90c020069c3ad9")
+	fmt.Println(result)
+}
+
 func TestProvider_GetTransactionBatch(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")

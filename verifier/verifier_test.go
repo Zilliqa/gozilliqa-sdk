@@ -2,6 +2,7 @@ package verifier
 
 import (
 	"container/list"
+	"encoding/json"
 	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
@@ -18,7 +19,7 @@ func TestVerify(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")
 	}
-	p := provider.NewProvider("https://kaus-poly-merged2-api.dev.z7a.xyz")
+	p := provider.NewProvider("https://kaus-poly-merged3-api.dev.z7a.xyz")
 	verifier := &Verifier{NumOfDsGuard: 9}
 	dsComm := list.New()
 
@@ -55,9 +56,11 @@ func TestVerify(t *testing.T) {
 		PubKey: "02D3CB3FFC8DDE2A55AC29D013CEB5636806C6FC61C5AF077B6313DC636027A602",
 	})
 
-
 	dst, _ := p.GetDsBlockVerbose("1")
 	dsBlock := core.NewDsBlockFromDsBlockT(dst)
+	dsBlock1Raw, _ := json.Marshal(dsBlock)
+	t.Log("ds block1 raw: ")
+	t.Log(string(dsBlock1Raw))
 
 	dsComm1, err := verifier.VerifyDsBlock(dsBlock, dsComm)
 	if err != nil {
@@ -74,26 +77,31 @@ func TestVerify(t *testing.T) {
 		t.Error(err2)
 		t.FailNow()
 	}
+	txBlock1Raw, _ := json.Marshal(core.NewTxBlockFromTxBlockT(txblock1))
+	t.Log("tx block1 raw: ")
+	t.Log(string(txBlock1Raw))
 
 	t.Log("verify tx block 1 successful")
-
 
 	currentDsBlockNum := uint64(1)
 	currentTxBlockNum := uint64(1)
 	preDsBlockHash := util.EncodeHex(dsBlock.BlockHash[:])
 
 	for {
-		latestTxBlock,_ := p.GetLatestTxBlock()
-		latest,_ := strconv.ParseUint(latestTxBlock.Header.BlockNum,10,64)
+		latestTxBlock, _ := p.GetLatestTxBlock()
+		latest, _ := strconv.ParseUint(latestTxBlock.Header.BlockNum, 10, 64)
 		if latest > currentTxBlockNum {
 			currentTxBlockNum++
 			// before handle tx block, check ds block first
-			txblockT,_ := p.GetTxBlockVerbose(strconv.FormatUint(currentTxBlockNum,10))
-			dsBlockNum,_ := strconv.ParseUint(txblockT.Header.DSBlockNum,10,64)
+			txblockT, _ := p.GetTxBlockVerbose(strconv.FormatUint(currentTxBlockNum, 10))
+			dsBlockNum, _ := strconv.ParseUint(txblockT.Header.DSBlockNum, 10, 64)
 			if dsBlockNum > currentDsBlockNum {
 				currentDsBlockNum++
-				dsBlockT,_ := p.GetDsBlockVerbose(strconv.FormatUint(dsBlockNum,10))
+				dsBlockT, _ := p.GetDsBlockVerbose(strconv.FormatUint(dsBlockNum, 10))
 				dsBlock := core.NewDsBlockFromDsBlockT(dsBlockT)
+				dsBlockRawn, _ := json.Marshal(dsBlock)
+				t.Log("ds block, block number = ", dsBlock.BlockHeader.BlockNum)
+				t.Log(string(dsBlockRawn))
 				if strings.ToUpper(dsBlock.PrevDSHash) != strings.ToUpper(preDsBlockHash) {
 					fmt.Println(dsBlock.PrevDSHash)
 					fmt.Println(preDsBlockHash)
@@ -111,6 +119,9 @@ func TestVerify(t *testing.T) {
 				dsComm = newDsComm
 			}
 
+			t.Log("tx block, block number = ", txblockT.Header.BlockNum)
+			txBlockn, _ := json.Marshal(core.NewTxBlockFromTxBlockT(txblockT))
+			t.Log(string(txBlockn))
 			err := verifier.VerifyTxBlock(core.NewTxBlockFromTxBlockT(txblockT), dsComm)
 			if err == nil {
 				t.Logf("verify tx block %d succeed\n", currentTxBlockNum)

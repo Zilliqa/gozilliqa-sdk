@@ -26,7 +26,7 @@ import (
 type DsBlock struct {
 	BlockBase
 	BlockHeader *DsBlockHeader
-	PrevDSHash string
+	PrevDSHash  string
 }
 
 func (dst *DsBlock) Serialize() []byte {
