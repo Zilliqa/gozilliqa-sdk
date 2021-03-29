@@ -18,6 +18,7 @@ package keytools
 
 import (
 	"crypto/rand"
+	"io"
 	"math/big"
 
 	"github.com/Zilliqa/gozilliqa-sdk/util"
@@ -31,18 +32,19 @@ var (
 type PrivateKey [32]byte
 
 func GeneratePrivateKey() (PrivateKey, error) {
-	var bytes [32]byte
+	pvk := [32]byte{}
+
 	for {
-		privk, err := btcec.NewPrivateKey(Secp256k1)
+		_, err := io.ReadFull(rand.Reader, pvk[:])
 		if err == nil {
-			pvkInt := privk.D
+			pvkInt := new(big.Int).SetBytes(pvk[:])
 			if pvkInt.Cmp(big.NewInt(0)) == 1 && pvkInt.Cmp(Secp256k1.N) == -1 {
-				privk.D.FillBytes(bytes[:])
 				break
 			}
 		}
 	}
-	return bytes, nil
+
+	return PrivateKey(pvk), nil
 }
 
 func GetPublicKeyFromPrivateKey(privateKey []byte, compress bool) []byte {
