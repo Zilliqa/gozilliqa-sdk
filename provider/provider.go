@@ -946,7 +946,7 @@ func (provider *Provider) GetBalance(user_address string) (*core.BalanceAndNonce
 	return &balanceAndNonce, nil
 }
 
-func (provider *Provider) GetStateProof(contractAddress string, vname string, indices []string, blockNum *string) (*core.StateProof, error) {
+func (provider *Provider) GetStateProof(contractAddress string, hashedStorageKey string, blockNum *string) (*core.StateProof, error) {
 	type req struct {
 		Id      string      `json:"id"`
 		Jsonrpc string      `json:"jsonrpc"`
@@ -964,8 +964,7 @@ func (provider *Provider) GetStateProof(contractAddress string, vname string, in
 
 	p := []interface{}{
 		contractAddress,
-		vname,
-		indices,
+		hashedStorageKey,
 		blocknum,
 	}
 

@@ -315,8 +315,8 @@ func TestGetBalance(t *testing.T) {
 
 func TestProvider_GetStateProof(t *testing.T) {
 	SkipIfCI(t)
-	provider := NewProvider("https://mpt42-api.dev.z7a.xyz")
-	result, _ := provider.GetStateProof("5050065f52bd935f9fe58937986f74373657a7fd", "zilToPolyTxHashMap", []string{"0"}, nil)
+	provider := NewProvider("https://kaus-new-poly6-api.dev.z7a.xyz/")
+	result, _ := provider.GetStateProof("6d84363526a2d764835f8cf52dfeefe80a360fac", "A0BD91DE66D97E6930118179BA4F1836C366C4CB3309A6B354D26F52ABB2AAC6", nil)
 	fmt.Println(result)
 }
 
