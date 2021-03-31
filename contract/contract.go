@@ -18,13 +18,14 @@ package contract
 
 import (
 	"errors"
+	"strconv"
+	"strings"
+
 	"github.com/Zilliqa/gozilliqa-sdk/account"
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/transaction"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
-	"strconv"
-	"strings"
 )
 
 type ContractStatus int
@@ -33,7 +34,7 @@ const MainNet = "mainnet"
 const TestNet = "testnet"
 const Isolated = "isolated"
 const TestNetHost = "https://dev-api.zilliqa.com/"
-const MainNetHost = "https://migrate3-api.dev.z7a.xyz"
+const MainNetHost = "https://migrate4-api.dev.z7a.xyz"
 const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
 
 const (
@@ -62,7 +63,7 @@ type State struct {
 // network id, message version nonce, gasfee, gaslimit
 // take a note that for gas limit, 40k is safe and recommend setting number
 // value of network can be testnet, mainnet or isolated
-func (c *Contract) DeployTo(network,gaslimit string) (*transaction.Transaction, error) {
+func (c *Contract) DeployTo(network, gaslimit string) (*transaction.Transaction, error) {
 	if network == TestNet {
 		c.Provider = provider.NewProvider(TestNetHost)
 		gasPrice, err := c.Provider.GetMinimumGasPrice()
