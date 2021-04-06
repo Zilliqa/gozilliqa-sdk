@@ -284,8 +284,8 @@ func TestGetSmartContractInit(t *testing.T) {
 
 func TestProvider_GetDSComm(t *testing.T) {
 	SkipIfCI(t)
-	provider := NewProvider("https://junhao-afbdaa8-api.dev.z7a.xyz")
-	result, _ := provider.GetDSComm()
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	result, _ := provider.GetCurrentDSComm()
 	fmt.Println(result)
 }
 
