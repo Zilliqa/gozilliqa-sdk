@@ -230,3 +230,10 @@ type TransactionStatus struct {
 type TransactionStatusId struct {
 	oid string `json:"$oid"`
 }
+
+type DSComm struct {
+	CurrentDSEpoch string
+	CurrentTxEpoch string
+	NumOfDSGuard   int
+	DSComm         []string `json:"dscomm"`
+}

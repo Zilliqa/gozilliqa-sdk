@@ -282,6 +282,13 @@ func TestGetSmartContractInit(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestProvider_GetDSComm(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://junhao-afbdaa8-api.dev.z7a.xyz")
+	result, _ := provider.GetDSComm()
+	fmt.Println(result)
+}
+
 func TestGetSmartContractState(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")

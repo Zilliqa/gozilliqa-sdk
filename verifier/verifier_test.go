@@ -15,6 +15,110 @@ import (
 )
 
 // todo change this test for community testnet or mainnet in the future
+func TestVerify2(t *testing.T) {
+	if os.Getenv("CI") != "" {
+		t.Skip("Skipping testing in CI environment")
+	}
+
+	p := provider.NewProvider("https://junhao-874ed66-api.dev.z7a.xyz")
+	initDsComm, _ := p.GetCurrentDSComm()
+	t.Log("current tx block num: " + initDsComm.CurrentTxEpoch)
+	t.Log("current ds block num: " + initDsComm.CurrentDSEpoch)
+	t.Log("current ds comm: ", initDsComm.DSComm)
+	t.Log("number of ds guard: ", initDsComm.NumOfDSGuard)
+	currentTxBlockNum, _ := strconv.ParseUint(initDsComm.CurrentTxEpoch, 10, 64)
+	currentDsBlockNum, _ := strconv.ParseUint(initDsComm.CurrentDSEpoch, 10, 64)
+	verifier := &Verifier{NumOfDsGuard: initDsComm.NumOfDSGuard}
+
+	for {
+		latestTxBlock, _ := p.GetLatestTxBlock()
+		t.Log("wait current tx block got generated")
+		latestTxBlockNum, _ := strconv.ParseUint(latestTxBlock.Header.BlockNum, 10, 64)
+		t.Logf("latest tx block num is: %d, current tx block num is: %d", latestTxBlockNum, currentTxBlockNum)
+		if latestTxBlockNum > currentTxBlockNum {
+			break
+		}
+		time.Sleep(time.Second * 30)
+	}
+
+	dsComm := list.New()
+	for _, ds := range initDsComm.DSComm {
+		dsComm.PushBack(core.PairOfNode{
+			PubKey: ds,
+		})
+	}
+	printDsComm(t, dsComm)
+
+	dst, _ := p.GetDsBlockVerbose(initDsComm.CurrentDSEpoch)
+	dsBlock := core.NewDsBlockFromDsBlockT(dst)
+	initDsBlock, _ := json.Marshal(dsBlock)
+	t.Log("init ds block raw: ")
+	t.Log(string(initDsBlock))
+
+	tst, _ := p.GetTxBlockVerbose(initDsComm.CurrentTxEpoch)
+	txBlock := core.NewTxBlockFromTxBlockT(tst)
+	initTxBlock, _ := json.Marshal(txBlock)
+	t.Log("init tx block raw: ")
+	t.Log(string(initTxBlock))
+
+	err := verifier.VerifyTxBlock(txBlock, dsComm)
+	if err != nil {
+		t.Error("verify init tx block error: " + err.Error())
+	}
+	t.Log("verify init tx block succeed")
+
+	//preDsBlockHash := util.EncodeHex(dsBlock.BlockHash[:])
+
+	for {
+		latestTxBlock, _ := p.GetLatestTxBlock()
+		latest, _ := strconv.ParseUint(latestTxBlock.Header.BlockNum, 10, 64)
+		if latest > currentTxBlockNum {
+			currentTxBlockNum++
+			// before handle tx block, check ds block first
+			txblockT, _ := p.GetTxBlockVerbose(strconv.FormatUint(currentTxBlockNum, 10))
+			dsBlockNum, _ := strconv.ParseUint(txblockT.Header.DSBlockNum, 10, 64)
+			if dsBlockNum > currentDsBlockNum {
+				currentDsBlockNum++
+				dsBlockT, _ := p.GetDsBlockVerbose(strconv.FormatUint(dsBlockNum, 10))
+				dsBlock := core.NewDsBlockFromDsBlockT(dsBlockT)
+				dsBlockRawn, _ := json.Marshal(dsBlock)
+				t.Log("ds block, block number = ", dsBlock.BlockHeader.BlockNum)
+				t.Log(string(dsBlockRawn))
+				//if strings.ToUpper(dsBlock.PrevDSHash) != strings.ToUpper(preDsBlockHash) {
+				//	fmt.Println(dsBlock.PrevDSHash)
+				//	fmt.Println(preDsBlockHash)
+				//	t.Logf("verify ds block %d failed, pre hash wrong\n", dsBlockNum)
+				//	t.FailNow()
+				//}
+				//preDsBlockHash = util.EncodeHex(dsBlock.BlockHash[:])
+				newDsComm, err := verifier.VerifyDsBlock(dsBlock, dsComm)
+				if err == nil {
+					t.Logf("verify ds block %d succeed\n", dsBlockNum)
+				} else {
+					t.Logf("verify ds block %d failed\n", dsBlockNum)
+					t.FailNow()
+				}
+				dsComm = newDsComm
+			}
+
+			t.Log("tx block, block number = ", txblockT.Header.BlockNum)
+			txBlockn, _ := json.Marshal(core.NewTxBlockFromTxBlockT(txblockT))
+			t.Log(string(txBlockn))
+			err := verifier.VerifyTxBlock(core.NewTxBlockFromTxBlockT(txblockT), dsComm)
+			if err == nil {
+				t.Logf("verify tx block %d succeed\n", currentTxBlockNum)
+			} else {
+				t.Logf("verify tx block %d failed\n", currentTxBlockNum)
+				t.FailNow()
+			}
+		} else {
+			time.Sleep(time.Second)
+		}
+	}
+
+}
+
+// todo change this test for community testnet or mainnet in the future
 func TestVerify(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")

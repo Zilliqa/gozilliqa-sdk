@@ -371,6 +371,31 @@ func (provider *Provider) TxBlockListing(page int) (*core.BlockList, error) {
 	return &list, nil
 }
 
+func (provider *Provider) GetCurrentDSComm() (*core.DSComm, error) {
+	result, err := provider.call("GetCurrentDSComm")
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var dscomm core.DSComm
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &dscomm)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &dscomm, nil
+}
+
 // Returns the current number of validated Transactions in the network.
 // This is represented as a String.
 func (provider *Provider) GetNumTransactions() (string, error) {
