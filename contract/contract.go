@@ -34,7 +34,7 @@ const MainNet = "mainnet"
 const TestNet = "testnet"
 const Isolated = "isolated"
 const TestNetHost = "https://dev-api.zilliqa.com/"
-const MainNetHost = "https://tinyv800alpha1-api.dev.z7a.xyz/"
+const MainNetHost = "https://tinyv800alpha12-api.dev.z7a.xyz/"
 const IsolatedHost = "https://zilliqa-isolated-server.zilliqa.com/"
 
 const (
