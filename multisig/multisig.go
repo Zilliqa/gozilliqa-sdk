@@ -14,71 +14,53 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package go_schnorr
+
+package multisig
 
 import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/Zilliqa/gozilliqa-sdk/util"
-	"math/big"
-
 	"github.com/Zilliqa/gozilliqa-sdk/keytools"
+	"github.com/Zilliqa/gozilliqa-sdk/util"
 	"github.com/btcsuite/btcd/btcec"
+	"math/big"
 )
 
 var bintZero = big.NewInt(0)
 
-func TrySign(privateKey []byte, publicKey []byte, message []byte, k []byte) ([]byte, []byte, error) {
-	priKey := new(big.Int).SetBytes(privateKey)
-	bintK := new(big.Int).SetBytes(k)
+const ThirdDomainSeparatedHashFunctionByte = 0x11
 
-	// 1a. check if private key is 0
-	if priKey.Cmp(new(big.Int).SetInt64(0)) <= 0 {
-		return nil, nil, errors.New("private key must be > 0")
+func AggregatedPubKey(pubKeys [][]byte) ([]byte, error) {
+	if len(pubKeys) == 0 {
+		return nil, errors.New("empty public key list")
+	}
+	var aggregatedPubKey *btcec.PublicKey
+	key, err := btcec.ParsePubKey(pubKeys[0], keytools.Secp256k1)
+	if err != nil {
+		return nil, err
+	}
+	aggregatedPubKey = key
+	for i := 1; i < len(pubKeys); i++ {
+		puk, err1 := btcec.ParsePubKey(pubKeys[i], keytools.Secp256k1)
+		if err1 != nil {
+			return nil, err1
+		}
+		x, y := keytools.Secp256k1.Add(aggregatedPubKey.X, aggregatedPubKey.Y, puk.X, puk.Y)
+		pubKeyBytes := util.Marshal(keytools.Secp256k1, x, y, true)
+		pubKey, err2 := btcec.ParsePubKey(pubKeyBytes, keytools.Secp256k1)
+		if err2 != nil {
+			return nil, err2
+		}
+
+		aggregatedPubKey = pubKey
+
 	}
 
-	// 1b. check if private key is less than curve order, i.e., within [1...n-1]
-	if priKey.Cmp(keytools.Secp256k1.N) >= 0 {
-		return nil, nil, errors.New("private key cannot be greater than curve order")
-	}
-
-	if bintK.Cmp(bintZero) == 0 {
-		return nil, nil, errors.New("k cannot be zero")
-	}
-
-	if bintK.Cmp(keytools.Secp256k1.N) > 0 {
-		return nil, nil, errors.New("k cannot be greater than order of secp256k1")
-	}
-
-	// 2. Compute commitment Q = kG, where G is the base point
-	Qx, Qy := keytools.Secp256k1.ScalarBaseMult(k)
-
-	Q := util.Compress(keytools.Secp256k1, Qx, Qy, true)
-
-	// 3. Compute the challenge r = H(Q || pubKey || msg)
-	// mod reduce r by the order of secp256k1, n
-	r := new(big.Int).SetBytes(hash(Q, publicKey, message[:]))
-	r = r.Mod(r, keytools.Secp256k1.N)
-
-	if r.Cmp(bintZero) == 0 {
-		return nil, nil, errors.New("invalid r")
-	}
-
-	//4. Compute s = k - r * prv
-	// 4a. Compute r * prv
-	_r := *r
-	s := new(big.Int).Mod(_r.Mul(&_r, priKey), keytools.Secp256k1.N)
-	s = new(big.Int).Mod(new(big.Int).Sub(bintK, s), keytools.Secp256k1.N)
-
-	if s.Cmp(big.NewInt(0)) == 0 {
-		return nil, nil, errors.New("invalid s")
-	}
-
-	return r.Bytes(), s.Bytes(), nil
+	return aggregatedPubKey.SerializeCompressed(), nil
 }
 
-func Verify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
+func MultiVerify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
 	bintR := new(big.Int).SetBytes(r)
 	bintS := new(big.Int).SetBytes(s)
 
@@ -113,17 +95,18 @@ func Verify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
 	Qx, Qy := keytools.Secp256k1.Add(rx, ry, lx, ly)
 	Q := util.Compress(keytools.Secp256k1, Qx, Qy, true)
 
-	_r := hash(Q, publicKey, msg)
+	_r := hash(ThirdDomainSeparatedHashFunctionByte, Q, publicKey, msg)
 	_rn := new(big.Int).Mod(new(big.Int).SetBytes(_r), keytools.Secp256k1.N)
 
 	rn := new(big.Int).SetBytes(r)
 	return rn.Cmp(_rn) == 0
 }
 
-func hash(Q []byte, pubKey []byte, msg []byte) []byte {
+func hash(first byte, Q []byte, pubKey []byte, msg []byte) []byte {
 	var buffer bytes.Buffer
+	buffer.WriteByte(first)
 	buffer.Write(Q)
-	buffer.Write(pubKey[:33])
+	buffer.Write(pubKey[:])
 	buffer.Write(msg)
 	return util.Sha256(buffer.Bytes())
 }

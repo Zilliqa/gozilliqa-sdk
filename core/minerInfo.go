@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Zilliqa
+ * Copyright (C) 2021 Zilliqa
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package contract
+package core
 
-type DeployParams struct {
-	ID           string
-	Version      string
-	Nonce        string
-	GasPrice     string
-	GasLimit     string
-	SenderPubKey string
-	Priority     bool
+import "container/list"
+
+type MinerInfoDSComm struct {
+	// inner type is string
+	DSNodes        *list.List
+	DSNodesEjected []string
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Zilliqa
+ * Copyright (C) 2021 Zilliqa
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package contract
+package core
 
-type DeployParams struct {
-	ID           string
-	Version      string
-	Nonce        string
-	GasPrice     string
-	GasLimit     string
-	SenderPubKey string
-	Priority     bool
+import "math/big"
+
+type Peer struct {
+	// Peer IP address (net-encoded)
+	// size is 128bits (16 bytes)
+	IpAddress *big.Int
+	// Peer listen port (host-encoded)
+	ListenPortHost uint32
+	HostName       string
+}
+
+func (p *Peer) Serialize() []byte {
+	data := make([]byte, 0)
+	port := new(big.Int).SetUint64(uint64(p.ListenPortHost))
+	data = UintToByteArray(data, 0, p.IpAddress, 16)
+	data = UintToByteArray(data, 16, port, 4)
+	return data
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Zilliqa
+ * Copyright (C) 2021 Zilliqa
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package contract
+package core
 
-type DeployParams struct {
-	ID           string
-	Version      string
-	Nonce        string
-	GasPrice     string
-	GasLimit     string
-	SenderPubKey string
-	Priority     bool
+import "github.com/Zilliqa/gozilliqa-sdk/protobuf"
+
+type BlockHeaderBase struct {
+	Version uint32
+	// Hash for the committee that generated the block
+	CommitteeHash [32]byte
+	PrevHash      [32]byte
+}
+
+func (b *BlockHeaderBase) ToProtobuf() *protobuf.ProtoBlockHeaderBase {
+	protoBlockHeaderBase := &protobuf.ProtoBlockHeaderBase{}
+	protoBlockHeaderBase.Version = b.Version
+	protoBlockHeaderBase.Committeehash = b.CommitteeHash[:]
+	protoBlockHeaderBase.Prevhash = b.PrevHash[:]
+	return protoBlockHeaderBase
 }

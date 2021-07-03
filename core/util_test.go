@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Zilliqa
+ * Copyright (C) 2021 Zilliqa
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package contract
+package core
 
-type DeployParams struct {
-	ID           string
-	Version      string
-	Nonce        string
-	GasPrice     string
-	GasLimit     string
-	SenderPubKey string
-	Priority     bool
+import (
+	"math/big"
+	"testing"
+)
+
+func TestUint128ToProtobufByteArray(t *testing.T) {
+	// prepare a uint128 number
+	a, _ := new(big.Int).SetString("7aec9010a5ca23caaeb63e38b4dc92b2", 16)
+	dst := make([]byte, 16)
+	dst = UintToByteArray(dst, 0, a, 16)
+	t.Log(a)
+	t.Log(dst)
+
+	b := new(big.Int).SetInt64(1)
+	dst2 := make([]byte, 16)
+	dst2 = UintToByteArray(dst2, 0, b, 16)
+	t.Log(b)
+	t.Log(dst2)
 }

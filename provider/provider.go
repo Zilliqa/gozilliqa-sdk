@@ -100,7 +100,7 @@ func (provider *Provider) GetShardingStructure() (*core.ShardingStructure, error
 }
 
 // Returns the details of a specified Directory Service block.
-func (provider *Provider) GetDsBlock(block_number string) (*core.DSBlock, error) {
+func (provider *Provider) GetDsBlock(block_number string) (*core.DsBlockT, error) {
 	result, err := provider.call("GetDsBlock", block_number)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,32 @@ func (provider *Provider) GetDsBlock(block_number string) (*core.DSBlock, error)
 		return nil, result.Error
 	}
 
-	var dsBlock core.DSBlock
+	var dsBlock core.DsBlockT
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &dsBlock)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &dsBlock, nil
+}
+
+func (provider *Provider) GetDsBlockVerbose(block_number string) (*core.DsBlockT, error) {
+	result, err := provider.call("GetDsBlockVerbose", block_number)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var dsBlock core.DsBlockT
 
 	jsonString, err2 := json.Marshal(result.Result)
 	if err2 != nil {
@@ -210,7 +235,7 @@ func (provider *Provider) DSBlockListing(ds_block_listing int) (*core.BlockList,
 }
 
 // Returns the details of a specified Transaction block.
-func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlock, error) {
+func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlockT, error) {
 	result, err := provider.call("GetTxBlock", tx_block)
 	if err != nil {
 		return nil, err
@@ -220,7 +245,32 @@ func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlock, error) {
 		return nil, result.Error
 	}
 
-	var txBlock core.TxBlock
+	var txBlock core.TxBlockT
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &txBlock)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &txBlock, nil
+}
+
+func (provider *Provider) GetTxBlockVerbose(tx_block string) (*core.TxBlockT, error) {
+	result, err := provider.call("GetTxBlockVerbose", tx_block)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var txBlock core.TxBlockT
 
 	jsonString, err2 := json.Marshal(result.Result)
 	if err2 != nil {
@@ -236,7 +286,7 @@ func (provider *Provider) GetTxBlock(tx_block string) (*core.TxBlock, error) {
 }
 
 // Returns the details of the most recent Transaction block.
-func (provider *Provider) GetLatestTxBlock() (*core.TxBlock, error) {
+func (provider *Provider) GetLatestTxBlock() (*core.TxBlockT, error) {
 	result, err := provider.call("GetLatestTxBlock")
 	if err != nil {
 		return nil, err
@@ -246,7 +296,7 @@ func (provider *Provider) GetLatestTxBlock() (*core.TxBlock, error) {
 		return nil, result.Error
 	}
 
-	var txBlock core.TxBlock
+	var txBlock core.TxBlockT
 
 	jsonString, err2 := json.Marshal(result.Result)
 	if err2 != nil {
@@ -319,6 +369,31 @@ func (provider *Provider) TxBlockListing(page int) (*core.BlockList, error) {
 	}
 
 	return &list, nil
+}
+
+func (provider *Provider) GetCurrentDSComm() (*core.DSComm, error) {
+	result, err := provider.call("GetCurrentDSComm")
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var dscomm core.DSComm
+
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &dscomm)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &dscomm, nil
 }
 
 // Returns the current number of validated Transactions in the network.
@@ -572,6 +647,30 @@ func (provider *Provider) GetTransaction(transaction_hash string) (*core.Transac
 	}
 
 	return &transaction, nil
+}
+
+func (provider *Provider) GetTransactionStatus(transactionHash string) (*core.TransactionStatus, error) {
+	result, err := provider.call("GetTransactionStatus", transactionHash)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var status core.TransactionStatus
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &status)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &status, nil
 }
 
 func (provider *Provider) GetTransactionBatch(transactionHashes []string) ([]*core.Transaction, error) {
@@ -870,6 +969,68 @@ func (provider *Provider) GetBalance(user_address string) (*core.BalanceAndNonce
 	}
 
 	return &balanceAndNonce, nil
+}
+
+func (provider *Provider) GetStateProof(contractAddress string, hashedStorageKey string, blockNum *string) (*core.StateProof, error) {
+	type req struct {
+		Id      string      `json:"id"`
+		Jsonrpc string      `json:"jsonrpc"`
+		Method  string      `json:"method"`
+		Params  interface{} `json:"params"`
+	}
+
+	var blocknum string
+
+	if blockNum == nil {
+		blocknum = "latest"
+	} else {
+		blocknum = *blockNum
+	}
+
+	p := []interface{}{
+		contractAddress,
+		hashedStorageKey,
+		blocknum,
+	}
+
+	r := &req{
+		Id:      "1",
+		Jsonrpc: "2.0",
+		Method:  "GetStateProof",
+		Params:  p,
+	}
+
+	b, _ := json.Marshal(r)
+	reader := bytes.NewReader(b)
+	request, err := http.NewRequest("POST", provider.host, reader)
+	if err != nil {
+		return nil, err
+	}
+	request.Header.Set("Content-Type", "application/json;charset=UTF-8")
+	client := http.Client{}
+	resp, err2 := client.Do(request)
+	if err2 != nil {
+		return nil, err2
+	}
+	defer resp.Body.Close()
+
+	result, err3 := ioutil.ReadAll(resp.Body)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	type rsp struct {
+		Id      string           `json:"id"`
+		Jsonrpc string           `json:"jsonrpc"`
+		Result  *core.StateProof `json:"result"`
+	}
+	var stateProof rsp
+	err4 := json.Unmarshal(result, &stateProof)
+	if err4 != nil {
+		return nil, err4
+	}
+
+	return stateProof.Result, nil
 }
 
 func (provider *Provider) call(method_name string, params ...interface{}) (*jsonrpc.RPCResponse, error) {

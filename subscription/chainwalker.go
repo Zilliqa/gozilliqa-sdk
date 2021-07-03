@@ -19,6 +19,7 @@ package subscription
 import (
 	"context"
 	"fmt"
+	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/workpool"
 	"strconv"
@@ -41,7 +42,7 @@ type Log struct {
 	Hash      string
 	EventName string
 	Address   string
-	Logs      interface{}
+	Logs      core.EventLog
 }
 
 func NewWalker(p *provider.Provider, from, to uint64, address string, workerNumber int64, eventName string) *Walker {
@@ -96,20 +97,21 @@ func (t GetEventReceiptTask) Run() {
 	} else {
 		if receipt.EventLogs != nil {
 			els := receipt.EventLogs
-			for _, el := range els {
-				log := el.(map[string]interface{})
-				eventName, ok2 := log["_eventname"]
-				// important: currently we only compare contract address to toAddr
-				if ok2 && strings.Compare(strings.ToLower(addr), strings.ToLower(t.Walker.Address[2:])) == 0 && strings.Compare(eventName.(string), t.Walker.EventName) == 0 {
-					logData := Log{
-						Hash:      t.Id,
-						EventName: eventName.(string),
-						Address:   t.Walker.Address,
-						Logs:      log,
+			if els != nil {
+				for _, el := range els {
+					// important: currently we only compare contract address to toAddr
+					if strings.Compare(strings.ToLower(addr), strings.ToLower(t.Walker.Address[2:])) == 0 && strings.Compare(el.EventName, t.Walker.EventName) == 0 {
+						logData := Log{
+							Hash:      t.Id,
+							EventName: el.EventName,
+							Address:   t.Walker.Address,
+							Logs:      el,
+						}
+						t.Walker.EventLogs[t.BlockNum] = logData
 					}
-					t.Walker.EventLogs[t.BlockNum] = logData
 				}
 			}
+
 		}
 	}
 }

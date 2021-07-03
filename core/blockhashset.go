@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Zilliqa
+ * Copyright (C) 2021 Zilliqa
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package contract
+package core
 
-type DeployParams struct {
-	ID           string
-	Version      string
-	Nonce        string
-	GasPrice     string
-	GasLimit     string
-	SenderPubKey string
-	Priority     bool
+type DSBlockHashSet struct {
+	// should be 32 bytes
+	ShardingHash  []byte
+	ReservedField [128]byte
+}
+
+type TxBlockHashSet struct {
+	// State merkle tree root hash only valid in vacuous epoch
+	// should be 32 bytes as well
+	StateRootHash [32]byte
+	// State Delta Hash on DS
+	// 32 bytes
+	DeltaHash [32]byte
+	// Hash concatenated from all microblock infos
+	// 32 bytes
+	MbInfoHash [32]byte
 }

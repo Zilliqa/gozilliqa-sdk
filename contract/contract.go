@@ -98,7 +98,7 @@ func (c *Contract) DeployTo(network string) (*transaction.Transaction, error) {
 			return nil, err
 		}
 		parameter := DeployParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(222, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",
@@ -129,6 +129,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 		Code:         strings.ReplaceAll(c.Code, "/\\", ""),
 		Data:         c.Init,
 		Status:       0,
+		Priority:     params.Priority,
 	}
 
 	err2 := c.Signer.Sign(tx, *c.Provider)
@@ -232,7 +233,7 @@ func (c *Contract) CallFor(transition string, args []core.ContractValue, priorit
 			return nil, err
 		}
 		params := CallParams{
-			Version:      strconv.FormatInt(int64(util.Pack(1, 1)), 10),
+			Version:      strconv.FormatInt(int64(util.Pack(222, 1)), 10),
 			Nonce:        "",
 			GasPrice:     gasPrice,
 			GasLimit:     "40000",

@@ -211,6 +211,13 @@ func TestGetTransaction(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestProvider_GetTransactionStatus(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	result, _ := provider.GetTransaction("07c993b6ab2b560d2756b8a2187b7e19f7e7948f1172b8217a90c020069c3ad9")
+	fmt.Println(result)
+}
+
 func TestProvider_GetTransactionBatch(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
@@ -275,6 +282,13 @@ func TestGetSmartContractInit(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestProvider_GetDSComm(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	result, _ := provider.GetCurrentDSComm()
+	fmt.Println(result)
+}
+
 func TestGetSmartContractState(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
@@ -303,6 +317,13 @@ func TestGetBalance(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
 	result, _ := provider.GetBalance("9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a")
+	fmt.Println(result)
+}
+
+func TestProvider_GetStateProof(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://kaus-new-poly6-api.dev.z7a.xyz/")
+	result, _ := provider.GetStateProof("6d84363526a2d764835f8cf52dfeefe80a360fac", "A0BD91DE66D97E6930118179BA4F1836C366C4CB3309A6B354D26F52ABB2AAC6", nil)
 	fmt.Println(result)
 }
 
