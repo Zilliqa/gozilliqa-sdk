@@ -30,6 +30,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const minimumGasLimit = "50"
+
 func TestPayload(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")
@@ -47,7 +49,7 @@ func TestPayload(t *testing.T) {
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 		Amount:       "10000000",
 		GasPrice:     gasPrice,
-		GasLimit:     "1",
+		GasLimit:     minimumGasLimit,
 		Code:         "",
 		Data:         "",
 		Priority:     false,
@@ -96,7 +98,7 @@ func TestSendTransaction(t *testing.T) {
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 		Amount:       "10000000",
 		GasPrice:     gasPrice,
-		GasLimit:     "1",
+		GasLimit:     minimumGasLimit,
 		Code:         "",
 		Data:         "",
 		Priority:     false,
@@ -138,7 +140,7 @@ func TestBatchSendTransaction(t *testing.T) {
 			ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 			Amount:       "10000000",
 			GasPrice:     gasPrice,
-			GasLimit:     "1",
+			GasLimit:     minimumGasLimit,
 			Code:         "",
 			Data:         "",
 			Priority:     false,
@@ -175,7 +177,7 @@ func TestSendTransactionInsufficientAmount(t *testing.T) {
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 		Amount:       "2000000000000000000",
 		GasPrice:     gasPrice,
-		GasLimit:     "1",
+		GasLimit:     minimumGasLimit,
 		Code:         "",
 		Data:         "",
 		Priority:     false,
