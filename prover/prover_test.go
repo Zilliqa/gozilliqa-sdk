@@ -1,9 +1,10 @@
 package prover
 
 import (
+	"testing"
+
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
-	"testing"
 )
 
 func TestStateProver_VerifyStateProof(t *testing.T) {
@@ -22,7 +23,8 @@ func TestStateProver_VerifyStateProof(t *testing.T) {
 	t.Log("current block number is: ", blockNum)
 	t.Log("account root hash from tx block: ", accountHash)
 
-	stateProof, err := sp.RpcClient.GetStateProof(contractAddr, vname, indices, &blockNum)
+	storageKey := core.GenerateStorageKey(contractAddr, vname, indices)
+	stateProof, err := sp.RpcClient.GetStateProof(contractAddr, string(storageKey), &blockNum)
 	if err != nil {
 		t.Fatal(err)
 	}
