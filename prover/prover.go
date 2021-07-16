@@ -3,6 +3,7 @@ package prover
 import (
 	"errors"
 	"fmt"
+
 	"github.com/Zilliqa/gozilliqa-sdk/core"
 	"github.com/Zilliqa/gozilliqa-sdk/mpt"
 	"github.com/Zilliqa/gozilliqa-sdk/provider"
@@ -40,7 +41,7 @@ func (p *StateProver) VerifyStateProof(contractAddr string, vname string, indice
 	}
 
 	db2 := mpt.NewFromProof(proof2)
-	storageKey := core.GenerateStorageKey(vname, indices)
+	storageKey := core.GenerateStorageKey(contractAddr, vname, indices)
 	value, err3 := mpt.Verify(storageKey, db2, accountBase.StorageRoot)
 	if err3 != nil {
 		msg := fmt.Sprintf("%s - %s", "get value error", err3.Error())

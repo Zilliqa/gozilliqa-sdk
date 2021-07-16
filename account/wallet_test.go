@@ -47,7 +47,7 @@ func TestPayload(t *testing.T) {
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 		Amount:       "10000000",
 		GasPrice:     gasPrice,
-		GasLimit:     "1",
+		GasLimit:     "50",
 		Code:         "",
 		Data:         "",
 		Priority:     false,
@@ -71,7 +71,7 @@ func TestWallet_SignWith(t *testing.T) {
 		Version:  "65535",
 		Amount:   "0",
 		GasPrice: "100000",
-		GasLimit: "1",
+		GasLimit: "50",
 	}
 	provider := provider2.NewProvider("https://dev-api.zilliqa.com/")
 	err := wallet.SignWith(tx, "9bfec715a6bd658fcb62b0f8cc9bfa2ade71434a", *provider)
@@ -96,7 +96,7 @@ func TestSendTransaction(t *testing.T) {
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 		Amount:       "10000000",
 		GasPrice:     gasPrice,
-		GasLimit:     "1",
+		GasLimit:     "50",
 		Code:         "",
 		Data:         "",
 		Priority:     false,
@@ -131,14 +131,14 @@ func TestBatchSendTransaction(t *testing.T) {
 	assert.Nil(t, err, err)
 
 	var transactions []*transaction.Transaction
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 3; i++ {
 		txn := &transaction.Transaction{
 			Version:      strconv.FormatInt(int64(util.Pack(333, 1)), 10),
 			SenderPubKey: "0246E7178DC8253201101E18FD6F6EB9972451D121FC57AA2A06DD5C111E58DC6A",
 			ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 			Amount:       "10000000",
 			GasPrice:     gasPrice,
-			GasLimit:     "1",
+			GasLimit:     "50",
 			Code:         "",
 			Data:         "",
 			Priority:     false,
@@ -175,7 +175,7 @@ func TestSendTransactionInsufficientAmount(t *testing.T) {
 		ToAddr:       "4BAF5faDA8e5Db92C3d3242618c5B47133AE003C",
 		Amount:       "2000000000000000000",
 		GasPrice:     gasPrice,
-		GasLimit:     "1",
+		GasLimit:     "50",
 		Code:         "",
 		Data:         "",
 		Priority:     false,
