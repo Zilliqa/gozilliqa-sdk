@@ -873,6 +873,15 @@ func (provider *Provider) GetSmartContractState(contract_address string) (*jsonr
 	return provider.call("GetSmartContractState", contract_address)
 }
 
+func (provider *Provider) GetSmartContractStateBatch(contract_addresses []string) (jsonrpc.RPCResponses, error) {
+	var requests jsonrpc.RPCRequests
+	for _, payload := range contract_addresses {
+		r := jsonrpc.NewRequest("GetSmartContractState", payload)
+		requests = append(requests, r)
+	}
+	return provider.rpcClient.CallBatch(requests)
+}
+
 // Returns the state (or a part specified) of a smart contract address, represented in a JSON format.
 func (provider *Provider) GetSmartContractSubState(contractAddress string, params ...interface{}) (string, error) {
 	//we should hack here for now
