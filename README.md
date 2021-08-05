@@ -4,10 +4,10 @@ The golang version of zilliqa blockchain library
 
 #### Requirements
 
-golang environment: 
+golang environment:
 
-* [download golang](https://golang.org/dl/)
-* [installation instructions](https://golang.org/doc/install)
+- [download golang](https://golang.org/dl/)
+- [installation instructions](https://golang.org/doc/install)
 
 #### Installation
 
@@ -19,7 +19,7 @@ Install the dependent libraries:
 go get ./...
 ```
 
-sdk it self cannot been built into a binary cause it does't have any `main` function, you can directly add it to your own project as a library. Also, we recommend that you can run the `golang uint test` or go through 
+sdk it self cannot been built into a binary cause it does't have any `main` function, you can directly add it to your own project as a library. Also, we recommend that you can run the `golang uint test` or go through
 the section `quick start` first to get a basic understanding before you start to use this sdk.
 
 #### Supports
@@ -29,7 +29,7 @@ the section `quick start` first to get a basic understanding before you start to
 - [x] aggregatedPubKey
 - [x] multiVerify
 - [x] tx block serialization
-- [x] ds block serialization  
+- [x] ds block serialization
 - [x] verify tx block
 - [x] verify ds block
 
@@ -75,7 +75,6 @@ the section `quick start` first to get a basic understanding before you start to
 - [x] isInitialised isDeployed isRejected
 - [x] getState
 - [x] getAddressForContract
-
 
 ##### Crypto API
 
