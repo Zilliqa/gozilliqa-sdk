@@ -11,7 +11,7 @@ golang environment:
 
 #### Installation
 
-The sdk is using `go mod` to manager it's dependent libraries, so if you do want to hack the source code of this repository, make sure you have the minimal `golang` version that support `go mod` and enable it.
+The sdk is using `go mod` to manage its dependent libraries, so if you do want to hack the source code of this repository, make sure you have the minimal `golang` version that support `go mod` and enable it.
 
 Install the dependent libraries:
 
