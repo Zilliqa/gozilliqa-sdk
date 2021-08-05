@@ -16,7 +16,7 @@ The sdk is using `go mod` to manager it's dependent libraries, so if you do want
 Install the dependent libraries:
 
 ```go
-go get ./...
+go mod download
 ```
 
 sdk it self cannot been built into a binary cause it does't have any `main` function, you can directly add it to your own project as a library. Also, we recommend that you can run the `golang uint test` or go through
