@@ -155,12 +155,12 @@ func (l *LockProxy) Unlock(txData, fromContractAddr, fromChainId string) (*trans
 }
 
 func (l *LockProxy) Pause() (*transaction.Transaction, error) {
-	var args []core.ContractValue
+	args := []core.ContractValue{}
 	return l.call(args, "Pause", "0")
 }
 
 func (l *LockProxy) UnPause() (*transaction.Transaction, error) {
-	var args []core.ContractValue
+	args := []core.ContractValue{}
 	return l.call(args, "UnPause", "0")
 }
 
@@ -176,7 +176,7 @@ func (l *LockProxy) UpdateAdmin(newAdmin string) (*transaction.Transaction, erro
 }
 
 func (l *LockProxy) ClaimAdmin() (*transaction.Transaction, error) {
-	var args []core.ContractValue
+	args := []core.ContractValue{}
 	return l.call(args, "ClaimAdmin", "0")
 }
 
