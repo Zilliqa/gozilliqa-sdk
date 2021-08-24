@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package polynetwork
 
 import (
@@ -151,6 +152,32 @@ func (l *LockProxy) Unlock(txData, fromContractAddr, fromChainId string) (*trans
 	}
 
 	return l.call(args, "unlock", "0")
+}
+
+func (l *LockProxy) Pause() (*transaction.Transaction, error) {
+	var args []core.ContractValue
+	return l.call(args, "Pause", "0")
+}
+
+func (l *LockProxy) UnPause() (*transaction.Transaction, error) {
+	var args []core.ContractValue
+	return l.call(args, "UnPause", "0")
+}
+
+func (l *LockProxy) UpdateAdmin(newAdmin string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			"newAdmin",
+			"ByStr20",
+			newAdmin,
+		},
+	}
+	return l.call(args, "UpdateAdmin", "0")
+}
+
+func (l *LockProxy) ClaimAdmin() (*transaction.Transaction, error) {
+	var args []core.ContractValue
+	return l.call(args, "ClaimAdmin", "0")
 }
 
 func (l *LockProxy) call(args []core.ContractValue, transition string, amount string) (*transaction.Transaction, error) {
