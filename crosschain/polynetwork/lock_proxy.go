@@ -127,7 +127,7 @@ func (l *LockProxy) Lock(fromAssetHash, toChainId, toAddress, amount string) (*t
 		},
 	}
 
-	return l.call(args, "Lock", amount)
+	return l.call(args, "lock", amount)
 }
 
 func (l *LockProxy) Unlock(txData, fromContractAddr, fromChainId string) (*transaction.Transaction, error) {
@@ -150,7 +150,7 @@ func (l *LockProxy) Unlock(txData, fromContractAddr, fromChainId string) (*trans
 		},
 	}
 
-	return l.call(args, "Unlock", "0")
+	return l.call(args, "unlock", "0")
 }
 
 func (l *LockProxy) call(args []core.ContractValue, transition string, amount string) (*transaction.Transaction, error) {
