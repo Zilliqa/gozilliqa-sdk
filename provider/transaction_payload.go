@@ -127,6 +127,7 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 
 	originData := strings.TrimPrefix(pl.Data, `"`)
 	originData = strings.TrimSuffix(originData, `"`)
+	originData = strings.ReplaceAll(originData, `\\\"`,"")
 	originData = strings.ReplaceAll(originData, "\\", "")
 	fmt.Println(originData)
 
