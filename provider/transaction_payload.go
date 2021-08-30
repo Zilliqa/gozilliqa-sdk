@@ -133,7 +133,7 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 		var dataArray []interface{}
 		err5 := json.Unmarshal([]byte(originData), &dataArray)
 		if err5 != nil {
-			return nil, errors.New("wrong data")
+			return nil, errors.New("wrong data: " + err.Error())
 		} else {
 			p := Init{
 				Version:   pl.Version,
