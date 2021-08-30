@@ -48,6 +48,8 @@ type Value struct {
 type Data struct {
 	Tag    string  `json:"_tag"`
 	Params []Value `json:"params"`
+	Sender string `json:"_sender"`
+	Amount string `json:"_amount"`
 }
 
 type payload struct {
