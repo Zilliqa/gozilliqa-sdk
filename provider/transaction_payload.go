@@ -126,6 +126,7 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 	originData := strings.TrimPrefix(pl.Data, `"`)
 	originData = strings.TrimSuffix(originData, `"`)
 	originData = strings.ReplaceAll(originData, "\\", "")
+	fmt.Println(originData)
 
 	var data Data
 	err4 := json.Unmarshal([]byte(originData), &data)
@@ -133,7 +134,6 @@ func (pl *TransactionPayload) ToJson() ([]byte, error) {
 		var dataArray []interface{}
 		err5 := json.Unmarshal([]byte(originData), &dataArray)
 		if err5 != nil {
-			fmt.Println(originData)
 			return nil, errors.New("wrong data: " + err.Error())
 		} else {
 			p := Init{
