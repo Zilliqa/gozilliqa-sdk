@@ -42,7 +42,8 @@ func (p *StateProver) VerifyStateProof(contractAddr string, vname string, indice
 
 	db2 := mpt.NewFromProof(proof2)
 	storageKey := core.GenerateStorageKey(contractAddr, vname, indices)
-	value, err3 := mpt.Verify(storageKey, db2, accountBase.StorageRoot)
+	hashedStorageKey := util.Sha256(storageKey)
+	value, err3 := mpt.Verify([]byte((util.EncodeHex(hashedStorageKey))), db2, accountBase.StorageRoot)
 	if err3 != nil {
 		msg := fmt.Sprintf("%s - %s", "get value error", err3.Error())
 		return nil, errors.New(msg)
