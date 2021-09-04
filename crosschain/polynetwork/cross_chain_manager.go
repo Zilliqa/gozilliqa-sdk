@@ -410,3 +410,22 @@ func (p *Proxy) VerifyHeaderAndExecuteTxWithNonce(proof *ProofEntity, rawHeader 
 
 	return p.callWithNonce(args, "VerifyHeaderAndExecuteTx", nonce)
 }
+
+func (p *Proxy) PopulateConKeepersPublicKeyList(keepers []string) (*transaction.Transaction, error) {
+	var values []core.ParamConstructor
+	for _, keeper := range keepers {
+		pc := core.ParamConstructor{
+			Constructor: "ByStr20",
+			ArgTypes:    make([]interface{}, 0),
+			Arguments:   []interface{}{keeper},
+		}
+		values = append(values, pc)
+	}
+	args := []core.ContractValue{{
+		VName: "keepers",
+		Type:  "List ByStr20",
+		Value: values,
+	}}
+
+	return p.call(args, "PopulateConKeepersPublicKeyList")
+}
