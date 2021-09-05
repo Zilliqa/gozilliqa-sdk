@@ -526,3 +526,20 @@ func (p *Proxy) PopulateFromChainTxExist(chainId, txId string) (*transaction.Tra
 
 	return p.call(args, "PopulateFromChainTxExist")
 }
+
+func (p *Proxy) PopulateFromChainTxExistWithNonce(chainId, txId, nonce string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "chainId",
+			Type:  "Uint64",
+			Value: chainId,
+		},
+		{
+			VName: "txId",
+			Type:  "ByStr32",
+			Value: txId,
+		},
+	}
+
+	return p.callWithNonce(args, "PopulateFromChainTxExist", nonce)
+}
