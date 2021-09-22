@@ -154,6 +154,35 @@ func (l *LockProxy) Unlock(txData, fromContractAddr, fromChainId string) (*trans
 	return l.call(args, "unlock", "0")
 }
 
+func (l *LockProxy) PopulateNonce(n string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			"n",
+			"Uint256",
+			n,
+		},
+	}
+
+	return l.call(args, "PopulateNonce", "0")
+}
+
+func (l *LockProxy) PopulateRegister(asset, hash string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			"asset",
+			"ByStr20",
+			asset,
+		},
+		{
+			"hash",
+			"ByStr32",
+			hash,
+		},
+	}
+
+	return l.call(args, "PopulateRegister", "0")
+}
+
 func (l *LockProxy) Pause() (*transaction.Transaction, error) {
 	args := []core.ContractValue{}
 	return l.call(args, "Pause", "0")
