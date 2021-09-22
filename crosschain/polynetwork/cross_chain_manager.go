@@ -543,3 +543,39 @@ func (p *Proxy) PopulateFromChainTxExistWithNonce(chainId, txId, nonce string) (
 
 	return p.callWithNonce(args, "PopulateFromChainTxExist", nonce)
 }
+
+func (p *Proxy) PopulateWhiteListFromContractWithNonce(addr, nonce string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "addr",
+			Type:  "ByStr20",
+			Value: addr,
+		},
+	}
+
+	return p.callWithNonce(args, "PopulateWhiteListFromContract", nonce)
+}
+
+func (p *Proxy) PopulateWhiteListToContractWithNonce(addr, nonce string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "addr",
+			Type:  "ByStr20",
+			Value: addr,
+		},
+	}
+
+	return p.callWithNonce(args, "PopulateWhiteListToContract", nonce)
+}
+
+func (p *Proxy) PopulateWhiteListMethodWithNonce(method, nonce string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "method",
+			Type:  "String",
+			Value: method,
+		},
+	}
+
+	return p.callWithNonce(args, "PopulateWhiteListMethod", nonce)
+}
