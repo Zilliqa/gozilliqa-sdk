@@ -38,12 +38,15 @@ type DsBlockHeader struct {
 	EpochNum uint64
 	GasPrice string
 	SwInfo   SWInfo
+	PowDSWinnersList []string
 	// key is (base16) public key
 	PoWDSWinners map[string]Peer
 	// (base16) public key
 	RemoveDSNodePubKeys []string
 	// todo concrete data type
 	DSBlockHashSet     DSBlockHashSet
+
+	ProposalIds []uint32
 	GovDSShardVotesMap map[uint32]Pair
 }
 
@@ -91,6 +94,7 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 		winnermap[dst.Header.PoWWinners[i]] = peer
 	}
 
+	dsBlockHeader.PowDSWinnersList = dst.Header.PoWWinners
 	dsBlockHeader.PoWDSWinners = winnermap
 
 	var removeDSNodePubKeys []string
@@ -105,8 +109,10 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 
 	governance := make(map[uint32]Pair, 0)
 	govs := dst.Header.Governance
+	var proposals []uint32
 	for _, gov := range govs {
 		proposalId := gov.ProposalId
+		proposals = append(proposals,proposalId)
 		dsmap := make(map[uint32]uint32, 0)
 		dsvotes := gov.DSVotes
 		for _, dsvote := range dsvotes {
@@ -127,6 +133,7 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	}
 
 	dsBlockHeader.GovDSShardVotesMap = governance
+	dsBlockHeader.ProposalIds = proposals
 
 	dsBlockHeader.BlockHeaderBase.Version = dst.Header.Version
 	ch := util.DecodeHex(dst.Header.CommitteeHash)
@@ -165,17 +172,20 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 		}
 
 		var protobufWinners []*protobuf.ProtoDSBlock_DSBlockHeader_PowDSWinners
-		for key, winner := range d.PoWDSWinners {
+		for _, winner := range d.PowDSWinnersList {
+			peer := d.PoWDSWinners[winner]
 			protobufWinner := &protobuf.ProtoDSBlock_DSBlockHeader_PowDSWinners{
-				Key: &protobuf.ByteArray{Data: util.DecodeHex(key)},
-				Val: &protobuf.ByteArray{Data: winner.Serialize()},
+				Key: &protobuf.ByteArray{Data: util.DecodeHex(winner)},
+				Val: &protobuf.ByteArray{Data: peer.Serialize()},
 			}
 			protobufWinners = append(protobufWinners, protobufWinner)
 		}
+
 		protoDSBlockHeader.Dswinners = protobufWinners
 
 		var proposals []*protobuf.ProtoDSBlock_DSBlockHeader_Proposal
-		for proposal, pair := range d.GovDSShardVotesMap {
+		for _, proposal := range d.ProposalIds {
+			pair := d.GovDSShardVotesMap[proposal]
 			protoproposal := &protobuf.ProtoDSBlock_DSBlockHeader_Proposal{}
 			protoproposal.Proposalid = proposal
 
