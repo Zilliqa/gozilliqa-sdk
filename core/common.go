@@ -21,8 +21,10 @@ const (
 )
 
 type Pair struct {
-	First  map[uint32]uint32
-	Second map[uint32]uint32
+	FirstList  []uint32
+	First      map[uint32]uint32
+	SecondList []uint32
+	Second     map[uint32]uint32
 }
 
 type DsBlockHeaderT struct {

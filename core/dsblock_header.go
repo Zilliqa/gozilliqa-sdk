@@ -35,18 +35,18 @@ type DsBlockHeader struct {
 	// Block index, starting from 0 in the genesis block
 	BlockNum uint64
 	// Tx Epoch Num then the DS block was generated
-	EpochNum uint64
-	GasPrice string
-	SwInfo   SWInfo
+	EpochNum         uint64
+	GasPrice         string
+	SwInfo           SWInfo
 	PowDSWinnersList []string
 	// key is (base16) public key
 	PoWDSWinners map[string]Peer
 	// (base16) public key
 	RemoveDSNodePubKeys []string
 	// todo concrete data type
-	DSBlockHashSet     DSBlockHashSet
+	DSBlockHashSet DSBlockHashSet
 
-	ProposalIds []uint32
+	ProposalIds        []uint32
 	GovDSShardVotesMap map[uint32]Pair
 }
 
@@ -112,22 +112,28 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 	var proposals []uint32
 	for _, gov := range govs {
 		proposalId := gov.ProposalId
-		proposals = append(proposals,proposalId)
+		proposals = append(proposals, proposalId)
 		dsmap := make(map[uint32]uint32, 0)
+		var dsList []uint32
 		dsvotes := gov.DSVotes
 		for _, dsvote := range dsvotes {
 			dsmap[dsvote.VoteValue] = dsvote.VoteCount
+			dsList = append(dsList, dsvote.VoteValue)
 		}
 
 		shardmap := make(map[uint32]uint32, 0)
+		var shardList []uint32
 		shardvotes := gov.ShardVotes
 		for _, shardvote := range shardvotes {
 			shardmap[shardvote.VoteValue] = shardvote.VoteCount
+			shardList = append(shardList, shardvote.VoteValue)
 		}
 
 		pair := Pair{
-			First:  dsmap,
-			Second: shardmap,
+			First:      dsmap,
+			FirstList:  dsList,
+			Second:     shardmap,
+			SecondList: shardList,
 		}
 		governance[proposalId] = pair
 	}
@@ -190,7 +196,8 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 			protoproposal.Proposalid = proposal
 
 			var dsvotes []*protobuf.ProtoDSBlock_DSBlockHeader_Vote
-			for value, count := range pair.First {
+			for _, value := range pair.FirstList {
+				count := pair.First[value]
 				dsvote := &protobuf.ProtoDSBlock_DSBlockHeader_Vote{
 					Value: value,
 					Count: count,
@@ -199,7 +206,8 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 			}
 
 			var minerVotes []*protobuf.ProtoDSBlock_DSBlockHeader_Vote
-			for value, count := range pair.Second {
+			for _, value := range pair.SecondList {
+				count := pair.Second[value]
 				minerVote := &protobuf.ProtoDSBlock_DSBlockHeader_Vote{
 					Value: value,
 					Count: count,
