@@ -27,15 +27,15 @@ type TxBlock struct {
 }
 
 func (t *TxBlock) Hash() []byte {
+
 	return util.Sha256(t.Serialize())
 }
 
 func (t *TxBlock) Serialize() []byte {
 	bytes := t.BlockHeader.Serialize()
-
-	bs := &BitVector{}
-	bytes = t.Cosigs.CS1.Serialize(bytes, uint(len(bytes)))
-	bytes = bs.SetBitVector(bytes, uint(len(bytes)), t.Cosigs.B1)
+	//bs := &BitVector{}
+	//bytes = t.Cosigs.CS1.Serialize(bytes, uint(len(bytes)))
+	//bytes = bs.SetBitVector(bytes, uint(len(bytes)), t.Cosigs.B1)
 	return bytes
 }
 
