@@ -172,7 +172,7 @@ func (v *Verifier) updateDSCommitteeComposition(selfKeyPub string, dsComm *list.
 	for _, pubKey := range dsBlock.BlockHeader.PowDSWinnersList {
 		peer := winners[pubKey]
 		w := core.PairOfNode{
-			PubKey: pubKey[2:],
+			PubKey: pubKey,
 			Peer:   peer,
 		}
 		// Place the current winner node's information in front of the DS Committee
