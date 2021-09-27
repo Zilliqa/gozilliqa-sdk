@@ -27,7 +27,7 @@ type TxBlock struct {
 }
 
 func (t *TxBlock) Hash() []byte {
-	return util.Sha256(t.Serialize())
+	return util.Sha256(t.BlockHeader.Serialize())
 }
 
 func (t *TxBlock) Serialize() []byte {

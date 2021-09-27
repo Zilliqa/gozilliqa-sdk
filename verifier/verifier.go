@@ -148,7 +148,7 @@ func (v *Verifier) updateDSCommitteeComposition(selfKeyPub string, dsComm *list.
 
 	// 1. get the map of all pow winners from the DS block
 	winners := dsBlock.BlockHeader.PoWDSWinners
-	numOfWinners := len(winners)
+	numOfWinners := len(dsBlock.BlockHeader.PowDSWinnersList)
 
 	// 2. get the array of all non-performant nodes to be removed
 	removeDSNodePubkeys := dsBlock.BlockHeader.RemoveDSNodePubKeys
@@ -169,9 +169,10 @@ func (v *Verifier) updateDSCommitteeComposition(selfKeyPub string, dsComm *list.
 	}
 
 	// 4. add new winners
-	for pubKey, peer := range winners {
+	for _, pubKey := range dsBlock.BlockHeader.PowDSWinnersList {
+		peer := winners[pubKey]
 		w := core.PairOfNode{
-			PubKey: pubKey[2:],
+			PubKey: pubKey,
 			Peer:   peer,
 		}
 		// Place the current winner node's information in front of the DS Committee
