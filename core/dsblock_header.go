@@ -35,15 +35,18 @@ type DsBlockHeader struct {
 	// Block index, starting from 0 in the genesis block
 	BlockNum uint64
 	// Tx Epoch Num then the DS block was generated
-	EpochNum uint64
-	GasPrice string
-	SwInfo   SWInfo
+	EpochNum         uint64
+	GasPrice         string
+	SwInfo           SWInfo
+	PowDSWinnersList []string
 	// key is (base16) public key
 	PoWDSWinners map[string]Peer
 	// (base16) public key
 	RemoveDSNodePubKeys []string
 	// todo concrete data type
-	DSBlockHashSet     DSBlockHashSet
+	DSBlockHashSet DSBlockHashSet
+
+	ProposalIds        []uint32
 	GovDSShardVotesMap map[uint32]Pair
 }
 
@@ -91,6 +94,7 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 		winnermap[dst.Header.PoWWinners[i]] = peer
 	}
 
+	dsBlockHeader.PowDSWinnersList = dst.Header.PoWWinners
 	dsBlockHeader.PoWDSWinners = winnermap
 
 	var removeDSNodePubKeys []string
@@ -105,28 +109,37 @@ func NewDsBlockHeaderFromDsBlockT(dst *DsBlockT) *DsBlockHeader {
 
 	governance := make(map[uint32]Pair, 0)
 	govs := dst.Header.Governance
+	var proposals []uint32
 	for _, gov := range govs {
 		proposalId := gov.ProposalId
+		proposals = append(proposals, proposalId)
 		dsmap := make(map[uint32]uint32, 0)
+		var dsList []uint32
 		dsvotes := gov.DSVotes
 		for _, dsvote := range dsvotes {
 			dsmap[dsvote.VoteValue] = dsvote.VoteCount
+			dsList = append(dsList, dsvote.VoteValue)
 		}
 
 		shardmap := make(map[uint32]uint32, 0)
+		var shardList []uint32
 		shardvotes := gov.ShardVotes
 		for _, shardvote := range shardvotes {
 			shardmap[shardvote.VoteValue] = shardvote.VoteCount
+			shardList = append(shardList, shardvote.VoteValue)
 		}
 
 		pair := Pair{
-			First:  dsmap,
-			Second: shardmap,
+			First:      dsmap,
+			FirstList:  dsList,
+			Second:     shardmap,
+			SecondList: shardList,
 		}
 		governance[proposalId] = pair
 	}
 
 	dsBlockHeader.GovDSShardVotesMap = governance
+	dsBlockHeader.ProposalIds = proposals
 
 	dsBlockHeader.BlockHeaderBase.Version = dst.Header.Version
 	ch := util.DecodeHex(dst.Header.CommitteeHash)
@@ -165,22 +178,26 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 		}
 
 		var protobufWinners []*protobuf.ProtoDSBlock_DSBlockHeader_PowDSWinners
-		for key, winner := range d.PoWDSWinners {
+		for _, winner := range d.PowDSWinnersList {
+			peer := d.PoWDSWinners[winner]
 			protobufWinner := &protobuf.ProtoDSBlock_DSBlockHeader_PowDSWinners{
-				Key: &protobuf.ByteArray{Data: util.DecodeHex(key)},
-				Val: &protobuf.ByteArray{Data: winner.Serialize()},
+				Key: &protobuf.ByteArray{Data: util.DecodeHex(winner)},
+				Val: &protobuf.ByteArray{Data: peer.Serialize()},
 			}
 			protobufWinners = append(protobufWinners, protobufWinner)
 		}
+
 		protoDSBlockHeader.Dswinners = protobufWinners
 
 		var proposals []*protobuf.ProtoDSBlock_DSBlockHeader_Proposal
-		for proposal, pair := range d.GovDSShardVotesMap {
+		for _, proposal := range d.ProposalIds {
+			pair := d.GovDSShardVotesMap[proposal]
 			protoproposal := &protobuf.ProtoDSBlock_DSBlockHeader_Proposal{}
 			protoproposal.Proposalid = proposal
 
 			var dsvotes []*protobuf.ProtoDSBlock_DSBlockHeader_Vote
-			for value, count := range pair.First {
+			for _, value := range pair.FirstList {
+				count := pair.First[value]
 				dsvote := &protobuf.ProtoDSBlock_DSBlockHeader_Vote{
 					Value: value,
 					Count: count,
@@ -189,7 +206,8 @@ func (d *DsBlockHeader) ToProtobuf(concreteVarsOnly bool) *protobuf.ProtoDSBlock
 			}
 
 			var minerVotes []*protobuf.ProtoDSBlock_DSBlockHeader_Vote
-			for value, count := range pair.Second {
+			for _, value := range pair.SecondList {
+				count := pair.Second[value]
 				minerVote := &protobuf.ProtoDSBlock_DSBlockHeader_Vote{
 					Value: value,
 					Count: count,

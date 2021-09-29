@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
 package polynetwork
 
 import (
@@ -408,4 +409,137 @@ func (p *Proxy) VerifyHeaderAndExecuteTxWithNonce(proof *ProofEntity, rawHeader 
 	}
 
 	return p.callWithNonce(args, "VerifyHeaderAndExecuteTx", nonce)
+}
+
+func (p *Proxy) PopulateWhiteListFromContract(addr, val string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "addr",
+			Type:  "ByStr20",
+			Value: addr,
+		}, {
+			VName: "val",
+			Type:  "Bool",
+			Value: val,
+		},
+	}
+
+	return p.call(args, "PopulateWhiteListFromContract")
+}
+
+func (p *Proxy) PopulateWhiteListToContract(addr, val string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "addr",
+			Type:  "ByStr20",
+			Value: addr,
+		}, {
+			VName: "val",
+			Type:  "Bool",
+			Value: val,
+		},
+	}
+
+	return p.call(args, "PopulateWhiteListToContract")
+}
+
+func (p *Proxy) PopulateWhiteListMethod(method, val string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "method",
+			Type:  "String",
+			Value: method,
+		}, {
+			VName: "val",
+			Type:  "Bool",
+			Value: val,
+		},
+	}
+
+	return p.call(args, "PopulateWhiteListMethod")
+}
+
+func (p *Proxy) PopulateConKeepersPublicKeyList(keepers []string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{{
+		VName: "keepers",
+		Type:  "List ByStr20",
+		Value: keepers,
+	}}
+
+	return p.call(args, "PopulateConKeepersPublicKeyList")
+}
+
+func (p *Proxy) PopulateCurEpochStartHeight(height string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "height",
+			Type:  "Uint32",
+			Value: height,
+		},
+	}
+
+	return p.call(args, "PopulateCurEpochStartHeight")
+}
+
+func (p *Proxy) PopulateZilToPolyTxHashMap(index, val string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "index",
+			Type:  "Uint256",
+			Value: index,
+		},
+		{
+			VName: "val",
+			Type:  "ByStr32",
+			Value: val,
+		},
+	}
+
+	return p.call(args, "PopulateZilToPolyTxHashMap")
+}
+
+func (p *Proxy) PopulateZilToPolyTxHashIndex(index string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "index",
+			Type:  "Uint256",
+			Value: index,
+		},
+	}
+
+	return p.call(args, "PopulateZilToPolyTxHashIndex")
+}
+
+func (p *Proxy) PopulateFromChainTxExist(chainId, txId string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "chainId",
+			Type:  "Uint64",
+			Value: chainId,
+		},
+		{
+			VName: "txId",
+			Type:  "ByStr32",
+			Value: txId,
+		},
+	}
+
+	return p.call(args, "PopulateFromChainTxExist")
+}
+
+func (p *Proxy) PopulateFromChainTxExistWithNonce(chainId, txId, nonce string) (*transaction.Transaction, error) {
+	args := []core.ContractValue{
+		{
+			VName: "chainId",
+			Type:  "Uint64",
+			Value: chainId,
+		},
+		{
+			VName: "txId",
+			Type:  "ByStr32",
+			Value: txId,
+		},
+	}
+
+	return p.callWithNonce(args, "PopulateFromChainTxExist", nonce)
 }
