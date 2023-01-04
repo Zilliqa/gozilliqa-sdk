@@ -19,6 +19,9 @@ func TestVerify2(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")
 	}
+	if true {
+		t.Skip("Skipping verifier test, since this depends on an old environment")
+	}
 
 	p := provider.NewProvider("https://junhao-874ed66-api.dev.z7a.xyz")
 	initDsComm, _ := p.GetCurrentDSComm()
@@ -122,6 +125,9 @@ func TestVerify2(t *testing.T) {
 func TestVerify(t *testing.T) {
 	if os.Getenv("CI") != "" {
 		t.Skip("Skipping testing in CI environment")
+	}
+	if true {
+		t.Skip("Skipping verifier test, since this depends on an old environment")
 	}
 	p := provider.NewProvider("https://kaus-poly-merged3-api.dev.z7a.xyz")
 	verifier := &Verifier{NumOfDsGuard: 9}

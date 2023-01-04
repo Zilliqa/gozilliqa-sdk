@@ -49,7 +49,8 @@ func TestTransaction_TrackTx(t *testing.T) {
 		Status:       0,
 	}
 
-	tx.Confirm("846cda64971e259b1739bf15710758803abcf5754507af5af3f779777cd1b0b0", 1000, 3, provider)
+	tx.Confirm("87d6ec83cdfa057bc4717f41099122fcca5c4acfb5156180d2d47a12dce43200", 1000, 3, provider)
+	// tx.Confirm("846cda64971e259b1739bf15710758803abcf5754507af5af3f779777cd1b0b0", 1000, 3, provider)
 	assert.True(t, tx.Status == core.Confirmed)
 }
 

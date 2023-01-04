@@ -8,6 +8,9 @@ import (
 )
 
 func TestStateProver_VerifyStateProof(t *testing.T) {
+	if true {
+		t.Skip("Skipping verifier test, since this depends on an old environment")
+	}
 	core.SkipIfCI(t)
 	p := provider.NewProvider("https://mpt42-api.dev.z7a.xyz")
 	sp := &StateProver{RpcClient: p}
