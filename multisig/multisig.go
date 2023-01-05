@@ -23,7 +23,7 @@ import (
 	"fmt"
 	"github.com/Zilliqa/gozilliqa-sdk/keytools"
 	"github.com/Zilliqa/gozilliqa-sdk/util"
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 	"math/big"
 )
 
@@ -36,19 +36,19 @@ func AggregatedPubKey(pubKeys [][]byte) ([]byte, error) {
 		return nil, errors.New("empty public key list")
 	}
 	var aggregatedPubKey *btcec.PublicKey
-	key, err := btcec.ParsePubKey(pubKeys[0], keytools.Secp256k1)
+	key, err := btcec.ParsePubKey(pubKeys[0])
 	if err != nil {
 		return nil, err
 	}
 	aggregatedPubKey = key
 	for i := 1; i < len(pubKeys); i++ {
-		puk, err1 := btcec.ParsePubKey(pubKeys[i], keytools.Secp256k1)
+		puk, err1 := btcec.ParsePubKey(pubKeys[i])
 		if err1 != nil {
 			return nil, err1
 		}
-		x, y := keytools.Secp256k1.Add(aggregatedPubKey.X, aggregatedPubKey.Y, puk.X, puk.Y)
+		x, y := keytools.Secp256k1.Add(aggregatedPubKey.X(), aggregatedPubKey.Y(), puk.X(), puk.Y())
 		pubKeyBytes := util.Marshal(keytools.Secp256k1, x, y, true)
-		pubKey, err2 := btcec.ParsePubKey(pubKeyBytes, keytools.Secp256k1)
+		pubKey, err2 := btcec.ParsePubKey(pubKeyBytes)
 		if err2 != nil {
 			return nil, err2
 		}
@@ -82,13 +82,13 @@ func MultiVerify(publicKey []byte, msg []byte, r []byte, s []byte) bool {
 		return false
 	}
 
-	puk, err := btcec.ParsePubKey(publicKey, keytools.Secp256k1)
+	puk, err := btcec.ParsePubKey(publicKey)
 
 	if err != nil {
 		panic("parse public key error")
 	}
 
-	pkx, pky := puk.X, puk.Y
+	pkx, pky := puk.X(), puk.Y()
 
 	lx, ly := keytools.Secp256k1.ScalarMult(pkx, pky, r)
 	rx, ry := keytools.Secp256k1.ScalarBaseMult(s)
