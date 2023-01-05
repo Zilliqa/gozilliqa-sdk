@@ -1,5 +1,5 @@
-FROM golang:1.15.8-alpine
-LABEL maintainer="Ren xiaohuo <lulu@zilliqa.com>"
+FROM golang:1.19.4-alpine
+LABEL maintainer="Richard Watts <richard@zilliqa.com>"
 WORKDIR /app
 COPY ./ .
 RUN apk add build-base
