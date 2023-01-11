@@ -18,10 +18,9 @@ package keytools
 
 import (
 	"crypto/rand"
-	"math/big"
 
 	"github.com/Zilliqa/gozilliqa-sdk/util"
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 )
 
 var (
@@ -33,11 +32,12 @@ type PrivateKey [32]byte
 func GeneratePrivateKey() (PrivateKey, error) {
 	var bytes [32]byte
 	for {
-		privk, err := btcec.NewPrivateKey(Secp256k1)
+		privk, err := btcec.NewPrivateKey()
 		if err == nil {
-			pvkInt := privk.D
-			if pvkInt.Cmp(big.NewInt(0)) == 1 && pvkInt.Cmp(Secp256k1.N) == -1 {
-				privk.D.FillBytes(bytes[:])
+			pvkInt := privk.Key
+			// Check that the resulting key is > 0 (check for less than N removed because the representation is mod N now)
+			if !pvkInt.IsZero() {
+				privk.Key.PutBytes(&bytes)
 				break
 			}
 		}
