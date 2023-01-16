@@ -26,8 +26,8 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/Zilliqa/gozilliqa-sdk/keytools"
-	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/Zilliqa/gozilliqa-sdk/v3/keytools"
+	"github.com/Zilliqa/gozilliqa-sdk/v3/util"
 )
 
 func SignMessage(privateKey []byte, publicKey []byte, message []byte) ([]byte, error) {

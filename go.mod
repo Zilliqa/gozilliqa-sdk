@@ -1,7 +1,7 @@
-module github.com/Zilliqa/gozilliqa-sdk
+module github.com/Zilliqa/gozilliqa-sdk/v3
 
 require (
-	github.com/btcsuite/btcd v0.23.0
+	github.com/btcsuite/btcd v0.23.2
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0
 	github.com/btcsuite/btcd/btcutil v1.1.3
 	github.com/ethereum/go-ethereum v1.10.26

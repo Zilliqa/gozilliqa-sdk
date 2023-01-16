@@ -17,7 +17,7 @@
 package core
 
 import (
-	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/Zilliqa/gozilliqa-sdk/v3/util"
 	"testing"
 )
 

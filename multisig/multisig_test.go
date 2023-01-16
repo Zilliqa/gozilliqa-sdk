@@ -17,7 +17,7 @@
 package multisig
 
 import (
-	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/Zilliqa/gozilliqa-sdk/v3/util"
 	"strings"
 	"testing"
 )

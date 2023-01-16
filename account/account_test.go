@@ -17,7 +17,7 @@
 package account
 
 import (
-	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/Zilliqa/gozilliqa-sdk/v3/util"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

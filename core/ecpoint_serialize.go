@@ -18,7 +18,7 @@ package core
 
 import (
 	"crypto/elliptic"
-	"github.com/Zilliqa/gozilliqa-sdk/keytools"
+	"github.com/Zilliqa/gozilliqa-sdk/v3/keytools"
 	"math/big"
 )
 

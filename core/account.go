@@ -17,7 +17,7 @@
 package core
 
 import (
-	protobuf "github.com/Zilliqa/gozilliqa-sdk/protobuf"
+	protobuf "github.com/Zilliqa/gozilliqa-sdk/v3/protobuf"
 	"github.com/golang/protobuf/proto"
 )
 

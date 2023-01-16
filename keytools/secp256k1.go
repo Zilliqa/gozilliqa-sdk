@@ -19,7 +19,7 @@ package keytools
 import (
 	"crypto/rand"
 
-	"github.com/Zilliqa/gozilliqa-sdk/util"
+	"github.com/Zilliqa/gozilliqa-sdk/v3/util"
 	"github.com/btcsuite/btcd/btcec/v2"
 )
 
