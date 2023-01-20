@@ -452,5 +452,5 @@ func TestContract_Call(t *testing.T) {
 
 This module was originally referenced using pseudo-versions and releases up to v2.4.0 were published as github releases without backward compatibility.
 Sadly, go modules require version `n` (`n>=2`) modules to have a `/v<n>` tag in their paths, and so we now do.
-Since this is a breaking change, I've elected to bump the major version to 3, which means that in fact the go module path is now `/v3`.
+Since this is a breaking change, we've elected to bump the major version to 3, which means that in fact the go module path is now `/v3`.
 Hopefully the version churn will now stop.
