@@ -4,23 +4,32 @@ The golang version of zilliqa blockchain library
 
 #### Requirements
 
-golang environment: 
+golang environment:
 
 * [download golang](https://golang.org/dl/)
 * [installation instructions](https://golang.org/doc/install)
 
 #### Installation
 
-The sdk is using `go mod` to manager it's dependent libraries, so if you do want to hack the source code of this repository, make sure you have the minimal `golang` version that support `go mod` and enable it.
+This sdk uses `go mod` to manage its dependent libraries.
 
-Install the dependent libraries:
+To install dependencies:
 
 ```go
 go get ./...
 ```
 
-sdk it self cannot been built into a binary cause it does't have any `main` function, you can directly add it to your own project as a library. Also, we recommend that you can run the `golang uint test` or go through 
-the section `quick start` first to get a basic understanding before you start to use this sdk.
+To build:
+
+```go
+go build ./...
+```
+
+To run the unit tests (which require access to the Zilliqa testnet):
+
+```go
+go test ./...
+```
 
 #### Supports
 
@@ -438,3 +447,10 @@ func TestContract_Call(t *testing.T) {
 	assert.True(t, tx.Status == core.Confirmed)
 }
 ```
+
+#### A note on versions
+
+This module was originally referenced using pseudo-versions and releases up to v2.4.0 were published as github releases without backward compatibility.
+Sadly, go modules require version `n` (`n>=2`) modules to have a `/v<n>` tag in their paths, and so we now do.
+Since this is a breaking change, we've elected to bump the major version to 3, which means that in fact the go module path is now `/v3`.
+Hopefully the version churn will now stop.

@@ -16,7 +16,7 @@
  */
 package core
 
-import "github.com/Zilliqa/gozilliqa-sdk/protobuf"
+import "github.com/Zilliqa/gozilliqa-sdk/v3/protobuf"
 
 type BlockHeaderBase struct {
 	Version uint32
