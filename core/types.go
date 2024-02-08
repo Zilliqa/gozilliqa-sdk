@@ -237,3 +237,20 @@ type DSComm struct {
 	NumOfDSGuard   int
 	DSComm         []string `json:"dscomm"`
 }
+
+type Version struct {
+	Commit  string
+	Version string
+}
+
+type TransactionsForTxBlockEx struct {
+	CurrPage     uint32
+	NumPages     uint32
+	Transactions [][]string
+}
+
+type TxnBodiesForTxBlockEx struct {
+	CurrPage     uint32
+	NumPages     uint32
+	Transactions []Transaction
+}

@@ -20,10 +20,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/Zilliqa/gozilliqa-sdk/v3/core"
-	"github.com/ybbus/jsonrpc"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+
+	"github.com/Zilliqa/gozilliqa-sdk/v3/core"
+	"github.com/ybbus/jsonrpc"
 )
 
 type Provider struct {
@@ -47,6 +49,55 @@ func (provider *Provider) GetNetworkId() (string, error) {
 		return "", result.Error
 	}
 	return result.Result.(string), nil
+}
+
+// Returns the software version of the specified network. This is represented as a String.
+func (provider *Provider) GetVersion() (*core.Version, error) {
+	result, err := provider.call("GetVersion")
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var version core.Version
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &version)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &version, nil
+}
+
+// Returns tye node type. This is represented as a String.
+func (provider *Provider) GetNodeType() (string, error) {
+	result, err := provider.call("GetNodeType")
+	if err != nil {
+		return "", err
+	}
+	if result.Error != nil {
+		return "", result.Error
+	}
+	return result.Result.(string), nil
+}
+
+// Returns tye node type. This is represented as a String.
+func (provider *Provider) GetNumPeers() (int64, error) {
+	result, err := provider.call("GetNumPeers")
+	if err != nil {
+		return -1, err
+	}
+	if result.Error != nil {
+		return -1, result.Error
+	}
+	return result.Result.(json.Number).Int64()
 }
 
 // Returns the current network statistics for the specified network.
@@ -96,7 +147,6 @@ func (provider *Provider) GetShardingStructure() (*core.ShardingStructure, error
 	}
 
 	return &shardingStructure, nil
-
 }
 
 // Returns the details of a specified Directory Service block.
@@ -516,6 +566,20 @@ func (provider *Provider) GetTotalCoinSupply() (string, error) {
 	return result.Result.(string), nil
 }
 
+// Returns the total supply (ZIL) of coins in the network. This is represented as a 64-bit integer.
+func (provider *Provider) GetTotalCoinSupplyAsInt() (int64, error) {
+	result, err := provider.call("GetTotalCoinSupplyAsInt")
+	if err != nil {
+		return -1, err
+	}
+
+	if result.Error != nil {
+		return -1, result.Error
+	}
+
+	return result.Result.(json.Number).Int64()
+}
+
 // Returns the mining nodes (i.e., the members of the DS committee and shards) at the specified DS block.
 // Notes: 1. Nodes owned by Zilliqa Research are omitted. 2. dscommittee has no size field since the DS committee size
 // is fixed for a given chain. 3. For the Zilliqa Mainnet, this API is only available from DS block 5500 onwards.
@@ -730,7 +794,7 @@ func (provider *Provider) GetRecentTransactions() (*core.Transactions, error) {
 	return &transactions, nil
 }
 
-// Returns the validated transactions included within a specfied final transaction block as an array of length i,
+// Returns the validated transactions included within a specified final transaction block as an array of length i,
 // where i is the number of shards plus the DS committee. The transactions are grouped based on the group that processed
 // the transaction. The first element of the array refers to the first shard. The last element of the array at index, i,
 // refers to the transactions processed by the DS Committee.
@@ -758,6 +822,30 @@ func (provider *Provider) GetTransactionsForTxBlock(tx_block_number string) ([][
 	return transactions, nil
 }
 
+func (provider *Provider) GetTransactionsForTxBlockEx(tx_block_number string, page_number uint32) (*core.TransactionsForTxBlockEx, error) {
+	result, err := provider.call("GetTransactionsForTxBlockEx", tx_block_number, strconv.Itoa(int(page_number)))
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var tx_block_ex core.TransactionsForTxBlockEx
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &tx_block_ex)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &tx_block_ex, nil
+}
+
 func (provider *Provider) GetTxnBodiesForTxBlock(tx_block_number string) ([]core.Transaction, error) {
 	result, err := provider.call("GetTxnBodiesForTxBlock", tx_block_number)
 	if err != nil {
@@ -780,6 +868,30 @@ func (provider *Provider) GetTxnBodiesForTxBlock(tx_block_number string) ([]core
 	}
 
 	return transactions, nil
+}
+
+func (provider *Provider) GetTxnBodiesForTxBlockEx(tx_block_number string, page_number uint32) (*core.TxnBodiesForTxBlockEx, error) {
+	result, err := provider.call("GetTxnBodiesForTxBlockEx", tx_block_number)
+	if err != nil {
+		return nil, err
+	}
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	var transactions core.TxnBodiesForTxBlockEx
+	jsonString, err2 := json.Marshal(result.Result)
+	if err2 != nil {
+		return nil, err2
+	}
+
+	err3 := json.Unmarshal(jsonString, &transactions)
+	if err3 != nil {
+		return nil, err3
+	}
+
+	return &transactions, nil
 }
 
 // Returns the number of validated transactions included in this Transaction epoch.

@@ -103,6 +103,9 @@ go test ./...
 Blockchain-related methods
 
 - [x] getNetworkId
+- [x] getVersion
+- [x] getNodeType
+- [x] getNumPeers
 - [x] getBlockchainInfo
 - [x] getShardingStructure
 - [x] getDsBlock
@@ -128,6 +131,9 @@ Transaction-related methods
 - [x] getTransaction
 - [x] getRecentTransactions
 - [x] getTransactionsForTxBlock
+- [x] getTransactionsForTxBlockEx
+- [x] getTxnBodiesForTxBlock
+- [x] getTxnBodiesForTxBlockEx
 - [x] getNumTxnsTxEpoch
 - [x] getNumTxnsDSEpoch
 - [x] getMinimumGasPrice
