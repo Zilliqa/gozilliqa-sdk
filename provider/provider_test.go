@@ -21,6 +21,8 @@ import (
 	"fmt"
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func SkipIfCI(t *testing.T) {
@@ -34,6 +36,28 @@ func TestGetNetworkId(t *testing.T) {
 	provider := NewProvider("https://dev-api.zilliqa.com/")
 	id, _ := provider.GetNetworkId()
 	fmt.Println(id)
+}
+
+func TestGetVersion(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	id, _ := provider.GetVersion()
+	fmt.Println(id)
+}
+
+func TestGetNodeType(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	nt, _ := provider.GetNodeType()
+	fmt.Println(nt)
+}
+
+func TestGetNumPeers(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	peers, _ := provider.GetNumPeers()
+	assert.Positive(t, peers)
+	fmt.Println(peers)
 }
 
 func TestGetBlockchainInfo(t *testing.T) {
@@ -189,6 +213,13 @@ func TestProvider_GetTotalCoinSupply(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestProvider_GetTotalCoinSupplyAsInt(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	result, _ := provider.GetTotalCoinSupplyAsInt()
+	fmt.Println(result)
+}
+
 func TestProvider_GetMinerInfo(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://api.zilliqa.com/")
@@ -240,10 +271,24 @@ func TestGetTransactionsForTxBlock(t *testing.T) {
 	fmt.Println(result)
 }
 
+func TestGetTransactionsForTxBlockEx(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	result, _ := provider.GetTransactionsForTxBlockEx("1442201", 0)
+	fmt.Println(result)
+}
+
 func TestProvider_GetTxnBodiesForTxBlock(t *testing.T) {
 	SkipIfCI(t)
 	provider := NewProvider("https://dev-api.zilliqa.com/")
 	result, _ := provider.GetTxnBodiesForTxBlock("1364221")
+	fmt.Println(result)
+}
+
+func TestProvider_GetTxnBodiesForTxBlockEx(t *testing.T) {
+	SkipIfCI(t)
+	provider := NewProvider("https://dev-api.zilliqa.com/")
+	result, _ := provider.GetTxnBodiesForTxBlockEx("1364221", 0)
 	fmt.Println(result)
 }
 
