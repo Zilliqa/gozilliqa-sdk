@@ -18,13 +18,14 @@ package contract
 
 import (
 	"errors"
+	"strconv"
+	"strings"
+
 	"github.com/Zilliqa/gozilliqa-sdk/v3/account"
 	"github.com/Zilliqa/gozilliqa-sdk/v3/core"
 	"github.com/Zilliqa/gozilliqa-sdk/v3/provider"
 	"github.com/Zilliqa/gozilliqa-sdk/v3/transaction"
 	"github.com/Zilliqa/gozilliqa-sdk/v3/util"
-	"strconv"
-	"strings"
 )
 
 type ContractStatus int
@@ -153,12 +154,16 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 
 	result := rsp.Result.(map[string]interface{})
 	hash := result["TranID"].(string)
-	contractAddress := result["ContractAddress"].(string)
-
 	tx.ID = hash
-	tx.ContractAddress = contractAddress
-	return tx, nil
+	// Handle optional contract address
+	contractAddress, ok := result["ContractAddress"].(string)
+	if ok {
+		tx.ContractAddress = contractAddress
+	} else {
+		tx.ContractAddress = ""
+	}
 
+	return tx, nil
 }
 func (c *Contract) Sign(transition string, args []core.ContractValue, params CallParams, priority bool) (error, *transaction.Transaction) {
 	if c.Address == "" {
