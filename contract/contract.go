@@ -156,7 +156,7 @@ func (c *Contract) Deploy(params DeployParams) (*transaction.Transaction, error)
 	hash := result["TranID"].(string)
 	tx.ID = hash
 	// Handle optional contract address
-	contractAddress, ok := result["contract_address"].(string)
+	contractAddress, ok := result["ContractAddress"].(string)
 	if ok {
 		tx.ContractAddress = contractAddress
 	} else {
